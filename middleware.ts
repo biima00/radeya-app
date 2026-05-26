@@ -51,5 +51,11 @@ export async function middleware(request: NextRequest) {
 
 // Cocokkan semua path API yang dilindungi
 export const config = {
-  matcher: ['/api/v1/cycles/:path*', '/api/v1/onboarding/:path*'],
+  matcher: [
+    '/api/v1/cycles',
+    '/api/v1/cycles/:path*',
+    '/api/v1/onboarding',
+    '/api/v1/onboarding/:path*',
+  ],
 };
+

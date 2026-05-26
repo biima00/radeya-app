@@ -56,6 +56,8 @@ export const config = {
     '/api/v1/cycles/:path*',
     '/api/v1/onboarding',
     '/api/v1/onboarding/:path*',
+    '/api/v1/ai',
+    '/api/v1/ai/:path*',
   ],
 };
 

@@ -21,6 +21,7 @@ interface Cycle {
     penetasan?: any[];
     kelahiran?: any[];
     harian?: any[];
+    checkedTasks?: string[]; // Menyimpan daftar task harian yang sudah dicentang
   };
   createdAt: string;
 }
@@ -38,9 +39,63 @@ const ANIMAL_LABELS: Record<string, string> = {
 };
 
 const SCALE_LABELS: Record<string, string> = {
-  besar: 'Skala Besar/Komersil',
-  kecil: 'Skala Kecil/Pembibitan',
+  besar: 'Skala Besar / Komersil',
+  kecil: 'Skala Kecil / Rumahan',
   breeding: 'Mode Breeding'
+};
+
+// --- SVGs Icons Pack for Professional SaaS UI ---
+const Icons = {
+  dashboard: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+    </svg>
+  ),
+  modalAwal: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  biaya: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+  ),
+  panen: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+    </svg>
+  ),
+  simulasi: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  ),
+  plus: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+    </svg>
+  ),
+  trash: (className = "w-4 h-4") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    </svg>
+  ),
+  export: (className = "w-4 h-4") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    </svg>
+  ),
+  calendar: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+  ),
+  aiVet: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    </svg>
+  )
 };
 
 // --- Mappers ---
@@ -74,6 +129,66 @@ const determineMode = (animal: string, scaleStr: string): string => {
   return 'broiler';
 };
 
+// --- Operational Task Templates ---
+const getCalendarTasks = (animal: string, scale: string, startDate: Date) => {
+  const formatTaskDate = (daysToAdd: number) => {
+    const d = new Date(startDate.getTime());
+    d.setDate(d.getDate() + daysToAdd);
+    return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
+  const isUnggas = ['ayam_petelur', 'ayam_pedaging', 'bebek', 'enthok'].includes(animal);
+  const isPedaging = ['ayam_pedaging', 'enthok'].includes(animal);
+  const isPerah = ['sapi_perah', 'kambing_perah'].includes(animal);
+
+  if (isUnggas && isPedaging) {
+    // Broiler
+    return [
+      { id: 'br_d1', day: 1, date: formatTaskDate(0), title: 'DOC Tiba & Adaptasi', desc: 'Berikan air gula merah 2% + vitamin anti-stres segera setelah DOC masuk. Set suhu pemanas (brooder) di kisaran 32-33°C.' },
+      { id: 'br_d4', day: 4, date: formatTaskDate(3), title: 'Vaksinasi ND-IB Pertama', desc: 'Lakukan vaksinasi Newcastle Disease (ND) dan Infectious Bronchitis (IB) menggunakan tetes mata atau tetes hidung.' },
+      { id: 'br_d7', day: 7, date: formatTaskDate(6), title: 'Pelebaran Pen & Timbang Bobot', desc: 'Lebarkan sekat kandang agar anak ayam tidak terlalu padat. Ambil sampel timbang 10% populasi (Target bobot badan: ~180 gram).' },
+      { id: 'br_d11', day: 11, date: formatTaskDate(10), title: 'Vaksinasi Gumboro (IBD)', desc: 'Berikan vaksin Gumboro aktif lewat air minum. Puasakan ayam makan pakan basah 1-2 jam sebelum pemberian vaksin agar memicu kehausan.' },
+      { id: 'br_d14', day: 14, date: formatTaskDate(13), title: 'Pembalikan Sekam & Cek Bobot', desc: 'Balik sekam yang menggumpal dan tambahkan sekam baru tipis-tipis. Timbang sampel mingguan (Target bobot badan: ~450 gram).' },
+      { id: 'br_d18', day: 18, date: formatTaskDate(17), title: 'Vaksinasi ND LaSota Booster', desc: 'Pemberian vaksin ND aktif LaSota lewat air minum kandang.' },
+      { id: 'br_d21', day: 21, date: formatTaskDate(20), title: 'Pelebaran Sekat Maksimal', desc: 'Buka sekat pembatas kandang agar luas ruang terpakai optimal. Timbang bobot badan (Target: ~850 gram).' },
+      { id: 'br_d28', day: 28, date: formatTaskDate(27), title: 'Evaluasi FCR & Bobot Pra-Panen', desc: 'Hitung FCR sementara. Rata-rata bobot badan ideal berkisar di 1.4kg - 1.6kg. Cek persediaan krat panen.' },
+      { id: 'br_d33', day: 33, date: formatTaskDate(32), title: 'Persiapan Panen (Puasa Pakan)', desc: 'Lakukan puasa pakan 8 jam sebelum penangkapan ayam panen agar kotoran tidak mencemari krat. Berikan air minum bersih tetap jalan.' }
+    ];
+  } else if (isUnggas && !isPedaging) {
+    // Layer (Ayam Petelur)
+    return [
+      { id: 'ly_d1', day: 1, date: formatTaskDate(0), title: 'Pullet Masuk Kandang', desc: 'Isolasi pullet di kandang baterai. Berikan vitamin anti-stres dalam air minum selama 3 hari berturut-turut.' },
+      { id: 'ly_d7', day: 7, date: formatTaskDate(6), title: 'Timbang Bobot Awal', desc: 'Timbang pullet secara acak. Target keseragaman ukuran pullet (uniformity) di atas 85%.' },
+      { id: 'ly_d14', day: 14, date: formatTaskDate(13), title: 'Potong Paruh & Sanitasi', desc: 'Lakukan potong paruh (debeaking) ujung paruh jika ada indikasi kanibalisme. Semprot desinfektan lantai kandang.' },
+      { id: 'ly_d21', day: 21, date: formatTaskDate(20), title: 'Vaksinasi ND-EDS', desc: 'Lakukan vaksinasi suntik emulsi ND-EDS untuk menjaga kestabilan saluran reproduksi telur.' },
+      { id: 'ly_d30', day: 30, date: formatTaskDate(29), title: 'Transisi Pakan Pre-Lay', desc: 'Campurkan pakan pullet dengan pakan layer (fase bertelur) bertahap dengan rasio 50:50.' },
+      { id: 'ly_d45', day: 45, date: formatTaskDate(44), title: 'Cek Telur Pertama (Perdana)', desc: 'Evaluasi telur perdana kecil. Pastikan pasokan kalsium (grit/kulit kerang) tercampur baik di pakan.' },
+      { id: 'ly_d60', day: 60, date: formatTaskDate(59), title: 'Evaluasi Hen Day (HD %)', desc: 'Hitung persentase produktivitas telur harian. Target Hen Day minggu ke-8 di atas 50%.' }
+    ];
+  } else if (!isUnggas && isPerah) {
+    // Sapi / Kambing Perah
+    return [
+      { id: 'df_d1', day: 1, date: formatTaskDate(0), title: 'Sanitasi Puting & Uji Mastitis', desc: 'Pemeriksaan awal mastitis dengan cairan CMT (California Mastitis Test). Mulai sanitasi celup puting (teat dipping) sebelum dan sesudah diperah.' },
+      { id: 'df_d3', day: 3, date: formatTaskDate(2), title: 'Obat Cacing & Vitamin', desc: 'Berikan obat cacing laktasi aman (seperti *Eprinomectin*) dan injeksi vitamin B-Kompleks.' },
+      { id: 'df_d7', day: 7, date: formatTaskDate(6), title: 'Evaluasi Produksi Kolostrum', desc: 'Pastikan susu kolostrum awal hari 1-5 disalurkan khusus anak sapi (pedet). Hari ke-7 susu siap disetor komersil.' },
+      { id: 'df_d14', day: 14, date: formatTaskDate(13), title: 'Vaksinasi PMK Pertama', desc: 'Berikan vaksin PMK (Penyakit Mulut dan Kuku) intramuskular di area leher hewan.' },
+      { id: 'df_d30', day: 30, date: formatTaskDate(29), title: 'Uji Mastitis Bulanan', desc: 'Lakukan screening mastitis subklinis rutin ke seluruh sapi perah yang sedang laktasi.' },
+      { id: 'df_d60', day: 60, date: formatTaskDate(59), title: 'Pemeriksaan Kebuntingan (PK)', desc: 'Lakukan pemeriksaan kebuntingan pasca Inseminasi Buatan (IB) oleh petugas inseminator.' }
+    ];
+  } else {
+    // Sapi / Kambing Penggemukan & Breeding
+    return [
+      { id: 'fm_d1', day: 1, date: formatTaskDate(0), title: 'Bakalan Tiba & Istirahat', desc: 'Jangan langsung diberi pakan konsentrat berat. Berikan air minum hangat dicampur garam/gula merah + jerami kering.' },
+      { id: 'fm_d3', day: 3, date: formatTaskDate(2), title: 'Obat Cacing & Antiseptik Kuku', desc: 'Pemberian obat cacing bolus (Albendazole) dan bersihkan sela kuku kaki ternak dengan tembaga sulfat.' },
+      { id: 'fm_d7', day: 7, date: formatTaskDate(6), title: 'Timbang Bobot Awal Individual', desc: 'Pasang ear-tag penanda nomor ternak dan catat berat badan awal sebagai basis ADG bulanan.' },
+      { id: 'fm_d14', day: 14, date: formatTaskDate(13), title: 'Vaksinasi PMK Dosis 1', desc: 'Lakukan vaksinasi PMK mencegah penyakit mulut kaki menular.' },
+      { id: 'fm_d30', day: 30, date: formatTaskDate(29), title: 'Timbang Berat Badan Bulanan', desc: 'Hitung ADG (Average Daily Gain / Pertambahan Bobot Harian). Target sapi penggemukan: > 1.0kg/hari.' },
+      { id: 'fm_d60', day: 60, date: formatTaskDate(59), title: 'Timbang Bulanan II & Cek Pakan', desc: 'Cek konsumsi serat kasar rumput segar dan ampas tahu/konsentrat. Sesuaikan protein pakan jika target ADG kurang.' },
+      { id: 'fm_d90', day: 90, date: formatTaskDate(89), title: 'Vaksin PMK Booster', desc: 'Suntik vaksin PMK penguat agar antibodi ternak terjaga penuh sampai waktu panen.' }
+    ];
+  }
+};
+
 export default function DashboardPage() {
   const router = useRouter();
 
@@ -81,21 +196,19 @@ export default function DashboardPage() {
   const [farmName, setFarmName] = useState('');
   const [cycles, setCycles] = useState<Cycle[]>([]);
   const [activeCycleIndex, setActiveCycleIndex] = useState<number>(-1);
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   // --- Onboarding Setup States (If user has 0 cycles) ---
   const [isOnboarding, setIsOnboarding] = useState(false);
-  const [obStep, setObStep] = useState(1); // 1: Animal, 2: Scale
+  const [obStep, setObStep] = useState(1);
   const [selectedAnimal, setSelectedAnimal] = useState('');
   const [selectedScale, setSelectedScale] = useState('');
 
   // --- Modal Form States ---
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [modalTitle, setModalTitle] = useState('');
-  
-  // Dynamic Form Fields
   const [formFields, setFormFields] = useState<any>({});
   const [previewVal, setPreviewVal] = useState('');
 
@@ -122,6 +235,19 @@ export default function DashboardPage() {
   // --- Simulation States ---
   const [simHarga, setSimHarga] = useState<number>(0);
 
+  // --- AI Vet Chat States ---
+  const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'ai'; text: string }>>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [isChatLoading, setIsChatLoading] = useState(false);
+
+  // --- Pearson Feed Formulation States ---
+  const [pearsonTarget, setPearsonTarget] = useState<number>(18);
+  const [pearsonIngA, setPearsonIngA] = useState<string>('Jagung');
+  const [pearsonProtA, setPearsonProtA] = useState<number>(9);
+  const [pearsonIngB, setPearsonIngB] = useState<string>('Konsentrat');
+  const [pearsonProtB, setPearsonProtB] = useState<number>(36);
+  const [pearsonTotalKg, setPearsonTotalKg] = useState<number>(100);
+
   // --- Fetch Data on Mount ---
   useEffect(() => {
     const token = localStorage.getItem('radeya_token');
@@ -144,8 +270,8 @@ export default function DashboardPage() {
         setCycles(data);
         setActiveCycleIndex(0);
         setIsOnboarding(false);
+        setActiveTab('dashboard');
       } else {
-        // No cycles in DB -> trigger setup onboarding screen
         setIsOnboarding(true);
         setObStep(1);
       }
@@ -199,7 +325,8 @@ export default function DashboardPage() {
         produksi: [],
         penetasan: [],
         kelahiran: [],
-        harian: []
+        harian: [],
+        checkedTasks: []
       };
 
       const newCycle = await apiPost('/api/v1/cycles', {
@@ -213,7 +340,7 @@ export default function DashboardPage() {
       setCycles((prev) => [newCycle, ...prev]);
       setActiveCycleIndex(0);
       setIsOnboarding(false);
-      setActiveTab(0);
+      setActiveTab('dashboard');
       showToast('✅ Siklus baru berhasil dibuat');
     } catch (err: any) {
       setError(err.message || 'Gagal membuat siklus baru.');
@@ -249,59 +376,71 @@ export default function DashboardPage() {
   };
 
   const getTabsForMode = (mode: string) => {
+    let baseTabs = [];
     switch (mode) {
       case 'broiler':
-        return [
-          { icon: '📊', label: 'Dashboard' },
-          { icon: '📋', label: 'Modal Awal' },
-          { icon: '🛒', label: 'Biaya' },
-          { icon: '🎯', label: 'Panen' },
-          { icon: '📈', label: 'Simulasi' }
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
+          { id: 'panen', icon: Icons.panen(), label: 'Panen' },
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
         ];
+        break;
       case 'petelur':
-        return [
-          { icon: '📊', label: 'Dashboard' },
-          { icon: '📋', label: 'Modal Awal' },
-          { icon: '🛒', label: 'Biaya' },
-          { icon: '🥚', label: 'Produksi' },
-          { icon: '💰', label: 'Penjualan' },
-          { icon: '📈', label: 'Simulasi' }
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
+          { id: 'panen', icon: Icons.panen(), label: 'Produksi' },
+          { id: 'penjualan', icon: Icons.modalAwal(), label: 'Penjualan' },
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
         ];
+        break;
       case 'pembibitan_unggas':
-        return [
-          { icon: '📊', label: 'Dashboard' },
-          { icon: '📋', label: 'Modal Awal' },
-          { icon: '🥚', label: 'Telur' },
-          { icon: '🐣', label: 'Penetasan' },
-          { icon: '💰', label: 'Penjualan' }
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Telur' },
+          { id: 'panen', icon: Icons.panen(), label: 'Penetasan' },
+          { id: 'penjualan', icon: Icons.modalAwal(), label: 'Penjualan' }
         ];
+        break;
       case 'penggemukan':
-        return [
-          { icon: '📊', label: 'Dashboard' },
-          { icon: '📋', label: 'Modal Awal' },
-          { icon: '🛒', label: 'Biaya' },
-          { icon: '🎯', label: 'Panen' },
-          { icon: '📈', label: 'Simulasi' }
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
+          { id: 'panen', icon: Icons.panen(), label: 'Panen' },
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
         ];
+        break;
       case 'susu':
-        return [
-          { icon: '📊', label: 'Dashboard' },
-          { icon: '📋', label: 'Modal Awal' },
-          { icon: '🛒', label: 'Biaya' },
-          { icon: '🥛', label: 'Produksi' },
-          { icon: '💰', label: 'Penjualan' },
-          { icon: '📈', label: 'Simulasi' }
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
+          { id: 'panen', icon: Icons.panen(), label: 'Produksi' },
+          { id: 'penjualan', icon: Icons.modalAwal(), label: 'Penjualan' },
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
         ];
+        break;
       case 'breeding_ruminansia':
-        return [
-          { icon: '📊', label: 'Dashboard' },
-          { icon: '📋', label: 'Modal Awal' },
-          { icon: '🐣', label: 'Kelahiran' },
-          { icon: '💰', label: 'Penjualan' }
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'panen', icon: Icons.panen(), label: 'Kelahiran' },
+          { id: 'penjualan', icon: Icons.modalAwal(), label: 'Penjualan' }
         ];
+        break;
       default:
-        return [{ icon: '📊', label: 'Dashboard' }];
+        baseTabs = [{ id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' }];
     }
+    return [
+      ...baseTabs,
+      { id: 'jadwal_kerja', icon: Icons.calendar(), label: 'Jadwal Kerja' },
+      { id: 'ai_vet', icon: Icons.aiVet(), label: 'AI Vet' }
+    ];
   };
 
   const getScaleOptions = (animal: string) => {
@@ -310,12 +449,12 @@ export default function DashboardPage() {
 
     if (isUnggas) {
       return [
-        { val: 'besar', icon: '🏭', title: 'Skala Besar/Komersil', desc: 'DOC beli, kandang besar, jual bobot' },
-        { val: 'kecil', icon: '🏡', title: 'Skala Kecil/Pembibitan', desc: 'Indukan sendiri, jual DOC & remaja' }
+        { val: 'besar', icon: '🏭', title: 'Skala Besar / Komersil', desc: 'DOC beli, kandang besar, jual bobot' },
+        { val: 'kecil', icon: '🏡', title: 'Skala Kecil / Pembibitan', desc: 'Indukan sendiri, jual DOC & remaja' }
       ];
     } else if (isPerah) {
       return [
-        { val: 'besar', icon: '🏭', title: 'Skala Besar/Komersil', desc: 'Produksi susu harian, setor ke koperasi' }
+        { val: 'besar', icon: '🏭', title: 'Skala Besar / Komersil', desc: 'Produksi susu harian, setor ke koperasi' }
       ];
     } else {
       return [
@@ -368,7 +507,7 @@ export default function DashboardPage() {
       const ip = (fcr > 0 && umur > 0) ? (srPct / 100 * bbRata) / (fcr * umur) * 100 : 0;
 
       return {
-        totalModal, totalPendapatan, laba, totalKgPanen, hpp, fcr, srPct, umur, ip,
+        totalModal, totalPendapatan, laba, totalKgPanen, hpp, fcr, srPct, umur, ip, mati, jmlDoc,
         breakdown: [
           { label: 'DOC', val: totalDOC },
           { label: 'Kandang', val: biayaKandang },
@@ -465,8 +604,10 @@ export default function DashboardPage() {
       if (tglBeli) lamaHari = Math.floor((new Date().getTime() - tglBeli.getTime()) / 86400000);
       const bbAkhirRata = panen.length > 0 ? parseFloat(panen[panen.length - 1].bb_akhir) || 0 : 0;
       const adg = lamaHari > 0 ? (bbAkhirRata - bbAwal) / lamaHari * 1000 : 0;
+      const mati = panen.reduce((s: number, p: any) => s + (parseFloat(p.jml_mati) || 0), 0);
+      const srPct = jmlEkor > 0 ? ((jmlEkor - mati) / jmlEkor) * 100 : 100;
 
-      return { totalModal, totalPendapatan, laba, hpp, fcr, adg, lamaHari, totalKgPanen };
+      return { totalModal, totalPendapatan, laba, hpp, fcr, adg, lamaHari, totalKgPanen, srPct, mati, jmlDoc: jmlEkor };
     }
 
     if (mode === 'susu') {
@@ -528,9 +669,188 @@ export default function DashboardPage() {
   // --- Currency Formatter ---
   const formatRp = (val: any) => {
     const n = parseFloat(val) || 0;
-    if (Math.abs(n) >= 1000000) return (n < 0 ? '-' : '') + 'Rp' + (Math.abs(n) / 1000000).toFixed(1) + 'jt';
-    if (Math.abs(n) >= 1000) return (n < 0 ? '-' : '') + 'Rp' + Math.abs(n).toLocaleString('id-ID');
-    return (n < 0 ? '-' : '') + 'Rp' + Math.abs(n).toFixed(0);
+    if (Math.abs(n) >= 1000000) return (n < 0 ? '-' : '') + 'Rp' + (Math.abs(n) / 1000000).toFixed(2) + ' jt';
+    if (Math.abs(n) >= 1000) return (n < 0 ? '-' : '') + 'Rp ' + Math.abs(n).toLocaleString('id-ID');
+    return (n < 0 ? '-' : '') + 'Rp ' + Math.abs(n).toFixed(0);
+  };
+
+  // --- Dynamic SVG Line Chart for Production ---
+  const renderSVGLineChart = () => {
+    const cycle = getActiveCycle();
+    if (!cycle) return null;
+
+    let points: Array<{ date: string; value: number }> = [];
+    let title = 'Grafik Produksi';
+    let unit = '';
+
+    if (cycle.mode === 'petelur') {
+      points = (cycle.data?.harian || []).map((h: any) => ({
+        date: h.tgl.slice(5),
+        value: parseFloat(h.butir) || 0
+      }));
+      title = 'Tren Produksi Telur (Butir)';
+      unit = 'butir';
+    } else if (cycle.mode === 'susu') {
+      points = (cycle.data?.harian || []).map((h: any) => ({
+        date: h.tgl.slice(5),
+        value: parseFloat(h.liter) || 0
+      }));
+      title = 'Tren Produksi Susu (Liter)';
+      unit = 'L';
+    } else if (cycle.mode === 'pembibitan_unggas') {
+      points = (cycle.data?.produksi || []).map((p: any) => ({
+        date: p.periode,
+        value: parseFloat(p.dikumpulkan) || 0
+      }));
+      title = 'Tren Telur Dikumpulkan';
+      unit = 'butir';
+    }
+
+    // Sort by date key or string
+    points = points.sort((a, b) => a.date.localeCompare(b.date));
+
+    if (points.length < 2) {
+      return (
+        <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl text-center py-12 text-slate-500 text-xs">
+          📈 Grafik Tren Produksi akan muncul otomatis setelah Anda mencatat minimal 2 entri data harian.
+        </div>
+      );
+    }
+
+    const maxVal = Math.max(...points.map((p) => p.value)) || 10;
+    const minVal = Math.min(...points.map((p) => p.value)) || 0;
+    const range = maxVal - minVal || 10;
+    const height = 180;
+    const width = 600;
+    const paddingLeft = 50;
+    const paddingRight = 20;
+    const paddingTop = 20;
+    const paddingBottom = 30;
+
+    const chartWidth = width - paddingLeft - paddingRight;
+    const chartHeight = height - paddingTop - paddingBottom;
+
+    const getX = (idx: number) => paddingLeft + (idx / (points.length - 1)) * chartWidth;
+    const getY = (val: number) => height - paddingBottom - ((val - minVal) / range) * chartHeight;
+
+    const pathData = points.reduce((acc, p, idx) => {
+      const x = getX(idx);
+      const y = getY(p.value);
+      return acc + `${idx === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    }, '');
+
+    // Path area for background gradient
+    const fillPathData = pathData + 
+      ` L ${getX(points.length - 1).toFixed(1)} ${(height - paddingBottom).toFixed(1)}` +
+      ` L ${getX(0).toFixed(1)} ${(height - paddingBottom).toFixed(1)} Z`;
+
+    return (
+      <div className="bg-slate-900/40 border border-teal-500/10 p-6 rounded-3xl shadow-xl">
+        <h4 className="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
+          <span>📈</span> {title}
+        </h4>
+        
+        <div className="w-full overflow-x-auto no-scrollbar">
+          <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[500px] h-auto overflow-visible">
+            <defs>
+              <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#0D9488" stopOpacity="0.4" />
+                <stop offset="100%" stopColor="#0D9488" stopOpacity="0.0" />
+              </linearGradient>
+            </defs>
+
+            {/* Grid Lines */}
+            {[0, 0.25, 0.5, 0.75, 1].map((p, i) => {
+              const y = paddingTop + p * chartHeight;
+              const val = maxVal - p * range;
+              return (
+                <g key={i}>
+                  <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="#1e293b" strokeDasharray="3 3" />
+                  <text x={paddingLeft - 10} y={y + 4} textAnchor="end" className="text-[10px] font-bold fill-slate-500 font-mono">
+                    {val.toFixed(0)}
+                  </text>
+                </g>
+              );
+            })}
+
+            {/* Shaded Area */}
+            <path d={fillPathData} fill="url(#chartGlow)" />
+
+            {/* Value Line */}
+            <path d={pathData} fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+
+            {/* Nodes and X labels */}
+            {points.map((p, idx) => {
+              const x = getX(idx);
+              const y = getY(p.value);
+              return (
+                <g key={idx}>
+                  <circle cx={x} cy={y} r="4" className="fill-teal-400 stroke-slate-950 stroke-2" />
+                  {/* Tooltip text on top of dots if small array */}
+                  {points.length <= 10 && (
+                    <text x={x} y={y - 8} textAnchor="middle" className="text-[9px] font-black fill-teal-300 font-mono">
+                      {p.value}
+                    </text>
+                  )}
+                  {/* Date/X Label */}
+                  <text x={x} y={height - 8} textAnchor="middle" className="text-[9px] font-bold fill-slate-550 font-mono">
+                    {p.date}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+      </div>
+    );
+  };
+
+  // --- Circular Gauge for Survival Rate ---
+  const renderSVGGauge = (srPct: number, mati: number, total: number) => {
+    const size = 150;
+    const strokeWidth = 12;
+    const r = (size - strokeWidth) / 2;
+    const circ = 2 * Math.PI * r;
+    const fillValue = (srPct / 100) * circ;
+    
+    let colorClass = 'stroke-teal-500';
+    if (srPct < 90) colorClass = 'stroke-amber-500';
+    if (srPct < 80) colorClass = 'stroke-rose-500';
+
+    return (
+      <div className="bg-slate-900/40 border border-teal-500/10 p-6 rounded-3xl shadow-xl flex flex-col items-center text-center justify-center">
+        <h4 className="text-sm font-bold text-slate-200 mb-4 self-start flex items-center gap-2">
+          <span>🩺</span> Tingkat Kelangsungan Hidup (SR)
+        </h4>
+
+        <div className="relative w-[150px] h-[150px] mb-3">
+          <svg className="w-full h-full -rotate-90">
+            {/* Background Track */}
+            <circle cx={size / 2} cy={size / 2} r={r} className="stroke-slate-800 fill-none" strokeWidth={strokeWidth} />
+            {/* Filled Progress arc */}
+            <circle 
+              cx={size / 2} 
+              cy={size / 2} 
+              r={r} 
+              className={`fill-none transition-all duration-1000 ${colorClass}`} 
+              strokeWidth={strokeWidth} 
+              strokeDasharray={circ} 
+              strokeDashoffset={circ - fillValue} 
+              strokeLinecap="round"
+            />
+          </svg>
+          {/* Inner Text */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <span className="text-2xl font-black text-white font-mono">{srPct.toFixed(1)}%</span>
+            <span className="text-[9px] text-slate-550 font-bold tracking-wider uppercase">Survival Rate</span>
+          </div>
+        </div>
+        
+        <p className="text-xs font-semibold text-slate-400">
+          Kematian: <strong className="text-rose-400 font-mono">{mati}</strong> / {total} ekor
+        </p>
+      </div>
+    );
   };
 
   // --- Modal Forms Renderer ---
@@ -570,11 +890,8 @@ export default function DashboardPage() {
       setModalTitle('💰 Catat Penjualan');
       setFormFields({ tgl: todayStr, tipe: 'DOC', jml: '', harga_ekor: '' });
       setPreviewVal('Rp 0');
-    } else if (type === 'modal_biaya_ruminansia') {
+    } else if (type === 'modal_biaya_ruminansia' || type === 'modal_biaya_susu') {
       setModalTitle('🌿 Tambah Biaya Operasional');
-      setFormFields({ tgl: todayStr, type: 'pakan', nama: '', kg: '0', total: '' });
-    } else if (type === 'modal_biaya_susu') {
-      setModalTitle('🌿 Tambah Biaya Produksi Susu');
       setFormFields({ tgl: todayStr, type: 'pakan', nama: '', kg: '0', total: '' });
     } else if (type === 'modal_panen_penggemukan') {
       setModalTitle('🎯 Catat Penjualan/Panen');
@@ -787,12 +1104,10 @@ export default function DashboardPage() {
     showToast('📥 CSV berhasil diunduh!');
   };
 
-  // --- Dynamic Previews on Input ---
   const updateFormField = (key: string, value: string) => {
     setFormFields((prev: any) => {
       const next = { ...prev, [key]: value };
       
-      // Realtime calculations inside forms
       if (activeModal === 'modal_pakan') {
         const sak = parseFloat(next.sak) || 0;
         const harga = parseFloat(next.harga_sak) || 0;
@@ -815,29 +1130,84 @@ export default function DashboardPage() {
     });
   };
 
-  // --- Render Layouts ---
+  // --- AI Vet Messages Send ---
+  const handleSendChatMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || isChatLoading) return;
+
+    const userText = chatInput.trim();
+    setChatInput('');
+    const newMsgList = [...chatMessages, { role: 'user' as const, text: userText }];
+    setChatMessages(newMsgList);
+    setIsChatLoading(true);
+
+    try {
+      const activeCycle = getActiveCycle();
+      const response = await apiPost('/api/v1/ai', {
+        message: userText,
+        animal: activeCycle?.animal || 'umum'
+      });
+
+      if (response && response.reply) {
+        setChatMessages([...newMsgList, { role: 'ai', text: response.reply }]);
+      } else {
+        setChatMessages([...newMsgList, { role: 'ai', text: 'Maaf, saya tidak menerima respon dari server AI. Silakan coba kembali.' }]);
+      }
+    } catch (err: any) {
+      setChatMessages([...newMsgList, { role: 'ai', text: '⚠️ Gagal terhubung ke asisten AI: ' + err.message }]);
+    } finally {
+      setIsChatLoading(false);
+    }
+  };
+
+  // --- Vaccine task toggle handler ---
+  const handleToggleTask = async (taskId: string) => {
+    const cycle = getActiveCycle();
+    if (!cycle) return;
+
+    const currentChecked = cycle.data?.checkedTasks || [];
+    let nextChecked = [];
+
+    if (currentChecked.includes(taskId)) {
+      nextChecked = currentChecked.filter((id) => id !== taskId);
+    } else {
+      nextChecked = [...currentChecked, taskId];
+    }
+
+    const updatedData = {
+      ...cycle.data,
+      checkedTasks: nextChecked
+    };
+
+    await handleSaveCycleData(updatedData);
+    showToast('💾 Perubahan jadwal disimpan!');
+  };
+
+  // --- Render Onboarding & Loading Layouts ---
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center text-slate-100 p-4">
-        <div className="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-sm text-slate-400">Menghubungkan ke database Radeya...</p>
+      <div className="min-h-screen bg-[#060D0F] flex flex-col items-center justify-center text-slate-100 p-4">
+        <div className="relative w-16 h-16 mb-4">
+          <div className="absolute inset-0 rounded-full border-4 border-teal-500/20" />
+          <div className="absolute inset-0 rounded-full border-4 border-t-teal-400 animate-spin" />
+        </div>
+        <p className="text-sm font-semibold tracking-wide text-slate-400">Menghubungkan ke database Radeya...</p>
       </div>
     );
   }
 
-  // --- onboarding wizard view ---
   if (isOnboarding) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-teal-900 via-slate-900 to-slate-950 flex flex-col font-sans">
+      <div className="min-h-screen bg-gradient-to-b from-[#0b1f22] via-[#071317] to-[#04080a] flex flex-col font-sans">
         <div className="max-w-xl mx-auto w-full px-4 py-12 flex-1 flex flex-col justify-center">
           <div className="text-center mb-8">
             <div className="text-4xl font-black tracking-tight text-white mb-2">
-              RADE<span className="text-emerald-400">YA</span>
+              RADE<span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">YA</span>
             </div>
-            <div className="text-sm font-semibold text-slate-400">Catat, Jual, Untung 🌿</div>
+            <div className="text-xs font-extrabold text-teal-450/70 tracking-widest uppercase">Catat, Jual, Untung 🌿</div>
           </div>
 
-          <div className="bg-slate-900/80 backdrop-blur-xl border border-teal-500/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+          <div className="bg-slate-900/50 backdrop-blur-xl border border-teal-500/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
             <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl" />
             <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl" />
 
@@ -851,10 +1221,10 @@ export default function DashboardPage() {
                     <button
                       key={key}
                       onClick={() => setSelectedAnimal(key)}
-                      className={`flex flex-col items-center justify-center bg-slate-800/40 border-2 py-5 px-3 rounded-2xl transition-all ${
+                      className={`flex flex-col items-center justify-center bg-slate-800/10 border-2 py-5 px-3 rounded-2xl transition-all duration-300 ${
                         selectedAnimal === key 
-                          ? 'border-teal-500 bg-teal-950/20 text-teal-400 shadow-lg shadow-teal-500/10 scale-[1.02]' 
-                          : 'border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/60'
+                          ? 'border-teal-500 bg-teal-950/20 text-teal-450 shadow-lg shadow-teal-500/10 scale-[1.03]' 
+                          : 'border-slate-800/80 text-slate-400 hover:border-slate-700 hover:bg-slate-800/40'
                       }`}
                     >
                       <span className="text-3xl mb-2">{label.split(' ')[0]}</span>
@@ -866,7 +1236,7 @@ export default function DashboardPage() {
                 <button
                   onClick={() => setObStep(2)}
                   disabled={!selectedAnimal}
-                  className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-teal-950/30"
                 >
                   Lanjut Pilih Skala &rarr;
                 </button>
@@ -875,7 +1245,7 @@ export default function DashboardPage() {
               <div className="relative">
                 <button
                   onClick={() => setObStep(1)}
-                  className="text-xs font-bold text-slate-500 hover:text-slate-300 mb-4 inline-flex items-center gap-1"
+                  className="text-xs font-bold text-slate-500 hover:text-slate-350 mb-4 inline-flex items-center gap-1 transition-colors"
                 >
                   &larr; Kembali
                 </button>
@@ -887,16 +1257,16 @@ export default function DashboardPage() {
                     <button
                       key={opt.val}
                       onClick={() => setSelectedScale(opt.val)}
-                      className={`w-full flex items-center gap-4 bg-slate-800/40 border-2 p-5 rounded-2xl text-left transition-all ${
+                      className={`w-full flex items-center gap-4 bg-slate-800/10 border-2 p-5 rounded-2xl text-left transition-all duration-300 ${
                         selectedScale === opt.val
-                          ? 'border-teal-500 bg-teal-950/20 text-teal-400 shadow-lg shadow-teal-500/10'
-                          : 'border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-800/60'
+                          ? 'border-teal-500 bg-teal-950/20 text-teal-455 shadow-lg shadow-teal-500/10'
+                          : 'border-slate-800/80 text-slate-300 hover:border-slate-700 hover:bg-slate-800/40'
                       }`}
                     >
                       <span className="text-3xl">{opt.icon}</span>
                       <div>
                         <div className="font-bold text-slate-200">{opt.title}</div>
-                        <div className="text-xs text-slate-550 mt-0.5">{opt.desc}</div>
+                        <div className="text-xs text-slate-500 mt-0.5">{opt.desc}</div>
                       </div>
                     </button>
                   ))}
@@ -905,7 +1275,7 @@ export default function DashboardPage() {
                 <button
                   onClick={handleOnboardingSubmit}
                   disabled={!selectedScale}
-                  className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-teal-950/30"
                 >
                   Masuk ke Aplikasi &rarr;
                 </button>
@@ -917,41 +1287,55 @@ export default function DashboardPage() {
     );
   }
 
-  // --- Main Application View ---
   const activeCycle = getActiveCycle();
   if (!activeCycle) return null;
 
   const tabs = getTabsForMode(activeCycle.mode);
   const stats = calculateStats();
 
+  // Get Calendar list based on active conditions
+  const startDayTime = activeCycle.data?.modal?.tgl_doc || activeCycle.data?.modal?.tgl_pullet || activeCycle.data?.modal?.tgl_beli || activeCycle.createdAt;
+  const parsedStartDate = new Date(startDayTime);
+  const calendarTasks = getCalendarTasks(activeCycle.animal, intToScale(activeCycle.scale), parsedStartDate);
+
+  // Initialize Chat Vet defaults on tab switch
+  const openChatTab = () => {
+    if (chatMessages.length === 0) {
+      setChatMessages([
+        { role: 'ai', text: `Halo! Saya **Radeya AI Vet**. Saya siap membantu menjawab pertanyaan Anda mengenai penyakit ternak, pencegahan infeksi, serta solusi pakan untuk jenis **${ANIMAL_LABELS[activeCycle.animal] || activeCycle.animal}** Anda.` }
+      ]);
+    }
+    setActiveTab('ai_vet');
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#070E10] text-slate-100 flex flex-col font-sans">
       
       {/* Top Navigation */}
-      <header className="border-b border-slate-900 bg-slate-900/40 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-slate-900/60 bg-slate-950/70 backdrop-blur-xl sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center font-black text-xl text-slate-950">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center font-black text-xl text-slate-950 shadow-lg shadow-teal-500/20">
               R
             </div>
             <div>
-              <span className="font-extrabold tracking-tight bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent text-lg">
+              <span className="font-extrabold tracking-tight bg-gradient-to-r from-teal-400 via-teal-200 to-emerald-400 bg-clip-text text-transparent text-lg">
                 RADEYA
               </span>
-              <span className="text-xs block text-slate-500 -mt-1">Peternakan Indonesia</span>
+              <span className="text-[10px] block text-slate-500 -mt-1 font-bold uppercase tracking-wider">Smart Farm Planner</span>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             <button
               onClick={handleResetSetupPrompt}
-              className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-350 text-xs font-semibold rounded-lg border border-slate-700/50 transition-colors"
+              className="px-3.5 py-2 bg-slate-900/60 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-xl border border-slate-800 transition-all flex items-center gap-1.5"
             >
               Ganti Ternak
             </button>
             <button
               onClick={handleSignOut}
-              className="px-3 py-1.5 bg-slate-850 hover:bg-rose-900/20 text-rose-400 text-xs font-semibold rounded-lg border border-rose-900/20 transition-colors"
+              className="px-3.5 py-2 bg-rose-950/20 hover:bg-rose-900/30 text-rose-400 text-xs font-bold rounded-xl border border-rose-900/30 transition-all"
             >
               Keluar
             </button>
@@ -960,25 +1344,29 @@ export default function DashboardPage() {
       </header>
 
       {/* Cycle Selector Bar */}
-      <section className="bg-gradient-to-r from-teal-900 to-cyan-900 py-6 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <section className="bg-slate-950/30 border-b border-slate-900/40 py-6 px-4 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative">
           <div>
-            <h2 className="text-xl font-bold text-white flex items-center gap-2">
-              <span>{ANIMAL_LABELS[activeCycle.animal]?.split(' ')[0]}</span>
-              {ANIMAL_LABELS[activeCycle.animal]?.split(' ').slice(1).join(' ') || activeCycle.animal}
-              <span className="text-xs px-2 py-0.5 bg-white/20 text-teal-200 rounded-md font-medium uppercase">
+            <div className="flex items-center gap-3 flex-wrap">
+              <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                <span>{ANIMAL_LABELS[activeCycle.animal]?.split(' ')[0]}</span>
+                {ANIMAL_LABELS[activeCycle.animal]?.split(' ').slice(1).join(' ') || activeCycle.animal}
+              </h2>
+              <span className="text-[10px] px-2.5 py-1 bg-teal-950/70 text-teal-400 rounded-lg font-bold border border-teal-500/20 uppercase tracking-wider">
                 {SCALE_LABELS[intToScale(activeCycle.scale)] || intToScale(activeCycle.scale)}
               </span>
-            </h2>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-xs text-slate-300">Pilih Periode/Siklus:</span>
+            </div>
+            
+            <div className="flex items-center gap-2.5 mt-3">
+              <span className="text-xs text-slate-450 font-bold">Pilih Siklus:</span>
               <select
                 value={activeCycleIndex}
                 onChange={(e) => {
                   setActiveCycleIndex(parseInt(e.target.value));
-                  setActiveTab(0);
+                  setActiveTab('dashboard');
                 }}
-                className="bg-white/10 text-white border-0 rounded-lg px-2.5 py-1 text-xs font-bold outline-none cursor-pointer focus:ring-2 focus:ring-teal-400"
+                className="bg-slate-900/80 text-slate-200 border border-slate-800 rounded-xl px-3 py-1.5 text-xs font-bold outline-none cursor-pointer focus:ring-2 focus:ring-teal-500 transition-all"
               >
                 {cycles.map((c, i) => (
                   <option key={c.id} value={i} className="text-slate-800">
@@ -988,31 +1376,37 @@ export default function DashboardPage() {
               </select>
               <button
                 onClick={handleAddNewCyclePrompt}
-                className="px-2 py-1 bg-teal-600 hover:bg-teal-500 text-white text-[11px] font-bold rounded-md transition-colors"
+                className="px-3 py-1.5 bg-teal-650 hover:bg-teal-600 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-teal-950/20"
               >
                 + Baru
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs text-slate-200 font-semibold">{farmName} (Railway PostgreSQL Sync)</span>
+          <div className="flex items-center gap-3 bg-slate-900/60 border border-slate-850 p-3 rounded-2xl self-start sm:self-center">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs text-slate-400 font-bold">Usaha: <strong className="text-teal-400">{farmName}</strong></span>
           </div>
         </div>
       </section>
 
       {/* Tab Switcher */}
-      <div className="bg-slate-900 border-b border-slate-850 px-4">
-        <div className="max-w-7xl mx-auto flex gap-2 overflow-x-auto py-3 no-scrollbar">
-          {tabs.map((tab, i) => (
+      <div className="bg-slate-950/40 border-b border-slate-900/50 sticky top-16 z-30 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto flex gap-2 overflow-x-auto py-3 px-4 no-scrollbar">
+          {tabs.map((tab) => (
             <button
-              key={i}
-              onClick={() => setActiveTab(i)}
-              className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                activeTab === i
-                  ? 'bg-teal-600 text-white shadow-lg shadow-teal-900/30'
-                  : 'bg-slate-800/40 text-slate-450 hover:bg-slate-800'
+              key={tab.id}
+              onClick={() => {
+                if (tab.id === 'ai_vet') {
+                  openChatTab();
+                } else {
+                  setActiveTab(tab.id);
+                }
+              }}
+              className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-extrabold transition-all duration-200 border ${
+                activeTab === tab.id
+                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg shadow-teal-950/30 border-teal-500/20 scale-[1.02]'
+                  : 'bg-slate-900/40 text-slate-400 border-slate-900/50 hover:bg-slate-900/80 hover:text-slate-200'
               }`}
             >
               <span>{tab.icon}</span>
@@ -1023,126 +1417,155 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Tab Contents */}
-      <main className="max-w-7xl mx-auto w-full px-4 py-8 flex-1 pb-24">
-        {stats && activeTab === 0 && (
-          // --- TAB 0: DASHBOARD SUMMARY ---
-          <div className="space-y-6">
-            <div className={`p-6 rounded-3xl relative overflow-hidden shadow-xl ${
+      <main className="max-w-7xl mx-auto w-full px-4 py-8 flex-1 pb-28">
+        
+        {/* --- TAB: DASHBOARD SUMMARY --- */}
+        {stats && activeTab === 'dashboard' && (
+          <div className="space-y-8 animate-fadeIn">
+            
+            {/* Laba Bersih Card */}
+            <div className={`p-8 rounded-3xl relative overflow-hidden shadow-2xl border ${
               stats.laba >= 0 
-                ? 'bg-gradient-to-tr from-emerald-600 to-teal-600 text-white' 
-                : 'bg-gradient-to-tr from-rose-700 to-pink-600 text-white'
+                ? 'bg-gradient-to-br from-emerald-600/90 to-teal-700/95 text-white border-emerald-500/20' 
+                : 'bg-gradient-to-br from-rose-700/90 to-red-800/95 text-white border-rose-500/20'
             }`}>
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-2xl" />
-              <span className="text-xs font-bold uppercase tracking-wider opacity-75">Laba Bersih Siklus Ini</span>
-              <h3 className="text-4xl font-black mt-2 tracking-tight">{formatRp(stats.laba)}</h3>
-              <p className="text-xs mt-2 opacity-90 font-medium">
-                {stats.laba >= 0 ? '🎉 Alhamdulillah, hasil panen menguntungkan!' : '⚠️ Pengeluaran masih lebih tinggi dari pendapatan.'}
+              <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl animate-pulse" />
+              <span className="text-xs font-bold uppercase tracking-wider opacity-85">Laba Bersih Siklus Ini</span>
+              <h3 className="text-5xl font-black mt-2 tracking-tight">{formatRp(stats.laba)}</h3>
+              <p className="text-xs mt-3 opacity-90 font-bold flex items-center gap-1.5">
+                {stats.laba >= 0 ? '🎉 Selamat! Hasil panen menghasilkan profit.' : '⚠️ Evaluasi pengeluaran Anda untuk menekan kerugian.'}
               </p>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Total Pengeluaran</span>
-                <span className="text-lg font-extrabold text-rose-400 mt-2 block">{formatRp(stats.totalModal)}</span>
+            {/* Visual Charts Layout (Responsive Grid) */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* Stat Cards */}
+              <div className="md:col-span-2 grid grid-cols-2 gap-4">
+                <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl hover:border-slate-800 transition-colors">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Modal</span>
+                  <span className="text-xl font-extrabold text-rose-400 mt-2 block font-mono">{formatRp(stats.totalModal)}</span>
+                </div>
+                <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl hover:border-slate-800 transition-colors">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Pendapatan</span>
+                  <span className="text-xl font-extrabold text-emerald-400 mt-2 block font-mono">{formatRp(stats.totalPendapatan)}</span>
+                </div>
+
+                {/* Dynamic Stats Based on Mode */}
+                {activeCycle.mode === 'broiler' && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / kg</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hpp)}</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Pakan</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.fcr || 0).toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
+
+                {activeCycle.mode === 'petelur' && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Hen Day %</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.henDay || 0).toFixed(1)}%</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Butir</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppButir)}</span>
+                    </div>
+                  </>
+                )}
+
+                {activeCycle.mode === 'pembibitan_unggas' && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Daya Tetas</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.dayaTetas || 0).toFixed(1)}%</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Populasi Aktif</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.populasi} ekor</span>
+                    </div>
+                  </>
+                )}
+
+                {activeCycle.mode === 'penggemukan' && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">ADG (g/hari)</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.adg || 0).toFixed(0)} g</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Lama Penggemukan</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.lamaHari} Hari</span>
+                    </div>
+                  </>
+                )}
+
+                {activeCycle.mode === 'susu' && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Produksi Rata-rata</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.produksiRata || 0).toFixed(1)} L/hari</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Liter</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppLiter)}</span>
+                    </div>
+                  </>
+                )}
+
+                {activeCycle.mode === 'breeding_ruminansia' && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Populasi Total</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{stats.populasiTotal} ekor</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Kelahiran</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.totalLahir} ekor</span>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Total Pendapatan</span>
-                <span className="text-lg font-extrabold text-emerald-400 mt-2 block">{formatRp(stats.totalPendapatan)}</span>
+
+              {/* Dynamic Chart (Line or Circular Gauge) */}
+              <div className="w-full">
+                {['broiler', 'penggemukan'].includes(activeCycle.mode) ? (
+                  renderSVGGauge(stats.srPct || 100, stats.mati || 0, stats.jmlDoc || 0)
+                ) : (
+                  renderSVGLineChart()
+                )}
               </div>
-
-              {/* Dynamic Stats Based on Mode */}
-              {activeCycle.mode === 'broiler' && (
-                <>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">HPP / kg</span>
-                    <span className="text-lg font-extrabold text-slate-200 mt-2 block">{formatRp(stats.hpp)}</span>
-                  </div>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">FCR Pakan</span>
-                    <span className="text-lg font-extrabold text-teal-400 mt-2 block">{(stats.fcr || 0).toFixed(2)}</span>
-                  </div>
-                </>
-              )}
-
-              {activeCycle.mode === 'petelur' && (
-                <>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Hen Day %</span>
-                    <span className="text-lg font-extrabold text-teal-400 mt-2 block">{(stats.henDay || 0).toFixed(1)}%</span>
-                  </div>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">HPP / Butir</span>
-                    <span className="text-lg font-extrabold text-slate-200 mt-2 block">{formatRp(stats.hppButir)}</span>
-                  </div>
-                </>
-              )}
-
-              {activeCycle.mode === 'pembibitan_unggas' && (
-                <>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Daya Tetas</span>
-                    <span className="text-lg font-extrabold text-teal-400 mt-2 block">{(stats.dayaTetas || 0).toFixed(1)}%</span>
-                  </div>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Populasi Aktif</span>
-                    <span className="text-lg font-extrabold text-slate-200 mt-2 block">{stats.populasi} ekor</span>
-                  </div>
-                </>
-              )}
-
-              {activeCycle.mode === 'penggemukan' && (
-                <>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">ADG (g/hari)</span>
-                    <span className="text-lg font-extrabold text-teal-400 mt-2 block">{(stats.adg || 0).toFixed(0)}g</span>
-                  </div>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Lama Penggemukan</span>
-                    <span className="text-lg font-extrabold text-slate-200 mt-2 block">{stats.lamaHari} Hari</span>
-                  </div>
-                </>
-              )}
-
-              {activeCycle.mode === 'susu' && (
-                <>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Rata-rata/ekor/hari</span>
-                    <span className="text-lg font-extrabold text-teal-400 mt-2 block">{(stats.produksiRata || 0).toFixed(1)} L</span>
-                  </div>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">HPP / Liter</span>
-                    <span className="text-lg font-extrabold text-slate-200 mt-2 block">{formatRp(stats.hppLiter)}</span>
-                  </div>
-                </>
-              )}
-
-              {activeCycle.mode === 'breeding_ruminansia' && (
-                <>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Populasi Total</span>
-                    <span className="text-lg font-extrabold text-teal-400 mt-2 block">{stats.populasiTotal} ekor</span>
-                  </div>
-                  <div className="bg-slate-900/60 border border-slate-850 p-5 rounded-2xl">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide block">Total Kelahiran</span>
-                    <span className="text-lg font-extrabold text-slate-200 mt-2 block">{stats.totalLahir} ekor</span>
-                  </div>
-                </>
-              )}
             </div>
 
-            {/* Aset Card for Breeding */}
+            {/* Extra Assets Card for Ruminansia Breeding */}
             {activeCycle.mode === 'breeding_ruminansia' && (
-              <div className="bg-gradient-to-r from-blue-900 to-indigo-900 p-6 rounded-3xl border border-blue-700/30">
-                <span className="text-xs font-bold text-blue-200 block uppercase">Estimasi Nilai Aset Peternakan</span>
-                <span className="text-3xl font-black text-white mt-1 block">{formatRp(stats.nilaiAset)}</span>
-                <span className="text-[10px] text-blue-300 block mt-2">*Taksiran berdasarkan Jumlah Populasi × Bobot Rata-rata (30kg) × Harga Pasar</span>
+              <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <span className="text-xs font-bold text-slate-450 uppercase tracking-wider block">Estimasi Nilai Aset Peternakan</span>
+                  <span className="text-2xl font-black text-white mt-1 block font-mono">{formatRp(stats.nilaiAset)}</span>
+                  <span className="text-[10px] text-slate-500 block mt-1">*Formula: Populasi × Taksiran Berat (30kg) × Harga Pasar</span>
+                </div>
+                <div className="flex gap-4">
+                  <div className="bg-slate-950/80 px-4 py-3 rounded-2xl border border-slate-850">
+                    <span className="text-[9px] text-slate-500 block font-bold">BETINA</span>
+                    <span className="text-sm font-black text-pink-400 font-mono">{stats.populasiBetina} ekor</span>
+                  </div>
+                  <div className="bg-slate-950/80 px-4 py-3 rounded-2xl border border-slate-850">
+                    <span className="text-[9px] text-slate-500 block font-bold">JANTAN</span>
+                    <span className="text-sm font-black text-blue-400 font-mono">{stats.populasiJantan} ekor</span>
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* Cost Breakdown Progress Bars */}
+            {/* Budget Breakdown */}
             {stats.breakdown && (
               <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl">
-                <h3 className="font-bold text-slate-200 mb-4 flex items-center gap-2">
+                <h3 className="font-bold text-slate-200 mb-5 text-sm flex items-center gap-2">
                   <span>📊</span> Rincian Anggaran & Pengeluaran
                 </h3>
                 <div className="space-y-4">
@@ -1150,14 +1573,14 @@ export default function DashboardPage() {
                     const pct = stats.totalModal > 0 ? (item.val / stats.totalModal) * 100 : 0;
                     return (
                       <div key={i} className="space-y-1">
-                        <div className="flex justify-between text-xs font-semibold">
-                          <span className="text-slate-400">{item.label}</span>
-                          <span className="text-slate-200">
+                        <div className="flex justify-between text-xs font-bold">
+                          <span className="text-slate-450">{item.label}</span>
+                          <span className="text-slate-200 font-mono">
                             {formatRp(item.val)} <span className="text-slate-500 font-medium">({pct.toFixed(0)}%)</span>
                           </span>
                         </div>
-                        <div className="w-full bg-slate-850 h-2 rounded-full overflow-hidden">
-                          <div className="bg-teal-500 h-full rounded-full" style={{ width: `${pct}%` }} />
+                        <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-900">
+                          <div className="bg-gradient-to-r from-teal-500 to-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
                     );
@@ -1170,31 +1593,33 @@ export default function DashboardPage() {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 onClick={handleCSVExport}
-                className="flex-1 py-3 px-4 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 font-bold rounded-xl transition-all text-sm flex items-center justify-center gap-2"
+                className="flex-1 py-3.5 px-4 bg-slate-900/70 hover:bg-slate-800 text-slate-200 border border-slate-850 hover:border-slate-700 font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm"
               >
-                📥 Ekspor Data (CSV)
+                {Icons.export("w-4 h-4 text-teal-400")}
+                Ekspor Laporan (CSV)
               </button>
               <button
                 onClick={handleConfirmDeleteCycle}
-                className="flex-1 py-3 px-4 bg-rose-950/20 hover:bg-rose-950/40 text-rose-400 border border-rose-900/25 font-bold rounded-xl transition-all text-sm flex items-center justify-center gap-2"
+                className="flex-1 py-3.5 px-4 bg-rose-950/20 hover:bg-rose-900/30 text-rose-400 border border-rose-900/20 font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2"
               >
-                🗑️ Hapus Siklus Ini
+                {Icons.trash("w-4 h-4 text-rose-400")}
+                Hapus Siklus Ini
               </button>
             </div>
           </div>
         )}
 
-        {/* --- TAB 1: MODAL AWAL FORM --- */}
-        {activeTab === 1 && (
-          <div className="max-w-2xl mx-auto bg-slate-900/40 border border-slate-850 p-6 rounded-3xl space-y-6">
-            <h3 className="text-xl font-bold text-slate-200 flex items-center gap-2">
+        {/* --- TAB: MODAL AWAL FORM --- */}
+        {activeTab === 'modal_awal' && (
+          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
               <span>📋</span> Data Modal Awal Siklus
             </h3>
 
             {activeCycle.mode === 'broiler' && (
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Tanggal Masuk DOC</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk DOC</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_doc || ''}
@@ -1202,11 +1627,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-255 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah DOC (Ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah DOC (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 1000"
@@ -1215,11 +1640,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Harga per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 8000"
@@ -1228,11 +1653,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Biaya Penyusutan Kandang per Siklus (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Penyusutan Kandang (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 500000"
@@ -1241,7 +1666,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), biaya_kandang: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -1250,7 +1675,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'petelur' && (
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Tanggal Masuk Pullet</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk Pullet</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_pullet || ''}
@@ -1258,11 +1683,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_pullet: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-220 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah Ayam Pullet (Ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ayam Pullet (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 500"
@@ -1271,11 +1696,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Harga Beli per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 80000"
@@ -1284,11 +1709,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Biaya Penyusutan Kandang per Siklus (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Penyusutan Kandang (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 1000000"
@@ -1297,7 +1722,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), biaya_kandang: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -1306,7 +1731,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'pembibitan_unggas' && (
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah Betina (Ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Betina (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 50"
@@ -1315,11 +1740,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_betina: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah Jantan (Ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Pejantan (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 5"
@@ -1328,11 +1753,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_jantan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Harga Indukan per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor Indukan (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 150000"
@@ -1341,7 +1766,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_indukan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -1350,7 +1775,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'penggemukan' && (
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Tanggal Beli Bakalan</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Beli Bakalan</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_beli || ''}
@@ -1358,11 +1783,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_beli: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-220 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah Ekor Bakalan</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor</label>
                   <input
                     type="number"
                     placeholder="Contoh: 10"
@@ -1371,11 +1796,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">BB Awal Rata-rata (kg/ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">BB Awal Rata2 (kg)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 150"
@@ -1384,11 +1809,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), bb_awal: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Harga Bakalan per kg (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per kg (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 55000"
@@ -1397,11 +1822,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_kg_bakalan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Biaya Kandang/Siklus (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Kandang (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 500000"
@@ -1410,7 +1835,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), biaya_kandang: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -1419,7 +1844,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'susu' && (
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Tanggal Beli Induk</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Beli Induk</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_beli || ''}
@@ -1427,11 +1852,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_beli: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-220 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah Induk (Ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor Indukan</label>
                   <input
                     type="number"
                     placeholder="Contoh: 5"
@@ -1440,11 +1865,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Harga Beli per Induk (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Induk (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 15000000"
@@ -1453,11 +1878,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Biaya Kandang/Siklus (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Kandang (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 2000000"
@@ -1466,7 +1891,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), biaya_kandang: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -1475,7 +1900,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'breeding_ruminansia' && (
               <div className="space-y-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah Induk Betina (Ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Induk Betina</label>
                   <input
                     type="number"
                     placeholder="Contoh: 10"
@@ -1484,11 +1909,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_betina: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Jumlah Pejantan (Ekor)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Pejantan</label>
                   <input
                     type="number"
                     placeholder="Contoh: 2"
@@ -1497,11 +1922,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_jantan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Harga Beli per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 3000000"
@@ -1510,11 +1935,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-400 block uppercase">Harga Pasar per kg Hidup saat ini (Rp)</label>
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga Pasar / kg Hidup (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 60000"
@@ -1523,15 +1948,28 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_pasar: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-850/50 border border-slate-750 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold"
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Taksiran Berat Anak (kg)</label>
+                  <input
+                    type="number"
+                    placeholder="Contoh: 30"
+                    value={activeCycle.data?.modal?.bobot_taksiran || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), bobot_taksiran: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
                 </div>
               </div>
             )}
 
-            <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-4 rounded-2xl">
-              <div className="text-xs font-bold block uppercase opacity-75">Preview Total Modal Awal:</div>
-              <div className="text-xl font-black mt-1">
+            <div className="bg-[#0c1a1f] border border-teal-500/10 p-5 rounded-2xl text-xs font-semibold text-slate-400">
+              <div className="text-[10px] font-bold block uppercase opacity-70 mb-2">Rincian Nilai Modal Awal:</div>
+              <div className="text-xl font-black text-teal-400 font-mono">
                 {formatRp(
                   activeCycle.mode === 'broiler'
                     ? (parseFloat(activeCycle.data?.modal?.jml_doc) || 0) * (parseFloat(activeCycle.data?.modal?.harga_doc) || 0) + (parseFloat(activeCycle.data?.modal?.biaya_kandang) || 0)
@@ -1552,35 +1990,34 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* --- TAB 2: BIAYA OPERASIONAL --- */}
-        {activeTab === 2 && (
-          <div className="space-y-6">
-            {/* Split view for Pakan, Obat, Lain-lain */}
+        {/* --- TAB: BIAYA OPERASIONAL --- */}
+        {activeTab === 'biaya' && (
+          <div className="space-y-6 animate-fadeIn">
             {(activeCycle.mode === 'broiler' || activeCycle.mode === 'petelur') ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Pakan */}
-                <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between">
+                <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-800 transition-colors">
                   <div>
                     <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
                       <span>🌾 Biaya Pakan</span>
-                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md">
+                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/45 text-teal-400 rounded-md font-mono">
                         {((activeCycle.data?.biaya || []).filter((b: any) => b.type === 'pakan').length)} Catatan
                       </span>
                     </h4>
-                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
                       {(activeCycle.data?.biaya || []).filter((b: any) => b.type === 'pakan').length === 0 ? (
-                        <div className="text-center py-8 text-xs text-slate-550">Belum ada catatan pakan.</div>
+                        <div className="text-center py-10 text-xs text-slate-650 font-bold">Belum ada catatan pakan.</div>
                       ) : (
                         (activeCycle.data?.biaya || []).filter((b: any) => b.type === 'pakan').map((b: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center bg-slate-900/80 p-3.5 rounded-xl border border-slate-850">
+                          <div key={i} className="flex justify-between items-center bg-slate-950/50 p-3.5 rounded-xl border border-slate-850/80">
                             <div>
-                              <div className="text-xs font-bold text-slate-300">{b.jenis || 'Pakan'}</div>
-                              <div className="text-[10px] text-slate-500 mt-0.5">{b.sak} sak × {b.kg_sak}kg/sak · {b.tgl}</div>
+                              <div className="text-xs font-bold text-slate-350">{b.jenis || 'Pakan'}</div>
+                              <div className="text-[9px] text-slate-500 mt-0.5 font-bold font-mono">{b.sak} sak × {b.kg_sak}kg/sak · {b.tgl}</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-teal-400">{formatRp(b.total)}</span>
-                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-black text-xs px-1">✕</button>
+                              <span className="text-xs font-black text-teal-450 font-mono">{formatRp(b.total)}</span>
+                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-bold p-1">✕</button>
                             </div>
                           </div>
                         ))
@@ -1589,34 +2026,34 @@ export default function DashboardPage() {
                   </div>
                   <button
                     onClick={() => openModalForm('modal_pakan')}
-                    className="w-full mt-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-teal-400 hover:text-teal-350 text-xs font-bold rounded-xl border border-slate-700/50 transition-all"
+                    className="w-full mt-6 py-2.5 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
                   >
                     + Tambah Pakan
                   </button>
                 </div>
 
                 {/* Obat */}
-                <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between">
+                <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-800 transition-colors">
                   <div>
                     <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
                       <span>💊 Obat & Vaksin</span>
-                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md">
+                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/45 text-teal-400 rounded-md font-mono">
                         {((activeCycle.data?.biaya || []).filter((b: any) => b.type === 'obat').length)} Catatan
                       </span>
                     </h4>
-                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
                       {(activeCycle.data?.biaya || []).filter((b: any) => b.type === 'obat').length === 0 ? (
-                        <div className="text-center py-8 text-xs text-slate-550">Belum ada catatan obat.</div>
+                        <div className="text-center py-10 text-xs text-slate-650 font-bold">Belum ada catatan obat.</div>
                       ) : (
                         (activeCycle.data?.biaya || []).filter((b: any) => b.type === 'obat').map((b: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center bg-slate-900/80 p-3.5 rounded-xl border border-slate-850">
+                          <div key={i} className="flex justify-between items-center bg-slate-950/50 p-3.5 rounded-xl border border-slate-850/80">
                             <div>
-                              <div className="text-xs font-bold text-slate-300">{b.nama || 'Obat/Vaksin'}</div>
-                              <div className="text-[10px] text-slate-500 mt-0.5">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
+                              <div className="text-xs font-bold text-slate-350">{b.nama || 'Obat/Vaksin'}</div>
+                              <div className="text-[9px] text-slate-500 mt-0.5 font-bold font-mono">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-teal-400">{formatRp(b.total)}</span>
-                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-black text-xs px-1">✕</button>
+                              <span className="text-xs font-black text-teal-450 font-mono">{formatRp(b.total)}</span>
+                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-bold p-1">✕</button>
                             </div>
                           </div>
                         ))
@@ -1625,34 +2062,34 @@ export default function DashboardPage() {
                   </div>
                   <button
                     onClick={() => openModalForm('modal_obat')}
-                    className="w-full mt-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-teal-400 hover:text-teal-350 text-xs font-bold rounded-xl border border-slate-700/50 transition-all"
+                    className="w-full mt-6 py-2.5 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
                   >
                     + Tambah Obat
                   </button>
                 </div>
 
                 {/* Lain */}
-                <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between">
+                <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-800 transition-colors">
                   <div>
                     <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
                       <span>📦 Biaya Lain</span>
-                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md">
+                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/45 text-teal-400 rounded-md font-mono">
                         {((activeCycle.data?.biaya || []).filter((b: any) => b.type === 'lain').length)} Catatan
                       </span>
                     </h4>
-                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1">
+                    <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
                       {(activeCycle.data?.biaya || []).filter((b: any) => b.type === 'lain').length === 0 ? (
-                        <div className="text-center py-8 text-xs text-slate-550">Belum ada catatan biaya lain.</div>
+                        <div className="text-center py-10 text-xs text-slate-650 font-bold">Belum ada catatan biaya lain.</div>
                       ) : (
                         (activeCycle.data?.biaya || []).filter((b: any) => b.type === 'lain').map((b: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center bg-slate-900/80 p-3.5 rounded-xl border border-slate-850">
+                          <div key={i} className="flex justify-between items-center bg-slate-950/50 p-3.5 rounded-xl border border-slate-850/80">
                             <div>
-                              <div className="text-xs font-bold text-slate-300">{b.nama || 'Biaya Lain'}</div>
-                              <div className="text-[10px] text-slate-500 mt-0.5">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
+                              <div className="text-xs font-bold text-slate-350">{b.nama || 'Biaya Lain'}</div>
+                              <div className="text-[9px] text-slate-500 mt-0.5 font-bold font-mono">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-teal-400">{formatRp(b.total)}</span>
-                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-black text-xs px-1">✕</button>
+                              <span className="text-xs font-black text-teal-455 font-mono">{formatRp(b.total)}</span>
+                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-bold p-1">✕</button>
                             </div>
                           </div>
                         ))
@@ -1661,7 +2098,7 @@ export default function DashboardPage() {
                   </div>
                   <button
                     onClick={() => openModalForm('modal_lain')}
-                    className="w-full mt-6 py-2.5 bg-slate-800 hover:bg-slate-700 text-teal-400 hover:text-teal-350 text-xs font-bold rounded-xl border border-slate-700/50 transition-all"
+                    className="w-full mt-6 py-2.5 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
                   >
                     + Tambah Biaya
                   </button>
@@ -1669,27 +2106,26 @@ export default function DashboardPage() {
 
               </div>
             ) : (
-              // Ruminansia/Susu/Breeding mode: single list for operasional
-              <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl max-w-2xl mx-auto">
+              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl max-w-xl mx-auto">
                 <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
                   <span>🌿 Biaya Operasional</span>
-                  <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md">
+                  <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono">
                     {(activeCycle.data?.biaya || []).length} Catatan
                   </span>
                 </h4>
                 <div className="space-y-3">
                   {(activeCycle.data?.biaya || []).length === 0 ? (
-                    <div className="text-center py-12 text-slate-500 text-sm">Belum ada biaya operasional dicatat.</div>
+                    <div className="text-center py-10 text-slate-500 text-sm">Belum ada biaya operasional dicatat.</div>
                   ) : (
                     (activeCycle.data?.biaya || []).map((b: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
                         <div>
-                          <div className="text-sm font-bold text-slate-200">{b.nama || b.type}</div>
-                          <div className="text-xs text-slate-500 mt-1">Jenis: <strong className="uppercase">{b.type}</strong> · Volume: {b.kg || 0} kg · {b.tgl}</div>
+                          <div className="text-xs font-bold text-slate-200 font-sans">{b.nama || b.type}</div>
+                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Jenis: <strong className="uppercase text-teal-450">{b.type}</strong> · Vol: {b.kg || 0} kg · {b.tgl}</div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-black text-teal-400">{formatRp(b.total)}</span>
-                          <button onClick={() => handleDeleteListItem('biaya', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2 py-1">✕</button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black text-teal-450">{formatRp(b.total)}</span>
+                          <button onClick={() => handleDeleteListItem('biaya', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                         </div>
                       </div>
                     ))
@@ -1697,7 +2133,7 @@ export default function DashboardPage() {
                 </div>
                 <button
                   onClick={() => openModalForm(activeCycle.mode === 'susu' ? 'modal_biaya_susu' : 'modal_biaya_ruminansia')}
-                  className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 hover:text-teal-350 text-sm font-bold rounded-xl border border-slate-700/50 transition-all"
+                  className="w-full mt-6 py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
                 >
                   + Tambah Biaya Operasional
                 </button>
@@ -1706,12 +2142,12 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* --- TAB 3: PANEN / PRODUKSI --- */}
-        {activeTab === 3 && (
-          <div className="max-w-2xl mx-auto bg-slate-900/40 border border-slate-850 p-6 rounded-3xl space-y-6">
-            <h3 className="text-xl font-bold text-slate-200 flex items-center justify-between">
+        {/* --- TAB: PANEN / PRODUKSI --- */}
+        {activeTab === 'panen' && (
+          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
               <span>{activeCycle.mode === 'susu' ? '🥛 Produksi Susu Harian' : activeCycle.mode === 'petelur' ? '🥚 Produksi Telur Harian' : '🎯 Data Panen/Jual'}</span>
-              <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md">
+              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
                 {(activeCycle.mode === 'susu' || activeCycle.mode === 'petelur' ? (activeCycle.data?.harian || []).length : (activeCycle.data?.panen || []).length)} Catatan
               </span>
             </h3>
@@ -1720,24 +2156,24 @@ export default function DashboardPage() {
               {activeCycle.mode === 'broiler' && (
                 <>
                   {(activeCycle.data?.panen || []).length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">Belum ada data panen broiler dicatat.</div>
+                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data panen broiler dicatat.</div>
                   ) : (
                     (activeCycle.data?.panen || []).map((p: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
                         <div>
-                          <div className="text-sm font-bold text-slate-200">{p.tgl} — {p.kg.toLocaleString('id-ID')} kg</div>
-                          <div className="text-xs text-slate-550 mt-1">Harga: {formatRp(p.harga_kg)}/kg · Kematian: {p.jml_mati || 0} ekor</div>
+                          <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} — {p.kg.toLocaleString('id-ID')} kg</div>
+                          <div className="text-[10px] text-slate-550 mt-1 font-bold">Harga: {formatRp(p.harga_kg)}/kg · Mati: {p.jml_mati || 0} ekor</div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-black text-emerald-400">{formatRp(p.kg * p.harga_kg)}</span>
-                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black text-emerald-450">{formatRp(p.kg * p.harga_kg)}</span>
+                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                         </div>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_panen_broiler')}
-                    className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold rounded-xl border border-slate-700/50 transition-all text-sm"
+                    className="w-full mt-6 py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Panen Broiler
                   </button>
@@ -1747,21 +2183,21 @@ export default function DashboardPage() {
               {activeCycle.mode === 'petelur' && (
                 <>
                   {(activeCycle.data?.harian || []).length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">Belum ada data harian produksi telur.</div>
+                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data harian produksi telur.</div>
                   ) : (
                     (activeCycle.data?.harian || []).map((h: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
                         <div>
-                          <div className="text-sm font-bold text-slate-200">{h.tgl}</div>
-                          <div className="text-xs text-slate-550 mt-1">Telur: {h.butir} butir · Berat: {h.kg || 0} kg · Retak: {h.retak || 0} butir</div>
+                          <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
+                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Telur: {h.butir} butir · Berat: {h.kg || 0} kg · Retak: {h.retak || 0} butir</div>
                         </div>
-                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_harian_petelur')}
-                    className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold rounded-xl border border-slate-700/50 transition-all text-sm"
+                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Produksi Harian
                   </button>
@@ -1771,21 +2207,21 @@ export default function DashboardPage() {
               {activeCycle.mode === 'pembibitan_unggas' && (
                 <>
                   {(activeCycle.data?.penetasan || []).length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">Belum ada data penetasan.</div>
+                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data penetasan.</div>
                   ) : (
                     (activeCycle.data?.penetasan || []).map((p: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
                         <div>
-                          <div className="text-sm font-bold text-slate-200">Menetas: {p.tgl}</div>
-                          <div className="text-xs text-slate-550 mt-1">Berhasil: <strong className="text-emerald-400">{p.berhasil} DOC</strong> · Gagal/Infertil: {p.gagal} butir</div>
+                          <div className="text-xs font-bold text-slate-200 font-sans">Menetas: {p.tgl}</div>
+                          <div className="text-[10px] text-slate-550 mt-1 font-bold">Berhasil: <strong className="text-emerald-450">{p.berhasil} DOC</strong> · Gagal: {p.gagal} butir</div>
                         </div>
-                        <button onClick={() => handleDeleteListItem('penetasan', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                        <button onClick={() => handleDeleteListItem('penetasan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_penetasan')}
-                    className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold rounded-xl border border-slate-700/50 transition-all text-sm"
+                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Penetasan Telur
                   </button>
@@ -1795,24 +2231,24 @@ export default function DashboardPage() {
               {activeCycle.mode === 'penggemukan' && (
                 <>
                   {(activeCycle.data?.panen || []).length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">Belum ada penjualan ruminansia.</div>
+                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada penjualan penggemukan.</div>
                   ) : (
                     (activeCycle.data?.panen || []).map((p: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
                         <div>
-                          <div className="text-sm font-bold text-slate-200">{p.tgl} — {p.jml_jual} Ekor</div>
-                          <div className="text-xs text-slate-550 mt-1">BB Rata: {p.bb_akhir} kg · Harga: {formatRp(p.harga_kg)}/kg · Mati: {p.jml_mati || 0}</div>
+                          <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} — {p.jml_jual} Ekor</div>
+                          <div className="text-[10px] text-slate-500 mt-1 font-bold">BB Rata: {p.bb_akhir} kg · Harga: {formatRp(p.harga_kg)}/kg · Kematian: {p.jml_mati || 0}</div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <span className="text-sm font-black text-emerald-400">{formatRp(p.jml_jual * p.bb_akhir * p.harga_kg)}</span>
-                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black text-emerald-450">{formatRp(p.jml_jual * p.bb_akhir * p.harga_kg)}</span>
+                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                         </div>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_panen_penggemukan')}
-                    className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold rounded-xl border border-slate-700/50 transition-all text-sm"
+                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Penjualan Penggemukan
                   </button>
@@ -1822,21 +2258,21 @@ export default function DashboardPage() {
               {activeCycle.mode === 'susu' && (
                 <>
                   {(activeCycle.data?.harian || []).length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">Belum ada data produksi susu.</div>
+                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data produksi susu.</div>
                   ) : (
                     (activeCycle.data?.harian || []).map((h: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
                         <div>
-                          <div className="text-sm font-bold text-slate-200">{h.tgl}</div>
-                          <div className="text-xs text-slate-550 mt-1">Total Produksi Susu: <strong className="text-teal-400">{h.liter} Liter</strong></div>
+                          <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
+                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Total Produksi Susu: <strong className="text-teal-400">{h.liter} L</strong></div>
                         </div>
-                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_harian_susu')}
-                    className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold rounded-xl border border-slate-700/50 transition-all text-sm"
+                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Produksi Harian Susu
                   </button>
@@ -1846,21 +2282,21 @@ export default function DashboardPage() {
               {activeCycle.mode === 'breeding_ruminansia' && (
                 <>
                   {(activeCycle.data?.kelahiran || []).length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">Belum ada kelahiran tercatat.</div>
+                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada kelahiran tercatat.</div>
                   ) : (
                     (activeCycle.data?.kelahiran || []).map((k: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
                         <div>
-                          <div className="text-sm font-bold text-slate-200">{k.tgl} — ID Induk: {k.id_induk || '-'}</div>
-                          <div className="text-xs text-slate-550 mt-1">Anak Jantan: {k.jantan} ekor · Anak Betina: {k.betina} ekor</div>
+                          <div className="text-xs font-bold text-slate-200 font-sans">{k.tgl} — ID Induk: {k.id_induk || '-'}</div>
+                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Anak Jantan: {k.jantan} ekor · Anak Betina: {k.betina} ekor</div>
                         </div>
-                        <button onClick={() => handleDeleteListItem('kelahiran', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                        <button onClick={() => handleDeleteListItem('kelahiran', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_kelahiran')}
-                    className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold rounded-xl border border-slate-700/50 transition-all text-sm"
+                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Kelahiran Baru
                   </button>
@@ -1870,31 +2306,31 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {/* --- TAB 4: PENJUALAN --- */}
-        {activeTab === 4 && (
-          <div className="max-w-2xl mx-auto bg-slate-900/40 border border-slate-850 p-6 rounded-3xl space-y-6">
-            <h3 className="text-xl font-bold text-slate-200 flex items-center justify-between">
+        {/* --- TAB: PENJUALAN --- */}
+        {activeTab === 'penjualan' && (
+          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between">
               <span>💰 Catat Penjualan Hasil Produksi</span>
-              <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md">
+              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
                 {(activeCycle.data?.penjualan || []).length} Transaksi
               </span>
             </h3>
 
-            <div className="space-y-3">
+            <div className="space-y-3 font-mono">
               {(activeCycle.data?.penjualan || []).length === 0 ? (
-                <div className="text-center py-12 text-slate-550 text-sm">Belum ada transaksi penjualan dicatat.</div>
+                <div className="text-center py-10 text-slate-500 text-xs font-sans">Belum ada transaksi penjualan dicatat.</div>
               ) : (
                 (activeCycle.data?.penjualan || []).map((p: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center bg-slate-900/80 p-4 rounded-xl border border-slate-850">
+                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80">
                     <div>
-                      <div className="text-sm font-bold text-slate-200">{p.tgl} {p.tipe || p.kategori ? `— ${p.tipe || p.kategori}` : ''}</div>
-                      <div className="text-xs text-slate-550 mt-1">
-                        {p.kg ? `Volume: ${p.kg} kg · Harga: ${formatRp(p.harga_kg)}/kg` : p.liter ? `Volume: ${p.liter} L · Harga: ${formatRp(p.harga_liter)}/L` : `Qty: ${p.jml} ekor · Harga: ${formatRp(p.harga_ekor)}/ekor`}
+                      <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} {p.tipe || p.kategori ? `— ${p.tipe || p.kategori}` : ''}</div>
+                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                        {p.kg ? `Vol: ${p.kg} kg · Harga: ${formatRp(p.harga_kg)}/kg` : p.liter ? `Vol: ${p.liter} L · Harga: ${formatRp(p.harga_liter)}/L` : `Qty: ${p.jml} ekor · Harga: ${formatRp(p.harga_ekor)}/ekor`}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-black text-emerald-400">{formatRp(p.total)}</span>
-                      <button onClick={() => handleDeleteListItem('penjualan', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-emerald-450">{formatRp(p.total)}</span>
+                      <button onClick={() => handleDeleteListItem('penjualan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
                     </div>
                   </div>
                 ))
@@ -1911,84 +2347,373 @@ export default function DashboardPage() {
                   ? 'modal_jual_doc'
                   : 'modal_jual_breeding'
               )}
-              className="w-full mt-6 py-3 bg-slate-800 hover:bg-slate-700 text-teal-400 font-bold rounded-xl border border-slate-700/50 transition-all text-sm"
+              className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
             >
               + Catat Penjualan Baru
             </button>
           </div>
         )}
 
-        {/* --- TAB: SIMULASI / HARGA PASAR --- */}
-        {activeTab === 5 && (
-          <div className="max-w-2xl mx-auto bg-slate-900/40 border border-slate-850 p-6 rounded-3xl space-y-6">
-            <h3 className="text-xl font-bold text-slate-200 flex items-center gap-2">
-              <span>📈</span> Simulasi Laba Berdasarkan Harga Jual
-            </h3>
-            <p className="text-xs text-slate-500">Geser slider di bawah ini untuk mensimulasikan dampak naik-turunnya harga jual di pasar terhadap margin laba bersih Anda.</p>
+        {/* --- TAB: SIMULASI & FORMULASI PAKAN --- */}
+        {activeTab === 'simulasi' && (
+          <div className="max-w-2xl mx-auto space-y-8 animate-fadeIn">
             
-            {/* Setup initial slider value if not set */}
-            {(() => {
-              const currentHarga = simHarga || (activeCycle.mode === 'broiler' ? 22000 : activeCycle.mode === 'petelur' ? 28000 : activeCycle.mode === 'susu' ? 7000 : 55000);
-              const minVal = activeCycle.mode === 'broiler' ? 10000 : activeCycle.mode === 'petelur' ? 15000 : activeCycle.mode === 'susu' ? 3000 : 20000;
-              const maxVal = activeCycle.mode === 'broiler' ? 60000 : activeCycle.mode === 'petelur' ? 50000 : activeCycle.mode === 'susu' ? 20000 : 150000;
-              const stepVal = activeCycle.mode === 'susu' ? 200 : activeCycle.mode === 'penggemukan' ? 1000 : 500;
+            {/* Simulasi Harga */}
+            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+              <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                <span>📈</span> Simulasi Laba Berdasarkan Harga Jual
+              </h3>
+              <p className="text-xs text-slate-400">Geser slider di bawah ini untuk melihat perkiraan laba jika terjadi perubahan harga pasar.</p>
+              
+              {(() => {
+                const currentHarga = simHarga || (activeCycle.mode === 'broiler' ? 22000 : activeCycle.mode === 'petelur' ? 28000 : activeCycle.mode === 'susu' ? 7000 : 55000);
+                const minVal = activeCycle.mode === 'broiler' ? 10000 : activeCycle.mode === 'petelur' ? 15000 : activeCycle.mode === 'susu' ? 3000 : 20000;
+                const maxVal = activeCycle.mode === 'broiler' ? 60000 : activeCycle.mode === 'petelur' ? 50000 : activeCycle.mode === 'susu' ? 20000 : 150000;
+                const stepVal = activeCycle.mode === 'susu' ? 200 : activeCycle.mode === 'penggemukan' ? 1000 : 500;
 
-              // Formulas
-              let qty = 0;
-              if (activeCycle.mode === 'broiler') {
-                qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.kg) || 0), 0);
-              } else if (activeCycle.mode === 'petelur') {
-                qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.kg) || 0), 0);
-              } else if (activeCycle.mode === 'susu') {
-                qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.liter) || 0), 0);
-              } else if (activeCycle.mode === 'penggemukan') {
-                qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.bb_akhir) || 0) * (parseFloat(p.jml_jual) || 0), 0);
-              }
+                let qty = 0;
+                if (activeCycle.mode === 'broiler') {
+                  qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.kg) || 0), 0);
+                } else if (activeCycle.mode === 'petelur') {
+                  qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.kg) || 0), 0);
+                } else if (activeCycle.mode === 'susu') {
+                  qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.liter) || 0), 0);
+                } else if (activeCycle.mode === 'penggemukan') {
+                  qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.bb_akhir) || 0) * (parseFloat(p.jml_jual) || 0), 0);
+                }
 
-              const totalModal = stats?.totalModal || 0;
-              const totalPendapatan = qty * currentHarga;
-              const labaSim = totalPendapatan - totalModal;
+                const totalModal = stats?.totalModal || 0;
+                const totalPendapatan = qty * currentHarga;
+                const labaSim = totalPendapatan - totalModal;
 
-              return (
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm font-bold">
-                      <span className="text-slate-350">Simulasi Harga Jual:</span>
-                      <span className="text-teal-400">{formatRp(currentHarga)} / {activeCycle.mode === 'susu' ? 'Liter' : 'kg'}</span>
+                return (
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <div className="flex justify-between text-xs font-bold">
+                        <span className="text-slate-400 font-bold">Simulasi Harga Jual:</span>
+                        <span className="text-teal-450 font-extrabold font-mono">{formatRp(currentHarga)} / {activeCycle.mode === 'susu' ? 'Liter' : 'kg'}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min={minVal}
+                        max={maxVal}
+                        step={stepVal}
+                        value={currentHarga}
+                        onChange={(e) => setSimHarga(parseFloat(e.target.value))}
+                        className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                      />
+                      <div className="flex justify-between text-[10px] text-slate-500 font-bold font-mono">
+                        <span>{formatRp(minVal)}</span>
+                        <span>{formatRp(maxVal)}</span>
+                      </div>
                     </div>
-                    <input
-                      type="range"
-                      min={minVal}
-                      max={maxVal}
-                      step={stepVal}
-                      value={currentHarga}
-                      onChange={(e) => setSimHarga(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
-                    />
-                    <div className="flex justify-between text-[10px] text-slate-500 font-bold">
-                      <span>{formatRp(minVal)}</span>
-                      <span>{formatRp(maxVal)}</span>
+
+                    <div className={`p-6 rounded-2xl border ${labaSim >= 0 ? 'bg-emerald-950/20 border-emerald-900/40 text-emerald-400' : 'bg-rose-950/20 border-rose-900/40 text-rose-400'}`}>
+                      <span className="text-[10px] font-bold block uppercase opacity-75">Estimasi Laba Bersih Simulasi</span>
+                      <span className="text-3xl font-black block mt-1 tracking-tight font-mono">{formatRp(labaSim)}</span>
                     </div>
                   </div>
+                );
+              })()}
+            </div>
 
-                  <div className={`p-5 rounded-2xl ${labaSim >= 0 ? 'bg-emerald-500/10 border border-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 border border-rose-500/20 text-rose-400'}`}>
-                    <span className="text-[10px] font-bold block uppercase opacity-75">Estimasi Laba Bersih Simulasi</span>
-                    <span className="text-2xl font-black block mt-1">{formatRp(labaSim)}</span>
+            {/* Pearson Feed Calculator Widget */}
+            <div className="bg-slate-900/40 border border-teal-500/10 p-6 rounded-3xl space-y-6">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">🌾</span>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-200">Kalkulator Formulasi Pakan (Pearson Square)</h3>
+                  <p className="text-xs text-slate-450 mt-0.5">Formulasikan campuran 2 bahan pakan pemicu energi & protein untuk mencapai protein target.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                <div className="space-y-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-450 block uppercase tracking-wider">Target Protein (%)</label>
+                    <input
+                      type="number"
+                      value={pearsonTarget}
+                      onChange={(e) => setPearsonTarget(parseFloat(e.target.value) || 0)}
+                      className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-sm font-semibold outline-none focus:border-teal-500 font-mono"
+                    />
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-450 block uppercase tracking-wider">Total Mix Pakan (kg)</label>
+                    <input
+                      type="number"
+                      value={pearsonTotalKg}
+                      onChange={(e) => setPearsonTotalKg(parseFloat(e.target.value) || 0)}
+                      className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-sm font-semibold outline-none focus:border-teal-500 font-mono"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 bg-slate-950/30 p-4 rounded-2xl border border-slate-850">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase">Bahan A (Energi)</label>
+                      <input
+                        type="text"
+                        value={pearsonIngA}
+                        onChange={(e) => setPearsonIngA(e.target.value)}
+                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1.5 text-slate-200 text-xs font-bold"
+                      />
+                      <input
+                        type="number"
+                        placeholder="CP %"
+                        value={pearsonProtA}
+                        onChange={(e) => setPearsonProtA(parseFloat(e.target.value) || 0)}
+                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1 text-slate-200 text-xs font-mono"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase">Bahan B (Protein)</label>
+                      <input
+                        type="text"
+                        value={pearsonIngB}
+                        onChange={(e) => setPearsonIngB(e.target.value)}
+                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1.5 text-slate-200 text-xs font-bold"
+                      />
+                      <input
+                        type="number"
+                        placeholder="CP %"
+                        value={pearsonProtB}
+                        onChange={(e) => setPearsonProtB(parseFloat(e.target.value) || 0)}
+                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1 text-slate-200 text-xs font-mono"
+                      />
+                    </div>
                   </div>
                 </div>
-              );
-            })()}
+
+                {/* Calculation Screen Output */}
+                {(() => {
+                  const t = pearsonTarget;
+                  const a = pearsonProtA;
+                  const b = pearsonProtB;
+
+                  const isRangeValid = (a < t && t < b) || (b < t && t < a);
+
+                  if (!isRangeValid) {
+                    return (
+                      <div className="flex flex-col items-center justify-center p-6 border border-dashed border-rose-800/30 rounded-2xl text-center bg-rose-950/5 text-rose-400 text-xs">
+                        ⚠️ **Rasio Tidak Valid**
+                        <span className="mt-2 text-slate-400 block">Target protein ({t}%) harus berada di antara persentase protein Bahan A ({a}%) dan Bahan B ({b}%).</span>
+                      </div>
+                    );
+                  }
+
+                  const partA = Math.abs(b - t);
+                  const partB = Math.abs(a - t);
+                  const totalParts = partA + partB;
+                  
+                  const pctA = (partA / totalParts) * 100;
+                  const pctB = (partB / totalParts) * 100;
+
+                  const kgA = (pctA / 100) * pearsonTotalKg;
+                  const kgB = (pctB / 100) * pearsonTotalKg;
+
+                  return (
+                    <div className="bg-slate-950/80 p-5 rounded-2xl border border-slate-850 flex flex-col justify-between">
+                      <div>
+                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Hasil Kalkulasi Pencampuran</div>
+                        
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="font-bold text-slate-300">{pearsonIngA} ({a}% CP):</span>
+                            <span className="font-mono text-teal-400 font-extrabold">{pctA.toFixed(1)}% <span className="text-slate-500">({kgA.toFixed(1)} kg)</span></span>
+                          </div>
+                          <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                            <div className="bg-teal-500 h-full" style={{ width: `${pctA}%` }} />
+                          </div>
+
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="font-bold text-slate-300">{pearsonIngB} ({b}% CP):</span>
+                            <span className="font-mono text-emerald-450 font-extrabold">{pctB.toFixed(1)}% <span className="text-slate-500">({kgB.toFixed(1)} kg)</span></span>
+                          </div>
+                          <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                            <div className="bg-emerald-500 h-full" style={{ width: `${pctB}%` }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 p-3 bg-teal-950/20 border border-teal-500/10 rounded-xl text-[11px] text-teal-300 leading-relaxed">
+                        💡 **Petunjuk Pencampuran:** Untuk membuat **{pearsonTotalKg}kg** pakan dengan **{t}% CP**, campurkan **{kgA.toFixed(1)}kg {pearsonIngA}** dengan **{kgB.toFixed(1)}kg {pearsonIngB}** secara merata.
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+
           </div>
         )}
+
+        {/* --- TAB: KALENDER OPERASIONAL & VAKSINASI --- */}
+        {activeTab === 'jadwal_kerja' && (
+          <div className="max-w-3xl mx-auto space-y-6 animate-fadeIn">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-4">
+              <div>
+                <h3 className="text-xl font-black text-slate-100 flex items-center gap-2">
+                  <span>📅</span> Kalender Kegiatan & Vaksinasi
+                </h3>
+                <p className="text-xs text-slate-450 mt-1">
+                  Jadwal rutin harian ini dihitung otomatis dari tanggal mulai siklus: <strong className="text-teal-400 font-mono">{parsedStartDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                </p>
+              </div>
+              <div className="bg-slate-900/60 border border-slate-850 px-4 py-2 rounded-xl text-center self-start">
+                <span className="text-[10px] font-bold text-slate-500 block uppercase">Pencapaian Tugas</span>
+                <span className="text-sm font-black text-teal-450 font-mono">
+                  {calendarTasks.filter((t) => (activeCycle.data?.checkedTasks || []).includes(t.id)).length} / {calendarTasks.length} Selesai
+                </span>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {calendarTasks.map((task) => {
+                const isChecked = (activeCycle.data?.checkedTasks || []).includes(task.id);
+                return (
+                  <div 
+                    key={task.id} 
+                    onClick={() => handleToggleTask(task.id)}
+                    className={`flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-pointer select-none ${
+                      isChecked 
+                        ? 'bg-slate-900/10 border-teal-500/15 opacity-60' 
+                        : 'bg-slate-900/30 border-slate-850 hover:border-teal-500/30 hover:bg-slate-900/50'
+                    }`}
+                  >
+                    {/* Checkbox circle/box */}
+                    <div className="mt-1 flex-shrink-0">
+                      <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${isChecked ? 'bg-teal-500 border-teal-500 text-slate-950 font-bold' : 'border-slate-800'}`}>
+                        {isChecked && '✓'}
+                      </div>
+                    </div>
+
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <span className="text-xs font-extrabold text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded-lg border border-teal-500/10 font-mono">
+                          Hari ke-{task.day}
+                        </span>
+                        <span className="text-xs font-bold text-slate-500 font-mono">
+                          {task.date}
+                        </span>
+                      </div>
+                      
+                      <h4 className={`text-sm font-black ${isChecked ? 'line-through text-slate-400' : 'text-slate-200'}`}>
+                        {task.title}
+                      </h4>
+                      <p className="text-xs text-slate-450 leading-relaxed font-semibold">
+                        {task.desc}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB: AI VET CHAT SCREEN --- */}
+        {activeTab === 'ai_vet' && (
+          <div className="max-w-3xl mx-auto h-[600px] bg-slate-900/20 border border-teal-500/10 rounded-3xl flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+            
+            {/* Header info */}
+            <div className="bg-slate-950/80 border-b border-slate-900 p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-xl">
+                  👨‍⚕️
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-100 uppercase tracking-wider">Radeya AI Vet</h4>
+                  <span className="text-[10px] font-bold text-emerald-450 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Asisten Konsultasi Aktif
+                  </span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setChatMessages([])} 
+                className="text-[10px] bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-1.5 rounded-xl font-bold transition-all"
+              >
+                Clear Chat
+              </button>
+            </div>
+
+            {/* Messages Stream */}
+            <div className="flex-1 p-6 overflow-y-auto space-y-4 scrollbar-thin">
+              {chatMessages.length === 0 ? (
+                <div className="text-center py-16 text-slate-500 text-xs">
+                  Ketik pertanyaan Anda di bawah untuk memulai sesi tanya-jawab dengan AI Vet.
+                </div>
+              ) : (
+                chatMessages.map((msg, i) => (
+                  <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
+                    <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed font-semibold ${
+                      msg.role === 'user'
+                        ? 'bg-teal-650 text-white rounded-br-none'
+                        : 'bg-slate-950/80 text-slate-200 border border-slate-850 rounded-bl-none'
+                    }`}>
+                      {/* Simple custom formatter for bold and bullets */}
+                      {msg.text.split('\n').map((line, idx) => {
+                        let content: React.ReactNode = line;
+                        // Replace **bold**
+                        if (line.includes('**')) {
+                          const parts = line.split('**');
+                          content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-teal-300 font-extrabold">{part}</strong> : part);
+                        }
+                        // Bullet point indentation helper
+                        const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ') || /^\d+\.\s/.test(line.trim());
+                        return (
+                          <p key={idx} className={`${isBullet ? 'pl-2 py-0.5' : ''} ${idx > 0 ? 'mt-1' : ''}`}>
+                            {content}
+                          </p>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              )}
+              {isChatLoading && (
+                <div className="flex justify-start animate-pulse">
+                  <div className="bg-slate-950/80 text-slate-350 p-4 rounded-2xl rounded-bl-none border border-slate-850 text-xs flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce" />
+                    <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    <span>Dokter mengetik respon...</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Input Bar */}
+            <form onSubmit={handleSendChatMessage} className="bg-slate-950/90 border-t border-slate-900 p-4 flex gap-3">
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Tanyakan keluhan ternak Anda di sini (misal: ayam lemas berak kapur)..."
+                className="flex-1 bg-slate-900/60 border border-slate-800 focus:border-teal-500 rounded-xl px-4 py-3 text-slate-200 text-xs font-semibold outline-none transition-colors"
+                disabled={isChatLoading}
+              />
+              <button
+                type="submit"
+                disabled={!chatInput.trim() || isChatLoading}
+                className="bg-gradient-to-tr from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold px-5 py-3 rounded-xl transition-all disabled:opacity-50 text-xs uppercase tracking-wider"
+              >
+                Kirim
+              </button>
+            </form>
+          </div>
+        )}
+
       </main>
 
       {/* FAB Floating Action Button (Only visible on input tabs) */}
-      {activeTab >= 2 && activeTab <= 4 && (
+      {['biaya', 'panen', 'penjualan'].includes(activeTab) && (
         <button
           onClick={() => {
-            if (activeTab === 2) {
+            if (activeTab === 'biaya') {
               openModalForm((activeCycle.mode === 'broiler' || activeCycle.mode === 'petelur') ? 'modal_pakan' : activeCycle.mode === 'susu' ? 'modal_biaya_susu' : 'modal_biaya_ruminansia');
-            } else if (activeTab === 3) {
+            } else if (activeTab === 'panen') {
               openModalForm(
                 activeCycle.mode === 'broiler' 
                   ? 'modal_panen_broiler' 
@@ -2002,7 +2727,7 @@ export default function DashboardPage() {
                   ? 'modal_harian_susu'
                   : 'modal_kelahiran'
               );
-            } else if (activeTab === 4) {
+            } else if (activeTab === 'penjualan') {
               openModalForm(
                 activeCycle.mode === 'petelur' 
                   ? 'modal_jual_petelur' 
@@ -2014,37 +2739,36 @@ export default function DashboardPage() {
               );
             }
           }}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white rounded-full flex items-center justify-center text-3xl font-black shadow-xl shadow-teal-500/20 active:scale-95 transition-all z-40"
+          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-xl shadow-teal-500/25 hover:scale-105 active:scale-95 transition-all z-45"
         >
-          +
+          {Icons.plus("w-6 h-6 text-white")}
         </button>
       )}
 
       {/* --- DYNAMIC INPUT MODAL --- */}
       {activeModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-md relative shadow-2xl">
             <button
               onClick={() => setActiveModal(null)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-200"
+              className="absolute top-4 right-4 w-7 h-7 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-full flex items-center justify-center transition-colors"
             >
               ✕
             </button>
 
-            <h3 className="text-xl font-bold text-slate-100 mb-6">{modalTitle}</h3>
+            <h3 className="text-lg font-black text-slate-100 mb-6">{modalTitle}</h3>
 
             <form onSubmit={handleModalFormSubmit} className="space-y-4">
               
-              {/* Common Date Field */}
               {formFields.tgl !== undefined && (
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-450 block uppercase">Tanggal</label>
+                  <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tanggal</label>
                   <input
                     type="date"
                     required
                     value={formFields.tgl}
                     onChange={(e) => updateFormField('tgl', e.target.value)}
-                    className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                   />
                 </div>
               )}
@@ -2053,49 +2777,49 @@ export default function DashboardPage() {
               {activeModal === 'modal_pakan' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Jenis Pakan</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jenis Pakan</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Pakan Broiler Starter"
                       value={formFields.jenis}
                       onChange={(e) => updateFormField('jenis', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah Sak</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Sak</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 10"
                         value={formFields.sak}
                         onChange={(e) => updateFormField('sak', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Berat per Sak (kg)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Berat per Sak (kg)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 50"
                         value={formFields.kg_sak}
                         onChange={(e) => updateFormField('kg_sak', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Harga per Sak (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Sak (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 350000"
                       value={formFields.harga_sak}
                       onChange={(e) => updateFormField('harga_sak', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2105,35 +2829,35 @@ export default function DashboardPage() {
               {activeModal === 'modal_obat' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Nama Obat/Vaksin</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Nama Obat/Vaksin</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Vitamin A, Vaksin Gumboro"
                       value={formFields.nama}
                       onChange={(e) => updateFormField('nama', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Keterangan</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Keterangan</label>
                     <input
                       type="text"
                       placeholder="Contoh: Dosis 5ml per ekor"
                       value={formFields.ket}
                       onChange={(e) => updateFormField('ket', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Total Biaya Obat (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Biaya Obat (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 150000"
                       value={formFields.total}
                       onChange={(e) => updateFormField('total', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2143,35 +2867,35 @@ export default function DashboardPage() {
               {activeModal === 'modal_lain' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Nama Pengeluaran</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Nama Pengeluaran</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Sekam Kandang, Gaji Pekerja"
                       value={formFields.nama}
                       onChange={(e) => updateFormField('nama', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Keterangan</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Keterangan</label>
                     <input
                       type="text"
                       placeholder="Contoh: Tambahan sekam 10 karung"
                       value={formFields.ket}
                       onChange={(e) => updateFormField('ket', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Total Biaya (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Biaya (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 200000"
                       value={formFields.total}
                       onChange={(e) => updateFormField('total', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2181,7 +2905,7 @@ export default function DashboardPage() {
               {activeModal === 'modal_panen_broiler' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Total Panen (kg)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Panen (kg)</label>
                     <input
                       type="number"
                       required
@@ -2189,29 +2913,29 @@ export default function DashboardPage() {
                       placeholder="Contoh: 1200"
                       value={formFields.kg}
                       onChange={(e) => updateFormField('kg', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Harga Jual per kg (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga Jual per kg (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 22000"
                       value={formFields.harga_kg}
                       onChange={(e) => updateFormField('harga_kg', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah Ayam Mati (Ekor)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ayam Kematian (Ekor)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 10"
                       value={formFields.jml_mati}
                       onChange={(e) => updateFormField('jml_mati', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2221,35 +2945,35 @@ export default function DashboardPage() {
               {activeModal === 'modal_harian_petelur' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah Telur (Butir)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Telur (Butir)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 350"
                       value={formFields.butir}
                       onChange={(e) => updateFormField('butir', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Berat Telur (kg)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Berat Telur (kg)</label>
                     <input
                       type="number"
                       step="0.1"
                       placeholder="Contoh: 20"
                       value={formFields.kg}
                       onChange={(e) => updateFormField('kg', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Telur Retak / BS (Butir)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Telur Retak / BS (Butir)</label>
                     <input
                       type="number"
                       placeholder="Contoh: 5"
                       value={formFields.retak}
                       onChange={(e) => updateFormField('retak', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2259,7 +2983,7 @@ export default function DashboardPage() {
               {activeModal === 'modal_jual_petelur' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah Jual (kg)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Jual (kg)</label>
                     <input
                       type="number"
                       required
@@ -2267,18 +2991,18 @@ export default function DashboardPage() {
                       placeholder="Contoh: 50"
                       value={formFields.kg}
                       onChange={(e) => updateFormField('kg', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Harga per kg (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per kg (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 28000"
                       value={formFields.harga_kg}
                       onChange={(e) => updateFormField('harga_kg', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2288,71 +3012,71 @@ export default function DashboardPage() {
               {(activeModal === 'modal_biaya_ruminansia' || activeModal === 'modal_biaya_susu') && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Jenis Pengeluaran</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jenis Pengeluaran</label>
                     <select
                       value={formFields.type}
                       onChange={(e) => updateFormField('type', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
                     >
                       <option value="pakan">Pakan / Hijauan / Konsentrat</option>
-                      <option value="obat">Obat / Vitamin / Inseminasi Buatan</option>
-                      <option value="lain">Lain-lain (Listrik, TK, dll)</option>
+                      <option value="obat">Kesehatan / Obat / Hormon / IB</option>
+                      <option value="lain">Lain-lain (TK, Listrik, dll)</option>
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Nama Detail Biaya</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Detail Nama Pengeluaran</label>
                     <input
                       type="text"
                       required
-                      placeholder="Contoh: Konsentrat Penggemukan, Jerami"
+                      placeholder="Contoh: Jerami Fermentasi, Vitamin ADE"
                       value={formFields.nama}
                       onChange={(e) => updateFormField('nama', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
-                  {formFields.type === 'pakan' && (
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Volume Pakan (kg)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Volume Berat (kg)</label>
                       <input
                         type="number"
                         placeholder="Contoh: 100"
                         value={formFields.kg}
                         onChange={(e) => updateFormField('kg', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
-                  )}
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Total Biaya (Rp)</label>
-                    <input
-                      type="number"
-                      required
-                      placeholder="Contoh: 500000"
-                      value={formFields.total}
-                      onChange={(e) => updateFormField('total', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
-                    />
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Biaya (Rp)</label>
+                      <input
+                        type="number"
+                        required
+                        placeholder="Contoh: 250000"
+                        value={formFields.total}
+                        onChange={(e) => updateFormField('total', e.target.value)}
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      />
+                    </div>
                   </div>
                 </>
               )}
 
-              {/* Ruminant Sales Fields */}
+              {/* Ruminant Fattening Harvest Fields */}
               {activeModal === 'modal_panen_penggemukan' && (
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Dijual (Ekor)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor Dijual</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 5"
                         value={formFields.jml_jual}
                         onChange={(e) => updateFormField('jml_jual', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">BB Akhir Rata2 (kg)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">BB Akhir Rata2 (kg)</label>
                       <input
                         type="number"
                         required
@@ -2360,30 +3084,30 @@ export default function DashboardPage() {
                         placeholder="Contoh: 400"
                         value={formFields.bb_akhir}
                         onChange={(e) => updateFormField('bb_akhir', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Harga Jual per kg (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga Jual per kg (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 55000"
                       value={formFields.harga_kg}
                       onChange={(e) => updateFormField('harga_kg', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Kematian (Ekor)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kematian (Ekor)</label>
                     <input
                       type="number"
                       required
                       placeholder="0"
                       value={formFields.jml_mati}
                       onChange={(e) => updateFormField('jml_mati', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2392,7 +3116,7 @@ export default function DashboardPage() {
               {/* Milk Yield Fields */}
               {activeModal === 'modal_harian_susu' && (
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-450 block uppercase">Total Produksi Susu (Liter)</label>
+                  <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Produksi Susu (Liter)</label>
                   <input
                     type="number"
                     required
@@ -2400,7 +3124,7 @@ export default function DashboardPage() {
                     placeholder="Contoh: 50"
                     value={formFields.liter}
                     onChange={(e) => updateFormField('liter', e.target.value)}
-                    className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                    className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                   />
                 </div>
               )}
@@ -2409,7 +3133,7 @@ export default function DashboardPage() {
               {activeModal === 'modal_jual_susu' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Volume Disetor (Liter)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Volume Disetor (Liter)</label>
                     <input
                       type="number"
                       required
@@ -2417,18 +3141,18 @@ export default function DashboardPage() {
                       placeholder="Contoh: 150"
                       value={formFields.liter}
                       onChange={(e) => updateFormField('liter', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Harga per Liter (Rp)</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Liter (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 7000"
                       value={formFields.harga_liter}
                       onChange={(e) => updateFormField('harga_liter', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -2438,37 +3162,37 @@ export default function DashboardPage() {
               {activeModal === 'modal_kelahiran' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">ID / Nomor Tag Indukan Betina</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Indukan Betina</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: A-01, B-03"
                       value={formFields.id_induk}
                       onChange={(e) => updateFormField('id_induk', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah Anak Jantan</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Anak Jantan</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 1"
                         value={formFields.jantan}
                         onChange={(e) => updateFormField('jantan', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah Anak Betina</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Anak Betina</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 1"
                         value={formFields.betina}
                         onChange={(e) => updateFormField('betina', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                   </div>
@@ -2480,11 +3204,11 @@ export default function DashboardPage() {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Kategori</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kategori</label>
                       <select
                         value={formFields.kategori}
                         onChange={(e) => updateFormField('kategori', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none"
+                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
                       >
                         <option>Bakalan</option>
                         <option>Afkir Betina</option>
@@ -2493,11 +3217,11 @@ export default function DashboardPage() {
                       </select>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Jenis Kelamin</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jenis Kelamin</label>
                       <select
                         value={formFields.jenis}
                         onChange={(e) => updateFormField('jenis', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none"
+                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
                       >
                         <option value="jantan">Jantan</option>
                         <option value="betina">Betina</option>
@@ -2506,25 +3230,25 @@ export default function DashboardPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah (Ekor)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah (Ekor)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 2"
                         value={formFields.jml}
                         onChange={(e) => updateFormField('jml', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Harga per Ekor (Rp)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 3500000"
                         value={formFields.harga_ekor}
                         onChange={(e) => updateFormField('harga_ekor', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                   </div>
@@ -2535,37 +3259,37 @@ export default function DashboardPage() {
               {activeModal === 'modal_telur_pembibitan' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Periode</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Periode</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Minggu ke-1"
                       value={formFields.periode}
                       onChange={(e) => updateFormField('periode', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">T. Dikumpulkan (Butir)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">T. Dikumpulkan (Butir)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 200"
                         value={formFields.dikumpulkan}
                         onChange={(e) => updateFormField('dikumpulkan', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Masuk Tetas (Butir)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Masuk Tetas (Butir)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 180"
                         value={formFields.masuk_tetas}
                         onChange={(e) => updateFormField('masuk_tetas', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                   </div>
@@ -2576,11 +3300,11 @@ export default function DashboardPage() {
               {activeModal === 'modal_jual_doc' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase">Tipe Penjualan</label>
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tipe Penjualan</label>
                     <select
                       value={formFields.tipe}
                       onChange={(e) => updateFormField('tipe', e.target.value)}
-                      className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none"
+                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
                     >
                       <option>DOC</option>
                       <option>Ayam Remaja</option>
@@ -2589,42 +3313,41 @@ export default function DashboardPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Jumlah Ekor</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 100"
                         value={formFields.jml}
                         onChange={(e) => updateFormField('jml', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-450 block uppercase">Harga per Ekor (Rp)</label>
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 8000"
                         value={formFields.harga_ekor}
                         onChange={(e) => updateFormField('harga_ekor', e.target.value)}
-                        className="w-full bg-slate-800/60 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
                   </div>
                 </>
               )}
 
-              {/* Realtime Form Value Previews */}
               {previewVal && (
-                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-3 rounded-2xl flex justify-between items-center text-xs font-bold">
-                  <span>Preview Total Biaya/Penjualan:</span>
+                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold font-mono">
+                  <span className="font-sans">Estimasi Total Biaya/Penjualan:</span>
                   <span className="text-sm font-black">{previewVal}</span>
                 </div>
               )}
 
               <button
                 type="submit"
-                className="w-full mt-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-900/20"
+                className="w-full mt-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-900/20 text-xs uppercase tracking-wider"
               >
                 Simpan Catatan
               </button>
@@ -2639,12 +3362,12 @@ export default function DashboardPage() {
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl">
             <span className="text-5xl block mb-4">⚠️</span>
             <h3 className="text-lg font-bold text-slate-100 mb-2">{confirmModal.title}</h3>
-            <p className="text-xs text-slate-450 mb-6 leading-relaxed">{confirmModal.msg}</p>
+            <p className="text-xs text-slate-400 mb-6 leading-relaxed font-semibold">{confirmModal.msg}</p>
 
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmModal((prev) => ({ ...prev, show: false }))}
-                className="flex-1 py-2.5 border border-slate-805 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-xs transition-colors"
+                className="flex-1 py-2.5 border border-slate-800 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-xs transition-colors"
               >
                 Batal
               </button>
@@ -2661,8 +3384,8 @@ export default function DashboardPage() {
 
       {/* --- FLOATING TOAST --- */}
       {toastMsg && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-800 text-slate-200 px-6 py-3 rounded-full text-xs font-bold shadow-2xl z-55 flex items-center gap-2 animate-bounce">
-          <span className="w-2 h-2 rounded-full bg-teal-400" />
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-850 text-slate-200 px-6 py-3.5 rounded-full text-xs font-extrabold shadow-2xl z-55 flex items-center gap-2 animate-bounce">
+          <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping" />
           {toastMsg}
         </div>
       )}

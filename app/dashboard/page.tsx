@@ -30,18 +30,20 @@ interface Cycle {
 const ANIMAL_LABELS: Record<string, string> = {
   ayam_petelur: '🐔 Ayam Petelur',
   ayam_pedaging: '🍗 Ayam Pedaging',
-  bebek: '🦆 Bebek',
-  enthok: '🦢 Enthok',
+  bebek_petelur: '🦆 Bebek Petelur',
+  bebek_pedaging: '🦆 Bebek Pedaging',
+  enthok_pedaging: '🦢 Entok Pedaging',
   sapi_perah: '🥛 Sapi Perah',
   sapi_pedaging: '🥩 Sapi Pedaging',
-  kambing: '🐐 Kambing',
-  kambing_perah: '🥛 Kambing Perah'
+  kambing_perah: '🥛 Kambing Perah',
+  kambing_pedaging: '🐐 Kambing Pedaging',
+  ikan_pembesaran: '🐟 Ikan Pembesaran',
+  ikan_pembibitan: '🐟 Ikan Pembibitan'
 };
 
 const SCALE_LABELS: Record<string, string> = {
   besar: 'Skala Besar / Komersil',
-  kecil: 'Skala Kecil / Rumahan',
-  breeding: 'Mode Breeding'
+  kecil: 'Skala Kecil / Rumahan'
 };
 
 // --- SVGs Icons Pack for Professional SaaS UI ---
@@ -95,6 +97,11 @@ const Icons = {
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
     </svg>
+  ),
+  team: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+    </svg>
   )
 };
 
@@ -115,17 +122,21 @@ const intToScale = (scaleInt: number): string => {
 
 const determineMode = (animal: string, scaleStr: string): string => {
   const isPerah = ['sapi_perah', 'kambing_perah'].includes(animal);
-  const isUnggas = ['ayam_petelur', 'ayam_pedaging', 'bebek', 'enthok'].includes(animal);
-  const isAyamPetelur = ['ayam_petelur', 'bebek'].includes(animal);
-  const isPedaging = ['ayam_pedaging', 'enthok'].includes(animal);
-  const isRuminansiaDaging = ['sapi_pedaging', 'kambing'].includes(animal);
+  const isAyamPetelur = ['ayam_petelur', 'bebek_petelur'].includes(animal);
+  const isPedaging = [
+    'ayam_pedaging',
+    'bebek_pedaging',
+    'enthok_pedaging',
+    'sapi_pedaging',
+    'kambing_pedaging',
+    'ikan_pembesaran'
+  ].includes(animal);
+  const isPembibitanOrBreeding = ['ikan_pembibitan'].includes(animal);
 
-  if (scaleStr === 'breeding') return 'breeding_ruminansia';
-  if (isPerah && scaleStr === 'besar') return 'susu';
-  if (isPedaging && scaleStr === 'besar') return 'broiler';
-  if (isAyamPetelur && scaleStr === 'besar') return 'petelur';
-  if (isUnggas && scaleStr === 'kecil') return 'pembibitan_unggas';
-  if (isRuminansiaDaging && scaleStr === 'besar') return 'penggemukan';
+  if (isPerah) return 'susu';
+  if (isAyamPetelur) return 'petelur';
+  if (isPedaging) return 'broiler';
+  if (isPembibitanOrBreeding) return 'pembibitan_unggas';
   return 'broiler';
 };
 
@@ -137,8 +148,21 @@ const getCalendarTasks = (animal: string, scale: string, startDate: Date) => {
     return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
   };
 
-  const isUnggas = ['ayam_petelur', 'ayam_pedaging', 'bebek', 'enthok'].includes(animal);
-  const isPedaging = ['ayam_pedaging', 'enthok'].includes(animal);
+  const isUnggas = [
+    'ayam_petelur',
+    'ayam_pedaging',
+    'bebek_petelur',
+    'bebek_pedaging',
+    'enthok_pedaging'
+  ].includes(animal);
+  const isPedaging = [
+    'ayam_pedaging',
+    'bebek_pedaging',
+    'enthok_pedaging',
+    'sapi_pedaging',
+    'kambing_pedaging',
+    'ikan_pembesaran'
+  ].includes(animal);
   const isPerah = ['sapi_perah', 'kambing_perah'].includes(animal);
 
   if (isUnggas && isPedaging) {
@@ -232,6 +256,21 @@ export default function DashboardPage() {
   // --- Toast Alert State ---
   const [toastMsg, setToastMsg] = useState('');
 
+  // --- Profile & Subscription States ---
+  const [profile, setProfile] = useState<any>({
+    user: { role: 'OWNER', name: '', email: '' },
+    organization: { plan: 'FREE', subscriptionActive: false, subscriptionEnd: null }
+  });
+  const [billingModalOpen, setBillingModalOpen] = useState(false);
+  const [billingLoading, setBillingLoading] = useState(false);
+
+  // --- Team Management States ---
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberEmail, setNewMemberEmail] = useState('');
+  const [newMemberPassword, setNewMemberPassword] = useState('');
+  const [isAddingMember, setIsAddingMember] = useState(false);
+
   // --- Simulation States ---
   const [simHarga, setSimHarga] = useState<number>(0);
 
@@ -248,6 +287,10 @@ export default function DashboardPage() {
   const [pearsonProtB, setPearsonProtB] = useState<number>(36);
   const [pearsonTotalKg, setPearsonTotalKg] = useState<number>(100);
 
+  // --- Manual FCR Calculator States ---
+  const [manualFcrFeed, setManualFcrFeed] = useState<number>(1500);
+  const [manualFcrWeight, setManualFcrWeight] = useState<number>(1000);
+
   // --- Fetch Data on Mount ---
   useEffect(() => {
     const token = localStorage.getItem('radeya_token');
@@ -255,16 +298,34 @@ export default function DashboardPage() {
       router.push('/login');
       return;
     }
-    const savedFarmName = localStorage.getItem('radeya_farm_name') || 'Peternakan Saya';
-    setFarmName(savedFarmName);
 
-    fetchCyclesData();
+    // Load Midtrans Snap Script dynamically
+    const script = document.createElement('script');
+    script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+    script.setAttribute('data-client-key', process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY || '');
+    document.body.appendChild(script);
+
+    fetchDashboardData();
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, [router]);
 
-  const fetchCyclesData = async () => {
+  const fetchDashboardData = async () => {
     setIsLoading(true);
     setError('');
     try {
+      // 1. Fetch user & organization profile
+      const profileData = await apiGet('/api/v1/profile');
+      setProfile(profileData);
+
+      if (profileData?.organization?.name) {
+        setFarmName(profileData.organization.name);
+        localStorage.setItem('radeya_farm_name', profileData.organization.name);
+      }
+
+      // 2. Fetch cycles
       const data = await apiGet('/api/v1/cycles');
       if (data && data.length > 0) {
         setCycles(data);
@@ -275,8 +336,17 @@ export default function DashboardPage() {
         setIsOnboarding(true);
         setObStep(1);
       }
+
+      // 3. Fetch team members if Enterprise & Owner
+      if (
+        profileData?.organization?.plan === 'ENTERPRISE' &&
+        profileData?.user?.role === 'OWNER'
+      ) {
+        const team = await apiGet('/api/v1/team');
+        setTeamMembers(team);
+      }
     } catch (err: any) {
-      setError(err.message || 'Gagal memuat data siklus.');
+      setError(err.message || 'Gagal menyinkronkan data.');
     } finally {
       setIsLoading(false);
     }
@@ -292,6 +362,62 @@ export default function DashboardPage() {
     localStorage.removeItem('radeya_org_id');
     localStorage.removeItem('radeya_farm_name');
     router.push('/login');
+  };
+
+  const handleCheckoutMidtrans = async (selectedPlan: 'PRO' | 'ENTERPRISE') => {
+    setBillingLoading(true);
+    try {
+      const res = await apiPost('/api/v1/billing/checkout', { plan: selectedPlan });
+      if (res.token) {
+        // @ts-ignore
+        window.snap.pay(res.token, {
+          onSuccess: async function (result: any) {
+            showToast('🎉 Pembayaran sukses! Mengubah paket...');
+            await fetchDashboardData();
+            setBillingModalOpen(false);
+          },
+          onPending: function (result: any) {
+            showToast('⏳ Menunggu pembayaran...');
+          },
+          onError: function (result: any) {
+            showToast('❌ Pembayaran gagal. Silakan coba lagi.');
+          },
+          onClose: function () {
+            showToast('ℹ️ Pembayaran dibatalkan.');
+          }
+        });
+      } else {
+        throw new Error('Gagal memproses pembayaran (Token kosong)');
+      }
+    } catch (err: any) {
+      showToast('❌ Error: ' + err.message);
+    } finally {
+      setBillingLoading(false);
+    }
+  };
+
+  const handleAddTeamMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMemberName || !newMemberEmail || !newMemberPassword) return;
+    setIsAddingMember(true);
+    try {
+      await apiPost('/api/v1/team', {
+        name: newMemberName,
+        email: newMemberEmail,
+        password: newMemberPassword
+      });
+      showToast('🎉 Berhasil menambahkan anggota tim!');
+      setNewMemberName('');
+      setNewMemberEmail('');
+      setNewMemberPassword('');
+      // Reload list tim
+      const team = await apiGet('/api/v1/team');
+      setTeamMembers(team);
+    } catch (err: any) {
+      showToast('❌ Gagal: ' + err.message);
+    } finally {
+      setIsAddingMember(false);
+    }
   };
 
   // --- API Actions ---
@@ -313,6 +439,11 @@ export default function DashboardPage() {
   };
 
   const handleCreateCycle = async (name: string, animal: string, scaleStr: string) => {
+    if (scaleStr === 'besar' && profile?.organization?.plan === 'FREE') {
+      showToast('⚠️ Skala Besar / Komersil hanya tersedia untuk paket PRO & ENTERPRISE!');
+      setBillingModalOpen(true);
+      return;
+    }
     setIsLoading(true);
     try {
       const mode = determineMode(animal, scaleStr);
@@ -355,7 +486,7 @@ export default function DashboardPage() {
     try {
       await apiDelete(`/api/v1/cycles/${activeCycle.id}`);
       showToast('🗑️ Siklus berhasil dihapus');
-      fetchCyclesData();
+      fetchDashboardData();
     } catch (err: any) {
       showToast('❌ Gagal menghapus: ' + err.message);
     }
@@ -436,32 +567,32 @@ export default function DashboardPage() {
       default:
         baseTabs = [{ id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' }];
     }
-    return [
-      ...baseTabs,
-      { id: 'jadwal_kerja', icon: Icons.calendar(), label: 'Jadwal Kerja' },
-      { id: 'ai_vet', icon: Icons.aiVet(), label: 'AI Vet' }
-    ];
+    const finalTabs = [...baseTabs];
+    finalTabs.push({ id: 'jadwal_kerja', icon: Icons.calendar(), label: 'Jadwal Kerja' });
+
+    const isFree = profile?.organization?.plan === 'FREE';
+    finalTabs.push({
+      id: 'ai_vet',
+      icon: Icons.aiVet(),
+      label: isFree ? 'AI Vet 🔒' : 'AI Vet'
+    });
+
+    if (profile?.user?.role === 'OWNER') {
+      finalTabs.push({
+        id: 'team_management',
+        icon: Icons.team(),
+        label: profile?.organization?.plan === 'ENTERPRISE' ? 'Kelola Tim' : 'Kelola Tim 🔒'
+      });
+    }
+
+    return finalTabs;
   };
 
   const getScaleOptions = (animal: string) => {
-    const isUnggas = ['ayam_petelur', 'ayam_pedaging', 'bebek', 'enthok'].includes(animal);
-    const isPerah = ['sapi_perah', 'kambing_perah'].includes(animal);
-
-    if (isUnggas) {
-      return [
-        { val: 'besar', icon: '🏭', title: 'Skala Besar / Komersil', desc: 'DOC beli, kandang besar, jual bobot' },
-        { val: 'kecil', icon: '🏡', title: 'Skala Kecil / Pembibitan', desc: 'Indukan sendiri, jual DOC & remaja' }
-      ];
-    } else if (isPerah) {
-      return [
-        { val: 'besar', icon: '🏭', title: 'Skala Besar / Komersil', desc: 'Produksi susu harian, setor ke koperasi' }
-      ];
-    } else {
-      return [
-        { val: 'besar', icon: '🏭', title: 'Skala Penggemukan', desc: 'Beli bakalan, jual setelah gemuk' },
-        { val: 'breeding', icon: '🐣', title: 'Mode Breeding', desc: 'Ternak indukan, jual anak/bakalan' }
-      ];
-    }
+    return [
+      { val: 'besar', icon: '🏭', title: 'Skala Besar / Komersil', desc: 'Operasional kapasitas besar & modern' },
+      { val: 'kecil', icon: '🏡', title: 'Skala Kecil / Rumahan', desc: 'Operasional kapasitas terbatas & rumahan' }
+    ];
   };
 
   // --- Business Logic Calculation Core ---
@@ -1287,6 +1418,33 @@ export default function DashboardPage() {
     );
   }
 
+  const renderUpgradeGate = (targetPlan: 'PRO' | 'ENTERPRISE', featureTitle: string, featureDesc: string) => {
+    return (
+      <div className="bg-slate-900/40 backdrop-blur-xl border border-teal-500/10 p-12 rounded-3xl text-center max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-fadeIn my-12">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl" />
+        
+        <div className="w-20 h-20 bg-teal-500/10 border border-teal-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-teal-400">
+          <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        
+        <h2 className="text-3xl font-black text-slate-100 mb-4">{featureTitle}</h2>
+        <p className="text-sm text-slate-400 mb-8 max-w-md mx-auto leading-relaxed">{featureDesc}</p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <button
+            onClick={() => setBillingModalOpen(true)}
+            className="px-8 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-2xl transition-all shadow-lg shadow-teal-955/40 flex items-center gap-2 text-xs"
+          >
+            ⭐ Upgrade ke {targetPlan} Sekarang
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const activeCycle = getActiveCycle();
   if (!activeCycle) return null;
 
@@ -1327,6 +1485,14 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-4">
+            {profile?.user?.role === 'OWNER' && (
+              <button
+                onClick={() => setBillingModalOpen(true)}
+                className="px-3.5 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 transition-all flex items-center gap-1.5 shadow-md shadow-amber-950/20"
+              >
+                Plan: {profile?.organization?.plan || 'FREE'} ⭐
+              </button>
+            )}
             <button
               onClick={handleResetSetupPrompt}
               className="px-3.5 py-2 bg-slate-900/60 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-xl border border-slate-800 transition-all flex items-center gap-1.5"
@@ -1598,13 +1764,15 @@ export default function DashboardPage() {
                 {Icons.export("w-4 h-4 text-teal-400")}
                 Ekspor Laporan (CSV)
               </button>
-              <button
-                onClick={handleConfirmDeleteCycle}
-                className="flex-1 py-3.5 px-4 bg-rose-950/20 hover:bg-rose-900/30 text-rose-400 border border-rose-900/20 font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2"
-              >
-                {Icons.trash("w-4 h-4 text-rose-400")}
-                Hapus Siklus Ini
-              </button>
+              {profile?.user?.role === 'OWNER' && (
+                <button
+                  onClick={handleConfirmDeleteCycle}
+                  className="flex-1 py-3.5 px-4 bg-rose-950/20 hover:bg-rose-900/30 text-rose-400 border border-rose-900/20 font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2"
+                >
+                  {Icons.trash("w-4 h-4 text-rose-400")}
+                  Hapus Siklus Ini
+                </button>
+              )}
             </div>
           </div>
         )}
@@ -2341,9 +2509,7 @@ export default function DashboardPage() {
               onClick={() => openModalForm(
                 activeCycle.mode === 'petelur' 
                   ? 'modal_jual_petelur' 
-                  : activeCycle.mode === 'susu'
-                  ? 'modal_jual_susu'
-                  : activeCycle.mode === 'pembibitan_unggas'
+: activeCycle.mode === 'pembibitan_unggas'
                   ? 'modal_jual_doc'
                   : 'modal_jual_breeding'
               )}
@@ -2356,42 +2522,48 @@ export default function DashboardPage() {
 
         {/* --- TAB: SIMULASI & FORMULASI PAKAN --- */}
         {activeTab === 'simulasi' && (
-          <div className="max-w-2xl mx-auto space-y-8 animate-fadeIn">
-            
-            {/* Simulasi Harga */}
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
-              <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
-                <span>📈</span> Simulasi Laba Berdasarkan Harga Jual
-              </h3>
-              <p className="text-xs text-slate-400">Geser slider di bawah ini untuk melihat perkiraan laba jika terjadi perubahan harga pasar.</p>
+          profile?.organization?.plan === 'FREE' ? (
+            renderUpgradeGate(
+              'PRO',
+              'Kalkulator & Formulasi Terkunci',
+              'Kalkulator simulasi harga jual dan formulasi pakan Pearson Square hanya tersedia pada paket PRO dan ENTERPRISE. Tingkatkan bisnis peternakan Anda sekarang!'
+            )
+          ) : (
+            <div className="max-w-2xl mx-auto space-y-8 animate-fadeIn">
               
-              {(() => {
-                const currentHarga = simHarga || (activeCycle.mode === 'broiler' ? 22000 : activeCycle.mode === 'petelur' ? 28000 : activeCycle.mode === 'susu' ? 7000 : 55000);
-                const minVal = activeCycle.mode === 'broiler' ? 10000 : activeCycle.mode === 'petelur' ? 15000 : activeCycle.mode === 'susu' ? 3000 : 20000;
-                const maxVal = activeCycle.mode === 'broiler' ? 60000 : activeCycle.mode === 'petelur' ? 50000 : activeCycle.mode === 'susu' ? 20000 : 150000;
-                const stepVal = activeCycle.mode === 'susu' ? 200 : activeCycle.mode === 'penggemukan' ? 1000 : 500;
+              {/* Simulasi Harga */}
+              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+                <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                  <span>📈</span> Simulasi Laba Berdasarkan Harga Jual
+                </h3>
+                <p className="text-xs text-slate-400">Geser slider di bawah ini untuk melihat perkiraan laba jika terjadi perubahan harga pasar.</p>
+                
+                {(() => {
+                  const currentHarga = simHarga || (activeCycle.mode === 'broiler' ? 22000 : activeCycle.mode === 'petelur' ? 28000 : activeCycle.mode === 'susu' ? 7000 : 55000);
+                  const minVal = activeCycle.mode === 'broiler' ? 10000 : activeCycle.mode === 'petelur' ? 15000 : activeCycle.mode === 'susu' ? 3000 : 20000;
+                  const maxVal = activeCycle.mode === 'broiler' ? 60000 : activeCycle.mode === 'petelur' ? 50000 : activeCycle.mode === 'susu' ? 20000 : 150000;
+                  const stepVal = activeCycle.mode === 'susu' ? 200 : activeCycle.mode === 'penggemukan' ? 1000 : 500;
 
-                let qty = 0;
-                if (activeCycle.mode === 'broiler') {
-                  qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.kg) || 0), 0);
-                } else if (activeCycle.mode === 'petelur') {
-                  qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.kg) || 0), 0);
-                } else if (activeCycle.mode === 'susu') {
-                  qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.liter) || 0), 0);
-                } else if (activeCycle.mode === 'penggemukan') {
-                  qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.bb_akhir) || 0) * (parseFloat(p.jml_jual) || 0), 0);
-                }
+                  let qty = 0;
+                  if (activeCycle.mode === 'broiler') {
+                    qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.kg) || 0), 0);
+                  } else if (activeCycle.mode === 'petelur') {
+                    qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.kg) || 0), 0);
+                  } else if (activeCycle.mode === 'susu') {
+                    qty = (activeCycle.data?.harian || []).reduce((s, h) => s + (parseFloat(h.liter) || 0), 0);
+                  } else if (activeCycle.mode === 'penggemukan') {
+                    qty = (activeCycle.data?.panen || []).reduce((s, p) => s + (parseFloat(p.bb_akhir) || 0) * (parseFloat(p.jml_jual) || 0), 0);
+                  }
 
-                const totalModal = stats?.totalModal || 0;
-                const totalPendapatan = qty * currentHarga;
-                const labaSim = totalPendapatan - totalModal;
+                  const totalModal = stats?.totalModal || 0;
+                  const totalPendapatan = qty * currentHarga;
+                  const labaSim = totalPendapatan - totalModal;
 
-                return (
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-xs font-bold">
-                        <span className="text-slate-400 font-bold">Simulasi Harga Jual:</span>
-                        <span className="text-teal-450 font-extrabold font-mono">{formatRp(currentHarga)} / {activeCycle.mode === 'susu' ? 'Liter' : 'kg'}</span>
+                  return (
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center text-xs font-bold text-slate-350">
+                        <span>Harga Simulasi:</span>
+                        <span className="text-teal-400 font-extrabold text-sm">Rp {currentHarga.toLocaleString('id-ID')} / {activeCycle.mode === 'susu' ? 'Liter' : activeCycle.mode === 'petelur' ? 'Kg' : 'Kg BB'}</span>
                       </div>
                       <input
                         type="range"
@@ -2399,153 +2571,275 @@ export default function DashboardPage() {
                         max={maxVal}
                         step={stepVal}
                         value={currentHarga}
-                        onChange={(e) => setSimHarga(parseFloat(e.target.value))}
-                        className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                        onChange={(e) => setSimHarga(parseInt(e.target.value))}
+                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
                       />
-                      <div className="flex justify-between text-[10px] text-slate-500 font-bold font-mono">
-                        <span>{formatRp(minVal)}</span>
-                        <span>{formatRp(maxVal)}</span>
-                      </div>
-                    </div>
-
-                    <div className={`p-6 rounded-2xl border ${labaSim >= 0 ? 'bg-emerald-950/20 border-emerald-900/40 text-emerald-400' : 'bg-rose-950/20 border-rose-900/40 text-rose-400'}`}>
-                      <span className="text-[10px] font-bold block uppercase opacity-75">Estimasi Laba Bersih Simulasi</span>
-                      <span className="text-3xl font-black block mt-1 tracking-tight font-mono">{formatRp(labaSim)}</span>
-                    </div>
-                  </div>
-                );
-              })()}
-            </div>
-
-            {/* Pearson Feed Calculator Widget */}
-            <div className="bg-slate-900/40 border border-teal-500/10 p-6 rounded-3xl space-y-6">
-              <div className="flex items-center gap-3">
-                <span className="text-2xl">🌾</span>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-200">Kalkulator Formulasi Pakan (Pearson Square)</h3>
-                  <p className="text-xs text-slate-450 mt-0.5">Formulasikan campuran 2 bahan pakan pemicu energi & protein untuk mencapai protein target.</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                <div className="space-y-4">
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase tracking-wider">Target Protein (%)</label>
-                    <input
-                      type="number"
-                      value={pearsonTarget}
-                      onChange={(e) => setPearsonTarget(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-sm font-semibold outline-none focus:border-teal-500 font-mono"
-                    />
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-450 block uppercase tracking-wider">Total Mix Pakan (kg)</label>
-                    <input
-                      type="number"
-                      value={pearsonTotalKg}
-                      onChange={(e) => setPearsonTotalKg(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950/70 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 text-sm font-semibold outline-none focus:border-teal-500 font-mono"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 bg-slate-950/30 p-4 rounded-2xl border border-slate-850">
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase">Bahan A (Energi)</label>
-                      <input
-                        type="text"
-                        value={pearsonIngA}
-                        onChange={(e) => setPearsonIngA(e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1.5 text-slate-200 text-xs font-bold"
-                      />
-                      <input
-                        type="number"
-                        placeholder="CP %"
-                        value={pearsonProtA}
-                        onChange={(e) => setPearsonProtA(parseFloat(e.target.value) || 0)}
-                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1 text-slate-200 text-xs font-mono"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase">Bahan B (Protein)</label>
-                      <input
-                        type="text"
-                        value={pearsonIngB}
-                        onChange={(e) => setPearsonIngB(e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1.5 text-slate-200 text-xs font-bold"
-                      />
-                      <input
-                        type="number"
-                        placeholder="CP %"
-                        value={pearsonProtB}
-                        onChange={(e) => setPearsonProtB(parseFloat(e.target.value) || 0)}
-                        className="w-full bg-slate-950/50 border border-slate-800 rounded-xl px-2 py-1 text-slate-200 text-xs font-mono"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Calculation Screen Output */}
-                {(() => {
-                  const t = pearsonTarget;
-                  const a = pearsonProtA;
-                  const b = pearsonProtB;
-
-                  const isRangeValid = (a < t && t < b) || (b < t && t < a);
-
-                  if (!isRangeValid) {
-                    return (
-                      <div className="flex flex-col items-center justify-center p-6 border border-dashed border-rose-800/30 rounded-2xl text-center bg-rose-950/5 text-rose-400 text-xs">
-                        ⚠️ **Rasio Tidak Valid**
-                        <span className="mt-2 text-slate-400 block">Target protein ({t}%) harus berada di antara persentase protein Bahan A ({a}%) dan Bahan B ({b}%).</span>
-                      </div>
-                    );
-                  }
-
-                  const partA = Math.abs(b - t);
-                  const partB = Math.abs(a - t);
-                  const totalParts = partA + partB;
-                  
-                  const pctA = (partA / totalParts) * 100;
-                  const pctB = (partB / totalParts) * 100;
-
-                  const kgA = (pctA / 100) * pearsonTotalKg;
-                  const kgB = (pctB / 100) * pearsonTotalKg;
-
-                  return (
-                    <div className="bg-slate-950/80 p-5 rounded-2xl border border-slate-850 flex flex-col justify-between">
-                      <div>
-                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Hasil Kalkulasi Pencampuran</div>
-                        
-                        <div className="space-y-4">
-                          <div className="flex justify-between items-center text-xs">
-                            <span className="font-bold text-slate-300">{pearsonIngA} ({a}% CP):</span>
-                            <span className="font-mono text-teal-400 font-extrabold">{pctA.toFixed(1)}% <span className="text-slate-500">({kgA.toFixed(1)} kg)</span></span>
-                          </div>
-                          <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-teal-500 h-full" style={{ width: `${pctA}%` }} />
-                          </div>
-
-                          <div className="flex justify-between items-center text-xs">
-                            <span className="font-bold text-slate-300">{pearsonIngB} ({b}% CP):</span>
-                            <span className="font-mono text-emerald-450 font-extrabold">{pctB.toFixed(1)}% <span className="text-slate-500">({kgB.toFixed(1)} kg)</span></span>
-                          </div>
-                          <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                            <div className="bg-emerald-500 h-full" style={{ width: `${pctB}%` }} />
-                          </div>
+                      <div className="grid grid-cols-2 gap-4 mt-6">
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Total Pendapatan (Simulasi)</span>
+                          <span className="text-sm font-black text-slate-200">Rp {totalPendapatan.toLocaleString('id-ID')}</span>
                         </div>
-                      </div>
-
-                      <div className="mt-4 p-3 bg-teal-950/20 border border-teal-500/10 rounded-xl text-[11px] text-teal-300 leading-relaxed">
-                        💡 **Petunjuk Pencampuran:** Untuk membuat **{pearsonTotalKg}kg** pakan dengan **{t}% CP**, campurkan **{kgA.toFixed(1)}kg {pearsonIngA}** dengan **{kgB.toFixed(1)}kg {pearsonIngB}** secara merata.
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
+                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Laba Bersih (Simulasi)</span>
+                          <span className={`text-sm font-black ${labaSim >= 0 ? 'text-teal-450' : 'text-rose-500'}`}>Rp {labaSim.toLocaleString('id-ID')}</span>
+                        </div>
                       </div>
                     </div>
                   );
                 })()}
               </div>
-            </div>
 
-          </div>
+              {/* Pearson Square Feed Formulation */}
+              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                    <span>🌾</span> Formulasi Pakan Pearson Square
+                  </h3>
+                  <span className="px-2.5 py-1 bg-emerald-950/70 text-emerald-450 text-[10px] rounded-lg font-bold border border-emerald-500/20 uppercase tracking-wider">
+                    Premium Feature
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400">
+                  Formulasikan pencampuran dua bahan baku pakan untuk mencapai target persentase protein kasar secara tepat.
+                </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Target Protein (%)</label>
+                    <input
+                      type="number"
+                      value={pearsonTarget}
+                      onChange={(e) => setPearsonTarget(parseFloat(e.target.value) || 0)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Hasil Pakan (kg)</label>
+                    <input
+                      type="number"
+                      value={pearsonTotalKg}
+                      onChange={(e) => setPearsonTotalKg(parseFloat(e.target.value) || 0)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Bahan A */}
+                  <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-3">
+                    <h4 className="text-xs font-black text-teal-400 uppercase tracking-widest font-sans">Bahan Baku A (Protein Rendah)</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Nama Bahan A</label>
+                        <input
+                          type="text"
+                          value={pearsonIngA}
+                          onChange={(e) => setPearsonIngA(e.target.value)}
+                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Kadar Protein (%)</label>
+                        <input
+                          type="number"
+                          value={pearsonProtA}
+                          onChange={(e) => setPearsonProtA(parseFloat(e.target.value) || 0)}
+                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bahan B */}
+                  <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-3">
+                    <h4 className="text-xs font-black text-emerald-450 uppercase tracking-widest font-sans">Bahan Baku B (Protein Tinggi)</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Nama Bahan B</label>
+                        <input
+                          type="text"
+                          value={pearsonIngB}
+                          onChange={(e) => setPearsonIngB(e.target.value)}
+                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Kadar Protein (%)</label>
+                        <input
+                          type="number"
+                          value={pearsonProtB}
+                          onChange={(e) => setPearsonProtB(parseFloat(e.target.value) || 0)}
+                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold font-mono"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {(() => {
+                  const pTarget = pearsonTarget;
+                  const pA = pearsonProtA;
+                  const pB = pearsonProtB;
+                  const diffA = Math.abs(pTarget - pB);
+                  const diffB = Math.abs(pTarget - pA);
+                  const totalParts = diffA + diffB;
+                  const isFeasible = pTarget > Math.min(pA, pB) && pTarget < Math.max(pA, pB);
+
+                  if (!isFeasible) {
+                    return (
+                      <div className="bg-rose-500/10 border border-rose-500/20 text-rose-455 p-4 rounded-2xl text-xs font-bold">
+                        ⚠️ Target protein ({pTarget}%) harus bernilai di antara kadar protein {pearsonIngA} ({pA}%) dan {pearsonIngB} ({pB}%). Silakan sesuaikan target atau kadar protein bahan baku.
+                      </div>
+                    );
+                  }
+
+                  const pctA = (diffA / totalParts) * 100;
+                  const pctB = (diffB / totalParts) * 100;
+                  const kgA = (pctA / 100) * pearsonTotalKg;
+                  const kgB = (pctB / 100) * pearsonTotalKg;
+
+                  return (
+                    <div className="space-y-6">
+                      {/* Diagram Visual Square */}
+                      <div className="bg-slate-950/45 p-6 rounded-2xl border border-slate-850 flex flex-col items-center justify-center relative overflow-hidden font-mono text-xs">
+                        <div className="grid grid-cols-3 gap-y-8 gap-x-2 w-full max-w-md items-center text-center relative z-10">
+                          {/* Row 1 */}
+                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">{pearsonIngA}</span>
+                            <strong className="text-teal-400 text-sm">{pA}%</strong>
+                          </div>
+                          <div className="text-slate-650 text-xl font-bold flex items-center justify-center h-full">↘</div>
+                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">Bagian {pearsonIngA}</span>
+                            <strong className="text-slate-200 text-sm">{diffA.toFixed(1)} bag</strong>
+                          </div>
+
+                          {/* Row 2 (Center) */}
+                          <div />
+                          <div className="bg-gradient-to-tr from-teal-905/60 to-emerald-905/60 border border-teal-500/30 p-3 rounded-2xl flex flex-col items-center justify-center aspect-square w-16 mx-auto -my-2 relative shadow-lg shadow-teal-950/40">
+                            <span className="text-[8px] text-teal-400 uppercase tracking-widest font-sans font-black">Target</span>
+                            <strong className="text-white text-base font-bold">{pTarget}%</strong>
+                          </div>
+                          <div />
+
+                          {/* Row 3 */}
+                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">{pearsonIngB}</span>
+                            <strong className="text-emerald-450 text-sm">{pB}%</strong>
+                          </div>
+                          <div className="text-slate-650 text-xl font-bold flex items-center justify-center h-full">↗</div>
+                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">Bagian {pearsonIngB}</span>
+                            <strong className="text-slate-200 text-sm">{diffB.toFixed(1)} bag</strong>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Recipe Table Card */}
+                      <div className="bg-gradient-to-r from-teal-950/20 to-emerald-950/20 p-5 rounded-2xl border border-teal-500/10">
+                        <h4 className="text-xs font-bold text-slate-200 mb-4 uppercase tracking-wider font-sans">Hasil Formulasi Pakan</h4>
+                        <div className="space-y-3.5 font-mono">
+                          <div className="flex justify-between items-center text-xs border-b border-slate-850 pb-2">
+                            <span className="text-slate-450 font-semibold font-sans">{pearsonIngA} ({pA}% Protein)</span>
+                            <span className="text-teal-450 font-black">{pctA.toFixed(1)}% <span className="text-slate-400 font-medium">({kgA.toFixed(2)} kg)</span></span>
+                          </div>
+                          <div className="flex justify-between items-center text-xs border-b border-slate-850 pb-2">
+                            <span className="text-slate-450 font-semibold font-sans">{pearsonIngB} ({pB}% Protein)</span>
+                            <span className="text-emerald-400 font-black">{pctB.toFixed(1)}% <span className="text-slate-400 font-medium">({kgB.toFixed(2)} kg)</span></span>
+                          </div>
+                          <div className="flex justify-between items-center text-xs pt-1">
+                            <span className="text-slate-200 font-extrabold uppercase font-sans">Total Target Campuran</span>
+                            <strong className="text-white font-black text-sm">100% ({pearsonTotalKg.toFixed(0)} kg) @ {pTarget}% Protein</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* Standalone manual FCR Calculator */}
+              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                    <span>⚖️</span> Kalkulator FCR Manual (Feed Conversion Ratio)
+                  </h3>
+                  <span className="px-2.5 py-1 bg-emerald-950/70 text-emerald-450 text-[10px] rounded-lg font-bold border border-emerald-500/20 uppercase tracking-wider">
+                    Premium Feature
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400">
+                  Hitung nilai konversi pakan secara cepat untuk mengukur tingkat efisiensi serapan pakan ternak Anda.
+                </p>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Konsumsi Pakan (kg)</label>
+                    <input
+                      type="number"
+                      value={manualFcrFeed}
+                      onChange={(e) => setManualFcrFeed(parseFloat(e.target.value) || 0)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Bobot Hasil Panen (kg)</label>
+                    <input
+                      type="number"
+                      value={manualFcrWeight}
+                      onChange={(e) => setManualFcrWeight(parseFloat(e.target.value) || 0)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                    />
+                  </div>
+                </div>
+
+                {(() => {
+                  const feed = manualFcrFeed;
+                  const weight = manualFcrWeight;
+                  if (weight <= 0) {
+                    return (
+                      <div className="bg-slate-955/40 text-center py-6 text-xs text-slate-550 font-bold border border-slate-850 rounded-2xl">
+                        Awaiting weight entry...
+                      </div>
+                    );
+                  }
+
+                  const fcrVal = feed / weight;
+                  let fcrStatus = '';
+                  let fcrBg = '';
+                  let fcrText = '';
+
+                  if (fcrVal <= 1.5) {
+                    fcrStatus = 'Sangat Efisien (Bagus Sekali) 🌟';
+                    fcrBg = 'bg-emerald-500/10 border-emerald-500/20';
+                    fcrText = 'text-emerald-400';
+                  } else if (fcrVal <= 1.8) {
+                    fcrStatus = 'Efisien (Standar) 👍';
+                    fcrBg = 'bg-teal-500/10 border-teal-500/20';
+                    fcrText = 'text-teal-400';
+                  } else {
+                    fcrStatus = 'Kurang Efisien (Butuh Evaluasi Pakan/Kandang) ⚠️';
+                    fcrBg = 'bg-rose-500/10 border-rose-500/20';
+                    fcrText = 'text-rose-450';
+                  }
+
+                  return (
+                    <div className={`p-5 rounded-2xl border ${fcrBg} space-y-2`}>
+                      <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">Hasil Rasio Konversi Pakan</span>
+                      <div className="flex justify-between items-baseline flex-wrap gap-2">
+                        <strong className={`text-3xl font-black font-mono ${fcrText}`}>{fcrVal.toFixed(2)}</strong>
+                        <span className={`text-xs font-extrabold ${fcrText}`}>{fcrStatus}</span>
+                      </div>
+                      <p className="text-[10px] text-slate-550 leading-relaxed font-semibold font-sans">
+                        *Artinya, untuk memproduksi 1 kg berat badan hewan ternak, dibutuhkan pasokan pakan sebanyak {fcrVal.toFixed(2)} kg. Semakin kecil angka FCR, semakin tinggi profit yang dihasilkan.
+                      </p>
+                    </div>
+                  );
+                })()}
+              </div>
+
+            </div>
+          )
         )}
 
         {/* --- TAB: KALENDER OPERASIONAL & VAKSINASI --- */}
@@ -2601,7 +2895,7 @@ export default function DashboardPage() {
                       <h4 className={`text-sm font-black ${isChecked ? 'line-through text-slate-400' : 'text-slate-200'}`}>
                         {task.title}
                       </h4>
-                      <p className="text-xs text-slate-450 leading-relaxed font-semibold">
+                      <p className={`text-xs mt-1 leading-relaxed ${isChecked ? 'line-through text-slate-500' : 'text-slate-400 font-medium'}`}>
                         {task.desc}
                       </p>
                     </div>
@@ -2611,98 +2905,200 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
-
-        {/* --- TAB: AI VET CHAT SCREEN --- */}
+            {/* --- TAB: AI VET CHAT SCREEN --- */}
         {activeTab === 'ai_vet' && (
-          <div className="max-w-3xl mx-auto h-[600px] bg-slate-900/20 border border-teal-500/10 rounded-3xl flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
-            
-            {/* Header info */}
-            <div className="bg-slate-950/80 border-b border-slate-900 p-5 flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-xl">
-                  👨‍⚕️
+          profile?.organization?.plan === 'FREE' ? (
+            renderUpgradeGate(
+              'PRO',
+              'Radeya AI Vet Terkunci',
+              'Konsultasikan kesehatan ternak Anda secara cerdas bersama Radeya AI Vet. Fitur ini hanya tersedia pada paket PRO dan ENTERPRISE.'
+            )
+          ) : (
+            <div className="max-w-3xl mx-auto h-[600px] bg-slate-900/20 border border-teal-500/10 rounded-3xl flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+              
+              {/* Header info */}
+              <div className="bg-slate-950/80 border-b border-slate-900 p-5 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-xl">
+                    👨‍⚕️
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-black text-slate-100 uppercase tracking-wider">Radeya AI Vet</h4>
+                    <span className="text-[10px] font-bold text-emerald-450 flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Asisten Konsultasi Aktif
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-xs font-black text-slate-100 uppercase tracking-wider">Radeya AI Vet</h4>
-                  <span className="text-[10px] font-bold text-emerald-450 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Asisten Konsultasi Aktif
-                  </span>
-                </div>
+                <button 
+                  onClick={() => setChatMessages([])} 
+                  className="text-[10px] bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-1.5 rounded-xl font-bold transition-all"
+                >
+                  Clear Chat
+                </button>
               </div>
-              <button 
-                onClick={() => setChatMessages([])} 
-                className="text-[10px] bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-1.5 rounded-xl font-bold transition-all"
-              >
-                Clear Chat
-              </button>
-            </div>
 
-            {/* Messages Stream */}
-            <div className="flex-1 p-6 overflow-y-auto space-y-4 scrollbar-thin">
-              {chatMessages.length === 0 ? (
-                <div className="text-center py-16 text-slate-500 text-xs">
-                  Ketik pertanyaan Anda di bawah untuk memulai sesi tanya-jawab dengan AI Vet.
-                </div>
-              ) : (
-                chatMessages.map((msg, i) => (
-                  <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
-                    <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed font-semibold ${
-                      msg.role === 'user'
-                        ? 'bg-teal-650 text-white rounded-br-none'
-                        : 'bg-slate-950/80 text-slate-200 border border-slate-850 rounded-bl-none'
-                    }`}>
-                      {/* Simple custom formatter for bold and bullets */}
-                      {msg.text.split('\n').map((line, idx) => {
-                        let content: React.ReactNode = line;
-                        // Replace **bold**
-                        if (line.includes('**')) {
-                          const parts = line.split('**');
-                          content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-teal-300 font-extrabold">{part}</strong> : part);
-                        }
-                        // Bullet point indentation helper
-                        const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ') || /^\d+\.\s/.test(line.trim());
-                        return (
-                          <p key={idx} className={`${isBullet ? 'pl-2 py-0.5' : ''} ${idx > 0 ? 'mt-1' : ''}`}>
-                            {content}
-                          </p>
-                        );
-                      })}
+              {/* Messages Stream */}
+              <div className="flex-1 p-6 overflow-y-auto space-y-4 scrollbar-thin">
+                {chatMessages.length === 0 ? (
+                  <div className="text-center py-16 text-slate-500 text-xs">
+                    Ketik pertanyaan Anda di bawah untuk memulai sesi tanya-jawab dengan AI Vet.
+                  </div>
+                ) : (
+                  chatMessages.map((msg, i) => (
+                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
+                      <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed font-semibold ${
+                        msg.role === 'user'
+                          ? 'bg-teal-650 text-white rounded-br-none'
+                          : 'bg-slate-950/80 text-slate-200 border border-slate-850 rounded-bl-none'
+                      }`}>
+                        {/* Simple custom formatter for bold and bullets */}
+                        {msg.text.split('\n').map((line, idx) => {
+                          let content: React.ReactNode = line;
+                          // Replace **bold**
+                          if (line.includes('**')) {
+                            const parts = line.split('**');
+                            content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-teal-300 font-extrabold">{part}</strong> : part);
+                          }
+                          // Bullet point indentation helper
+                          const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ') || /^\d+\.\s/.test(line.trim());
+                          return (
+                            <p key={idx} className={`${isBullet ? 'pl-2 py-0.5' : ''} ${idx > 0 ? 'mt-1' : ''}`}>
+                              {content}
+                            </p>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))
+                )}
+                {isChatLoading && (
+                  <div className="flex justify-start animate-pulse">
+                    <div className="bg-slate-950/80 text-slate-350 p-4 rounded-2xl rounded-bl-none border border-slate-850 text-xs flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce" />
+                      <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                      <span>Dokter mengetik respon...</span>
                     </div>
                   </div>
-                ))
-              )}
-              {isChatLoading && (
-                <div className="flex justify-start animate-pulse">
-                  <div className="bg-slate-950/80 text-slate-350 p-4 rounded-2xl rounded-bl-none border border-slate-850 text-xs flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce" />
-                    <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                    <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.4s]" />
-                    <span>Dokter mengetik respon...</span>
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            {/* Input Bar */}
-            <form onSubmit={handleSendChatMessage} className="bg-slate-950/90 border-t border-slate-900 p-4 flex gap-3">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Tanyakan keluhan ternak Anda di sini (misal: ayam lemas berak kapur)..."
-                className="flex-1 bg-slate-900/60 border border-slate-800 focus:border-teal-500 rounded-xl px-4 py-3 text-slate-200 text-xs font-semibold outline-none transition-colors"
-                disabled={isChatLoading}
-              />
-              <button
-                type="submit"
-                disabled={!chatInput.trim() || isChatLoading}
-                className="bg-gradient-to-tr from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold px-5 py-3 rounded-xl transition-all disabled:opacity-50 text-xs uppercase tracking-wider"
-              >
-                Kirim
-              </button>
-            </form>
-          </div>
+              {/* Input Bar */}
+              <form onSubmit={handleSendChatMessage} className="bg-slate-955/90 border-t border-slate-900 p-4 flex gap-3">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Tanyakan keluhan ternak Anda di sini (misal: ayam lemas berak kapur)..."
+                  className="flex-1 bg-slate-900/60 border border-slate-800 focus:border-teal-500 rounded-xl px-4 py-3 text-slate-200 text-xs font-semibold outline-none transition-colors"
+                  disabled={isChatLoading}
+                />
+                <button
+                  type="submit"
+                  disabled={!chatInput.trim() || isChatLoading}
+                  className="bg-gradient-to-tr from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold px-5 py-3 rounded-xl transition-all disabled:opacity-50 text-xs uppercase tracking-wider"
+                >
+                  Kirim
+                </button>
+              </form>
+            </div>
+          )
+        )}
+
+        {/* --- TAB: TEAM MANAGEMENT --- */}
+        {activeTab === 'team_management' && (
+          profile?.organization?.plan !== 'ENTERPRISE' ? (
+            renderUpgradeGate(
+              'ENTERPRISE',
+              'Kelola Anggota Tim Terkunci',
+              'Kelola peternakan Anda bersama tim secara kolaboratif (Boss & Pekerja). Fitur multi-user ini hanya tersedia pada paket ENTERPRISE.'
+            )
+          ) : (
+            <div className="max-w-3xl mx-auto bg-slate-900/30 border border-slate-850 p-8 rounded-3xl space-y-8 animate-fadeIn">
+              <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+                <span>👥</span> Kelola Anggota Tim (Pekerja)
+              </h3>
+              <p className="text-sm text-slate-450 leading-relaxed font-semibold">
+                Sebagai pemilik (Boss), Anda dapat mendaftarkan akun pekerja untuk mencatat data harian peternakan. Pekerja hanya dapat menginput data dan tidak diizinkan untuk menghapus data.
+              </p>
+
+              {/* Form Tambah Anggota */}
+              <form onSubmit={handleAddTeamMember} className="space-y-4 bg-slate-955/20 p-6 rounded-2xl border border-slate-850">
+                <h4 className="text-xs font-black text-slate-200 uppercase tracking-widest">Tambah Pekerja Baru</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <input
+                    type="text"
+                    required
+                    placeholder="Nama Lengkap"
+                    value={newMemberName}
+                    onChange={(e) => setNewMemberName(e.target.value)}
+                    className="bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 font-semibold"
+                  />
+                  <input
+                    type="email"
+                    required
+                    placeholder="Email Pekerja"
+                    value={newMemberEmail}
+                    onChange={(e) => setNewMemberEmail(e.target.value)}
+                    className="bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 font-semibold"
+                  />
+                  <input
+                    type="password"
+                    required
+                    placeholder="Password Akun"
+                    value={newMemberPassword}
+                    onChange={(e) => setNewMemberPassword(e.target.value)}
+                    className="bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 font-semibold"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  disabled={isAddingMember}
+                  className="px-6 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-bold rounded-xl transition-all disabled:opacity-50"
+                >
+                  {isAddingMember ? 'Menyimpan...' : '+ Daftarkan Pekerja'}
+                </button>
+              </form>
+
+              {/* Daftar Anggota */}
+              <div className="space-y-3">
+                <h4 className="text-xs font-black text-slate-200 uppercase tracking-widest">Daftar Tim Aktif</h4>
+                <div className="border border-slate-850 rounded-2xl overflow-hidden bg-slate-950/20">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-900 text-slate-400 font-bold uppercase tracking-wider">
+                      <tr>
+                        <th className="px-6 py-3">Nama</th>
+                        <th className="px-6 py-3">Email</th>
+                        <th className="px-6 py-3">Peran</th>
+                        <th className="px-6 py-3">Tanggal Dibuat</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-850 text-slate-300 font-medium">
+                      {teamMembers.map((member) => (
+                        <tr key={member.id}>
+                          <td className="px-6 py-4">{member.name}</td>
+                          <td className="px-6 py-4">{member.email}</td>
+                          <td className="px-6 py-4">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                              member.role === 'OWNER' 
+                                ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' 
+                                : 'bg-slate-800 text-slate-400 border border-slate-700/30'
+                            }`}>
+                              {member.role === 'OWNER' ? 'BOSS (Owner)' : 'PEKERJA (Member)'}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            {new Date(member.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )
         )}
 
       </main>
@@ -3377,6 +3773,150 @@ export default function DashboardPage() {
               >
                 {confirmModal.btnText}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- BILLING / UPGRADE MODAL --- */}
+      {billingModalOpen && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn overflow-y-auto">
+          <div className="bg-[#0b1f22] border border-teal-500/20 rounded-3xl p-8 w-full max-w-4xl shadow-2xl relative my-8">
+            <button
+              onClick={() => setBillingModalOpen(false)}
+              className="absolute top-4 right-4 w-8 h-8 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-full flex items-center justify-center transition-all border border-slate-800"
+            >
+              &times;
+            </button>
+
+            <div className="text-center mb-8">
+              <span className="px-3 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-full text-[10px] font-extrabold uppercase tracking-widest">
+                Radeya Premium
+              </span>
+              <h3 className="text-2xl font-black text-slate-100 mt-3">Pilih Paket Langganan Peternakan Anda</h3>
+              <p className="text-xs text-slate-450 mt-1 max-w-md mx-auto">
+                Buka seluruh potensi otomatisasi Radeya SaaS untuk meningkatkan efisiensi dan laba peternakan Anda harian.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              
+              {/* Card FREE */}
+              <div className="bg-slate-950/40 border border-slate-900 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+                <div>
+                  <h4 className="text-sm font-black text-slate-300">FREE TIER</h4>
+                  <div className="mt-4 flex items-baseline gap-1">
+                    <span className="text-2xl font-black text-slate-200">Rp 0</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">/ Selamanya</span>
+                  </div>
+                  <p className="text-[11px] text-slate-450 mt-3 leading-relaxed">
+                    Sangat cocok untuk peternak pemula skala kecil rumahan.
+                  </p>
+                  <ul className="mt-6 space-y-3.5 text-[11px] text-slate-400 font-bold">
+                    <li className="flex items-center gap-2">
+                      <span className="text-teal-400">✓</span> Catat Siklus Sederhana
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-teal-400">✓</span> Kalender Kerja Harian
+                    </li>
+                    <li className="flex items-center gap-2 text-slate-550 line-through">
+                      <span>✗</span> Skala Besar / Komersil
+                    </li>
+                    <li className="flex items-center gap-2 text-slate-550 line-through">
+                      <span>✗</span> Radeya AI Vet Chat
+                    </li>
+                    <li className="flex items-center gap-2 text-slate-550 line-through">
+                      <span>✗</span> Pearson Square & FCR
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-8">
+                  <button
+                    disabled
+                    className="w-full py-3 bg-slate-900 border border-slate-800 text-slate-500 rounded-xl text-xs font-bold uppercase tracking-wider cursor-not-allowed"
+                  >
+                    {profile?.organization?.plan === 'FREE' ? 'Paket Aktif Saat Ini' : 'Bawaan'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Card PRO */}
+              <div className="bg-[#082a2e]/30 border-2 border-teal-500/30 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden shadow-lg shadow-teal-955/10">
+                <div className="absolute top-0 right-0 bg-teal-500 text-[#070e10] text-[8px] font-black uppercase px-3 py-1 rounded-bl-xl tracking-widest">
+                  Terpopuler
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-teal-400">PRO PLAN</h4>
+                  <div className="mt-4 flex items-baseline gap-1">
+                    <span className="text-2xl font-black text-slate-200">Rp 50.000</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">/ Bulan</span>
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-3 leading-relaxed">
+                    Membuka analisis medis dan pakan cerdas untuk efisiensi penuh.
+                  </p>
+                  <ul className="mt-6 space-y-3.5 text-[11px] text-slate-350 font-bold">
+                    <li className="flex items-center gap-2">
+                      <span className="text-teal-450">✓</span> Semua fitur paket FREE
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-teal-450">✓</span> **Buka Skala Besar / Komersil**
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-teal-450">✓</span> **Radeya AI Vet Chat Tanpa Batas**
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-teal-450">✓</span> **Kalkulator Pearson & Rumus FCR**
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-8">
+                  <button
+                    onClick={() => handleCheckoutMidtrans('PRO')}
+                    disabled={billingLoading}
+                    className="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                  >
+                    {profile?.organization?.plan === 'PRO' ? 'Perpanjang Langganan' : billingLoading ? 'Memproses...' : 'Pilih Paket PRO'}
+                  </button>
+                </div>
+              </div>
+
+              {/* Card ENTERPRISE */}
+              <div className="bg-slate-950/40 border border-slate-900 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+                <div>
+                  <h4 className="text-sm font-black text-emerald-450">ENTERPRISE</h4>
+                  <div className="mt-4 flex items-baseline gap-1">
+                    <span className="text-2xl font-black text-slate-200">Rp 150.000</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase">/ Bulan</span>
+                  </div>
+                  <p className="text-[11px] text-slate-450 mt-3 leading-relaxed">
+                    Sangat pas untuk peternakan modern komersil dengan banyak pekerja.
+                  </p>
+                  <ul className="mt-6 space-y-3.5 text-[11px] text-slate-400 font-bold">
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-450">✓</span> Semua fitur paket PRO
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-450">✓</span> **Kolaborasi Multi-user (Tim)**
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-450">✓</span> **1 Akun Boss + Banyak Pekerja**
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-emerald-450">✓</span> Hak akses input terkendali
+                    </li>
+                  </ul>
+                </div>
+                <div className="mt-8">
+                  <button
+                    onClick={() => handleCheckoutMidtrans('ENTERPRISE')}
+                    disabled={billingLoading}
+                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                  >
+                    {profile?.organization?.plan === 'ENTERPRISE' ? 'Perpanjang Langganan' : billingLoading ? 'Memproses...' : 'Pilih Paket ENTERPRISE'}
+                  </button>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>

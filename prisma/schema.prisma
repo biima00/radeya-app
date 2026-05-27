@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,35 +8,38 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
-  email     String   @unique
+  email     String       @unique
   password  String
-  role      String   @default("MEMBER")
+  role      String       @default("MEMBER")
   orgId     String
   org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }
 
 model Organization {
-  id        String   @id @default(uuid())
-  name      String
-  users     User[]
-  cycles    Cycle[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String    @id @default(uuid())
+  name               String
+  plan               String    @default("FREE")
+  subscriptionActive Boolean   @default(false)
+  subscriptionEnd    DateTime?
+  users              User[]
+  cycles             Cycle[]
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 }
 
 model Cycle {
-  id        String   @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
   animal    String
   scale     Int
   mode      String
-  data      Json     @default("{}")
+  data      Json         @default("{}")
   orgId     String
   org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 }

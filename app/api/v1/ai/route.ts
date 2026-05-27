@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
 
 // Fallback cerdas offline berbasis aturan (medis ternak Indonesia)
 function getOfflineResponse(message: string, animal: string): string {
@@ -94,6 +95,16 @@ Silakan ketik pertanyaan Anda secara spesifik. *(Saat ini sistem beroperasi dala
 
 export async function POST(req: Request) {
   try {
+    // Check Rate Limiting (Max 15 requests per minute)
+    const ip = getClientIp(req);
+    const limitRes = rateLimit(ip, 15, 60 * 1000);
+    if (!limitRes.success) {
+      return NextResponse.json(
+        { error: 'Terlalu banyak permintaan percakapan. Silakan coba lagi dalam satu menit.' },
+        { status: 429 }
+      );
+    }
+
     const orgId = req.headers.get('x-org-id');
     if (!orgId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

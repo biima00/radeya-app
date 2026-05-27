@@ -1,37 +1,51 @@
 'use client';
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiPost } from '@/lib/api';
+
 export default function RegisterPage() {
   const router = useRouter();
   
+  // State untuk menampung input pendaftaran pengguna
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+
+  // State untuk status error & loading
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+
+    // 1. Validasi Frontend Sederhana sebelum dikirim ke server
     if (password.length < 8) {
       setError('Kata sandi harus minimal 8 karakter.');
       return;
     }
+
     if (password !== confirmPassword) {
       setError('Konfirmasi kata sandi tidak cocok.');
       return;
     }
+
     setIsLoading(true);
+
     try {
+      // 2. Panggil API Register
       const data = await apiPost('/api/v1/auth/register', { name, email, password });
       
+      // 3. Jika registrasi sukses, secara otomatis simpan token & login
       if (data.token) {
         localStorage.setItem('radeya_token', data.token);
         if (data.orgId) {
           localStorage.setItem('radeya_org_id', data.orgId);
         }
         
+        // 4. Arahkan pengguna langsung ke onboarding untuk memasukkan nama farm
         router.push('/dashboard/onboarding');
       } else {
         throw new Error('Gagal melakukan pendaftaran otomatis setelah pendaftaran sukses.');
@@ -42,12 +56,16 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-teal-500/20 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+        {/* Glow Effect */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl" />
+
         <div className="relative">
+          {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
               Radeya
@@ -59,15 +77,20 @@ export default function RegisterPage() {
               Daftar Akun Baru
             </h2>
           </div>
+
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Error Message */}
             {error && (
-              <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm rounded-2xl flex items-start gap-3">
+              <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm rounded-2xl flex items-start gap-3 animate-shake">
                 <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <span>{error}</span>
               </div>
             )}
+
+            {/* Name Field */}
             <div className="space-y-1.5">
               <label htmlFor="name" className="text-xs font-semibold text-slate-300">
                 Nama Lengkap
@@ -79,10 +102,12 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Budi Setiawan"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all disabled:opacity-50"
                 disabled={isLoading}
               />
             </div>
+
+            {/* Email Field */}
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-xs font-semibold text-slate-300">
                 Alamat Email
@@ -94,10 +119,12 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="nama@email.com"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all disabled:opacity-50"
                 disabled={isLoading}
               />
             </div>
+
+            {/* Password Field */}
             <div className="space-y-1.5">
               <label htmlFor="password" className="text-xs font-semibold text-slate-300">
                 Kata Sandi (Min. 8 karakter)
@@ -109,10 +136,12 @@ export default function RegisterPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all disabled:opacity-50"
                 disabled={isLoading}
               />
             </div>
+
+            {/* Confirm Password Field */}
             <div className="space-y-1.5">
               <label htmlFor="confirmPassword" className="text-xs font-semibold text-slate-300">
                 Konfirmasi Kata Sandi
@@ -124,14 +153,16 @@ export default function RegisterPage() {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-slate-800/50 border border-slate-700/50 rounded-xl text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all disabled:opacity-50"
                 disabled={isLoading}
               />
             </div>
+
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 mt-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-teal-600/20"
+              className="w-full py-3 px-4 mt-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus:ring-offset-slate-900 disabled:opacity-50 shadow-lg shadow-teal-600/20"
             >
               {isLoading ? (
                 <>
@@ -146,6 +177,8 @@ export default function RegisterPage() {
               )}
             </button>
           </form>
+
+          {/* Login Link */}
           <div className="mt-8 pt-6 border-t border-slate-800/60 text-center">
             <p className="text-sm text-slate-400">
               Sudah memiliki akun?{' '}

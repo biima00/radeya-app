@@ -1,71 +1,47 @@
-type RateLimitEntry = {
-  count: number;
-  resetTime: number;
-};
+import { NextResponse } from 'next/server';
 
-// Map global in-memory untuk menyimpan batas laju request per IP
-const limiters = new Map<string, RateLimitEntry>();
-
-/**
- * Memeriksa laju permintaan dari IP tertentu.
- * @param ip Alamat IP klien
- * @param limit Jumlah maksimal request yang diizinkan dalam rentang waktu tertentu
- * @param windowMs Durasi rentang waktu dalam milidetik
- */
-export function rateLimit(
-  ip: string,
-  limit: number,
-  windowMs: number
-): { success: boolean; limit: number; remaining: number; reset: number } {
-  const now = Date.now();
-  const entry = limiters.get(ip);
-
-  // Jika data IP belum ada atau window waktunya sudah terlewati, buat window baru
-  if (!entry || now > entry.resetTime) {
-    const newEntry = {
-      count: 1,
-      resetTime: now + windowMs,
-    };
-    limiters.set(ip, newEntry);
-    return {
-      success: true,
-      limit,
-      remaining: limit - 1,
-      reset: newEntry.resetTime,
-    };
+export function getClientIp(req: Request): string {
+  const xForwardedFor = req.headers.get('x-forwarded-for');
+  if (xForwardedFor) {
+    return xForwardedFor.split(',')[0].trim();
   }
-
-  // Jika jumlah request melampaui limit, tolak permintaan
-  if (entry.count >= limit) {
-    return {
-      success: false,
-      limit,
-      remaining: 0,
-      reset: entry.resetTime,
-    };
+  const xRealIp = req.headers.get('x-real-ip');
+  if (xRealIp) {
+    return xRealIp.trim();
   }
+  return '127.0.0.1';
+}
 
-  // Tambahkan hitungan request
-  entry.count += 1;
-  return {
-    success: true,
-    limit,
-    remaining: limit - entry.count,
-    reset: entry.resetTime,
+interface RateLimitStore {
+  [key: string]: {
+    count: number;
+    resetTime: number;
   };
 }
 
-/**
- * Mengambil IP asli dari Request headers
- */
-export function getClientIp(req: Request): string {
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  if (forwardedFor) {
-    return forwardedFor.split(',')[0].trim();
+const store: RateLimitStore = {};
+
+export function rateLimit(ip: string, limit: number, windowMs: number) {
+  const now = Date.now();
+  if (!store[ip]) {
+    store[ip] = {
+      count: 1,
+      resetTime: now + windowMs,
+    };
+    return { success: true, count: 1, resetTime: store[ip].resetTime };
   }
-  const realIp = req.headers.get('x-real-ip');
-  if (realIp) {
-    return realIp;
+
+  const record = store[ip];
+  if (now > record.resetTime) {
+    record.count = 1;
+    record.resetTime = now + windowMs;
+    return { success: true, count: 1, resetTime: record.resetTime };
   }
-  return '127.0.0.1';
+
+  record.count += 1;
+  if (record.count > limit) {
+    return { success: false, count: record.count, resetTime: record.resetTime };
+  }
+
+  return { success: true, count: record.count, resetTime: record.resetTime };
 }

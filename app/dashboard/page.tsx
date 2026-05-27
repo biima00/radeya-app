@@ -486,7 +486,7 @@ export default function DashboardPage() {
     try {
       await apiDelete(`/api/v1/cycles/${activeCycle.id}`);
       showToast('🗑️ Siklus berhasil dihapus');
-      fetchCyclesData();
+      fetchDashboardData();
     } catch (err: any) {
       showToast('❌ Gagal menghapus: ' + err.message);
     }

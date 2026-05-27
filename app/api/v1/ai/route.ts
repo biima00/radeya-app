@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { rateLimit, getClientIp } from '../../../../lib/rate-limit';
 
 // Fallback cerdas offline berbasis aturan (medis ternak Indonesia)
 function getOfflineResponse(message: string, animal: string): string {
@@ -15,7 +15,7 @@ Untuk mengoptimalkan biaya dan nutrisi pakan, pastikan kadar protein kasar (CP) 
   }
 
   // Respon spesifik unggas (ayam/bebek)
-  if (['ayam_petelur', 'ayam_pedaging', 'bebek', 'enthok'].includes(animalType)) {
+  if (['ayam_petelur', 'ayam_pedaging', 'bebek_petelur', 'bebek_pedaging', 'enthok_pedaging'].includes(animalType)) {
     if (msg.includes('kapur') || msg.includes('berak putih') || msg.includes('pullorum')) {
       return `🐔 **Radeya AI Vet - Analisis Berak Kapur (Pullorum)**
 Gejala berak kapur ditandai dengan kotoran putih menempel di dubur, lemas, dan sayap menggantung.
@@ -49,7 +49,7 @@ Kematian mendadak dalam jumlah banyak dengan gejala leher berputar (tetelo) atau
   }
 
   // Respon spesifik ruminansia (sapi/kambing)
-  if (['sapi_pedaging', 'sapi_perah', 'kambing', 'kambing_perah'].includes(animalType)) {
+  if (['sapi_pedaging', 'sapi_perah', 'kambing_pedaging', 'kambing_perah'].includes(animalType)) {
     if (msg.includes('kembung') || msg.includes('bloat') || msg.includes('begah')) {
       return `🥩 **Radeya AI Vet - Penanganan Bloat (Kembung)**
 Kembung terjadi akibat akumulasi gas di rumen, biasanya karena mengonsumsi rumput muda yang masih basah (embun pagi) atau leguminosa berlebih.
@@ -79,6 +79,23 @@ Ternak yang ambruk setelah melahirkan (terutama sapi perah produktivitas tinggi)
 1. **Penting:** Ini kondisi darurat! Hubungi dokter hewan terdekat segera untuk penyuntikan kalsium glukonat secara intravena (lewat darah).
 2. Hindari pemaksaan ternak untuk berdiri jika ia terlalu lemah karena berisiko cedera otot/tulang panggul.
 3. Berikan pakan hijau segar dan air hangat yang dicampur garam mineral.`;
+    }
+  }
+
+  // Respon spesifik perikanan (ikan_pembesaran/ikan_pembibitan)
+  if (['ikan_pembesaran', 'ikan_pembibitan'].includes(animalType)) {
+    if (msg.includes('mati') || msg.includes('jamur') || msg.includes('putih') || msg.includes('aeromonas') || msg.includes('insang')) {
+      return `🐟 **Radeya AI Vet - Penanganan Penyakit/Kematian Ikan**
+1. **Kualitas Air:** Cek parameter pH (ideal 6.5-8) dan kadar Amonia. Sebagian besar kematian ikan disebabkan oleh penumpukan amonia/kotoran pakan.
+2. **Karantina:** Segera pisahkan ikan yang lemas, memiliki bercak putih/merah (jamur/bakteri Aeromonas), atau berenang tidak normal.
+3. **Tindakan:** Kurangi pemberian pakan sementara waktu, lakukan pergantian air 30% dari dasar kolam.
+4. **Pengobatan:** Berikan garam krosok (garam ikan) 1-3 kg per meter kubik air kolam, atau campur pakan dengan obat antibiotik ikan (seperti *Oxytetracycline*) sesuai dosis selama 3-5 hari.`;
+    }
+    if (msg.includes('pakan') || msg.includes('makan') || msg.includes('kurang nafsu')) {
+      return `🐟 **Radeya AI Vet - Analisis Nafsu Makan Ikan Menurun**
+1. Periksa suhu air kolam. Suhu dingin di musim hujan menurunkan metabolisme ikan sehingga mereka malas makan.
+2. Cek kandungan oksigen terlarut (DO). Jika ikan sering menggantung di permukaan di pagi hari, berarti kolam kekurangan oksigen. Nyalakan aerator/kincir air.
+3. Puasakan ikan selama 1-2 hari untuk membersihkan sistem pencernaan mereka, kemudian berikan pakan yang dicampur vitamin C/probiotik penambah nafsu makan.`;
     }
   }
 

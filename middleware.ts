@@ -58,6 +58,11 @@ export const config = {
     '/api/v1/onboarding/:path*',
     '/api/v1/ai',
     '/api/v1/ai/:path*',
+    '/api/v1/profile',
+    '/api/v1/profile/:path*',
+    '/api/v1/team',
+    '/api/v1/team/:path*',
+    '/api/v1/billing/checkout',
+    '/api/v1/billing/checkout/:path*',
   ],
 };
-

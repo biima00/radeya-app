@@ -51,6 +51,26 @@ export async function POST(req: Request) {
       );
     }
 
+    // Check cycle count limit based on plan
+    const org = await prisma.organization.findUnique({
+      where: { id: orgId },
+      select: { plan: true }
+    });
+
+    const plan = org?.plan || 'FREE';
+    const limit = plan === 'ENTERPRISE' ? 100 : plan === 'PRO' ? 10 : 3;
+
+    const cycleCount = await prisma.cycle.count({
+      where: { orgId }
+    });
+
+    if (cycleCount >= limit) {
+      return NextResponse.json(
+        { error: `Batas maksimum siklus untuk paket ${plan} (${limit} siklus) telah tercapai.` },
+        { status: 403 }
+      );
+    }
+
     const body = await req.json();
     const parsed = createCycleSchema.safeParse(body);
 

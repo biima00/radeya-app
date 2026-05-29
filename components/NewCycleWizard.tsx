@@ -104,7 +104,7 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
   }, [isDetailedCageInput, cageMaterialCost, cageLaborCost, cageOtherCost]);
 
   // Determine mode logic
-  const getMode = (selectedAnimal: string) => {
+  const getMode = (selectedAnimal: string): 'susu' | 'petelur' | 'penggemukan' | 'broiler' | 'pembibitan_unggas' | 'breeding_ruminansia' => {
     const isPerah = ['sapi_perah', 'kambing_perah'].includes(selectedAnimal);
     const isAyamPetelur = ['ayam_petelur', 'bebek_petelur'].includes(selectedAnimal);
     const isRuminanPedaging = ['sapi_pedaging', 'kambing_pedaging'].includes(selectedAnimal);

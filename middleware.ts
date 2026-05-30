@@ -65,4 +65,3 @@ export const config = {
     '/api/v1/billing/:path*',
   ],
 };
-

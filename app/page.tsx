@@ -33,7 +33,7 @@ export default function LandingPage() {
   // Mini-simulation profit calculation
   const calculateSimLaba = () => {
     if (simKomoditas === 'unggas') {
-      // Ayam pedaging/broiler: skala (ekor) x 1.6kg x harga_jual - modal_awal (ekor x 15000)
+      // Ayam pedaging/broiler: skala (ekor) x 1.6kg x harga_jual - modal_awal (ekor x 18000)
       const modal = simSkala * 18000;
       const panen = simSkala * 1.6 * simHarga;
       return panen - modal;
@@ -148,138 +148,19 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Neon Banner SVG Artwork (pohon, sapi, ayam, kambing, ikan) */}
+        {/* Neon Banner Agriculture & Livestock Image */}
         <div className="lg:col-span-6 flex justify-center relative">
           {/* Glowing backdrops */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl -z-10" />
           <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-emerald-500/5 rounded-full blur-2xl -z-10" />
 
           {/* Glassmorphic Screen Container */}
-          <div className="w-full max-w-[500px] aspect-[4/3] bg-slate-900/40 backdrop-blur-xl border border-teal-500/15 rounded-3xl p-6 shadow-2xl relative flex items-center justify-center overflow-hidden hover:border-teal-500/35 hover:shadow-teal-500/5 transition-all duration-500 group">
-            
-            {/* SVG Illustration - Neon integrated farm */}
-            <svg viewBox="0 0 400 300" className="w-full h-full">
-              {/* Defs for Glow Filter Effects */}
-              <defs>
-                <filter id="neonTeal" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="4" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <filter id="neonEmerald" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="5" result="blur" />
-                  <feMerge>
-                    <feMergeNode in="blur" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
-                <linearGradient id="pondGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#0891b2" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#0f172a" stopOpacity="0.0" />
-                </linearGradient>
-              </defs>
-
-              {/* Grid Background Lines (SaaS feel) */}
-              <g opacity="0.15">
-                <line x1="0" y1="50" x2="400" y2="50" stroke="#0D9488" strokeWidth="1" />
-                <line x1="0" y1="100" x2="400" y2="100" stroke="#0D9488" strokeWidth="1" />
-                <line x1="0" y1="150" x2="400" y2="150" stroke="#0D9488" strokeWidth="1" />
-                <line x1="0" y1="200" x2="400" y2="200" stroke="#0D9488" strokeWidth="1" />
-                <line x1="0" y1="250" x2="400" y2="250" stroke="#0D9488" strokeWidth="1" />
-                <line x1="80" y1="0" x2="80" y2="300" stroke="#0D9488" strokeWidth="1" />
-                <line x1="160" y1="0" x2="160" y2="300" stroke="#0D9488" strokeWidth="1" />
-                <line x1="240" y1="0" x2="240" y2="300" stroke="#0D9488" strokeWidth="1" />
-                <line x1="320" y1="0" x2="320" y2="300" stroke="#0D9488" strokeWidth="1" />
-              </g>
-
-              {/* 1. POHON (Tree in background/center) */}
-              <g stroke="#10b981" strokeWidth="3.5" fill="none" filter="url(#neonEmerald)" opacity="0.8">
-                {/* Trunk */}
-                <path d="M200,240 L200,150" />
-                {/* Branches & Leaves */}
-                <path d="M200,170 C160,150 150,110 190,90 C180,60 220,50 230,80 C260,80 250,130 200,150" fill="#10b981" fillOpacity="0.05" />
-                <path d="M200,190 L180,175" />
-                <path d="M200,165 L220,155" />
-                <path d="M190,120 L160,115" />
-              </g>
-
-              {/* 2. SAPI (Cow on the Left) */}
-              <g stroke="#06b6d4" strokeWidth="3" fill="none" filter="url(#neonTeal)" opacity="0.9">
-                {/* Cow Body */}
-                <rect x="70" y="150" width="70" height="45" rx="8" />
-                {/* Cow Head */}
-                <rect x="125" y="130" width="25" height="30" rx="4" />
-                {/* Cow Horns/Ears */}
-                <path d="M130,130 L125,120" />
-                <path d="M145,130 L150,120" />
-                {/* Legs */}
-                <line x1="80" y1="195" x2="80" y2="225" />
-                <line x1="95" y1="195" x2="95" y2="225" />
-                <line x1="115" y1="195" x2="115" y2="225" />
-                <line x1="130" y1="195" x2="130" y2="225" />
-                {/* Tail */}
-                <path d="M70,160 C60,165 60,185 62,190" />
-                {/* Udder/Susu */}
-                <circle cx="105" cy="200" r="3" />
-              </g>
-
-              {/* 3. KAMBING (Goat on the Right) */}
-              <g stroke="#f59e0b" strokeWidth="2.5" fill="none" filter="url(#neonTeal)" opacity="0.85">
-                {/* Goat Body */}
-                <rect x="250" y="165" width="50" height="30" rx="6" />
-                {/* Head */}
-                <rect x="290" y="150" width="18" height="22" rx="3" />
-                {/* Horns */}
-                <path d="M293,150 Q288,140 285,142" />
-                <path d="M302,150 Q305,140 308,142" />
-                {/* Legs */}
-                <line x1="258" y1="195" x2="258" y2="220" />
-                <line x1="268" y1="195" x2="268" y2="220" />
-                <line x1="282" y1="195" x2="282" y2="220" />
-                <line x1="294" y1="195" x2="294" y2="220" />
-                {/* Tail */}
-                <path d="M250,170 L244,162" />
-              </g>
-
-              {/* 4. AYAM (Chicken pecking near center) */}
-              <g stroke="#ec4899" strokeWidth="2" fill="none" filter="url(#neonTeal)" opacity="0.9">
-                {/* Body */}
-                <path d="M190,195 C175,195 170,210 185,215 C195,215 195,200 190,195 Z" />
-                {/* Head & Comb */}
-                <circle cx="192" cy="188" r="4" />
-                <path d="M192,184 L192,181" stroke="#ef4444" strokeWidth="1.5" />
-                {/* Beak */}
-                <path d="M196,188 L201,189" />
-                {/* Legs */}
-                <line x1="180" y1="215" x2="178" y2="223" />
-                <line x1="186" y1="215" x2="188" y2="223" />
-              </g>
-
-              {/* 5. IKAN (Fish in neon blue pond at bottom) */}
-              {/* Pond Outline & Fill */}
-              <path d="M60,255 C120,245 280,245 340,255 C370,260 370,290 340,295 C280,300 120,300 60,295 C30,290 30,260 60,255 Z" fill="url(#pondGrad)" stroke="#06b6d4" strokeWidth="1" opacity="0.3" />
-              
-              {/* Fish Swimming Left */}
-              <g stroke="#0ea5e9" strokeWidth="2" fill="none" filter="url(#neonTeal)" opacity="0.9">
-                <path d="M140,270 C160,260 170,280 145,280 C135,280 135,270 140,270 Z" />
-                {/* Tail Fin */}
-                <path d="M170,270 L176,264 M170,270 L176,276" />
-                {/* Fish Swimming Right */}
-                <path d="M260,280 C240,270 230,290 255,290 C265,290 265,280 260,280 Z" />
-                {/* Tail Fin */}
-                <path d="M230,280 L224,274 M230,280 L224,286" />
-              </g>
-
-              {/* Floating Bubbles */}
-              <g fill="none" stroke="#22d3ee" strokeWidth="1" opacity="0.7">
-                <circle cx="130" cy="262" r="2" />
-                <circle cx="270" cy="272" r="1.5" />
-                <circle cx="280" cy="265" r="3" />
-              </g>
-            </svg>
-
+          <div className="w-full max-w-[500px] aspect-[4/3] glass-panel rounded-3xl p-2.5 relative flex items-center justify-center overflow-hidden group shadow-2xl shadow-teal-500/10 border border-teal-500/20">
+            <img 
+              src="/images/farm_hero_neon.png" 
+              alt="Radeya Neon Agriculture & Livestock" 
+              className="w-full h-full object-cover rounded-2xl opacity-90 transition-transform duration-700 group-hover:scale-105"
+            />
             {/* Glowing neon bottom bar inside card */}
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-500 via-emerald-500 to-blue-500 opacity-60" />
           </div>
@@ -299,7 +180,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             
             {/* Card Unggas */}
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl hover:border-teal-500/20 transition-all duration-300 group">
+            <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🍗</span>
               <h3 className="text-base font-bold text-slate-200 mb-2">Ternak Unggas</h3>
               <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan Ayam Pedaging (Broiler) & Ayam Petelur (Layer). Otomatisasi FCR, Hen Day %, Indeks Performa (IP), dan pencatatan mortalitas harian.</p>
@@ -307,7 +188,7 @@ export default function LandingPage() {
             </div>
 
             {/* Card Ruminansia */}
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl hover:border-teal-500/20 transition-all duration-300 group">
+            <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🥩</span>
               <h3 className="text-base font-bold text-slate-200 mb-2">Ruminansia</h3>
               <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan Penggemukan Sapi/Kambing & Mode Breeding. Otomatisasi ADG (Average Daily Gain), pencatatan kelahiran anak, dan taksiran nilai aset hidup.</p>
@@ -315,7 +196,7 @@ export default function LandingPage() {
             </div>
 
             {/* Card Perikanan */}
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl hover:border-teal-500/20 transition-all duration-300 group">
+            <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🐟</span>
               <h3 className="text-base font-bold text-slate-200 mb-2">Budidaya Ikan</h3>
               <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan untuk kolam pembesaran ikan (Nila, Lele, Gurame). Pantau FCR pelet pakan, kepadatan kolam, tingkat kelangsungan hidup (SR), serta jadwal tebar.</p>
@@ -323,7 +204,7 @@ export default function LandingPage() {
             </div>
 
             {/* Card Pertanian */}
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl hover:border-teal-500/20 transition-all duration-300 group">
+            <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🌴</span>
               <h3 className="text-base font-bold text-slate-200 mb-2">Tanaman & Kebun</h3>
               <p className="text-xs text-slate-450 leading-relaxed mb-4">Integrasikan perkebunan penunjang pakan hijau. Jadwalkan pemupukan berkala, catat panen jerami/rumput gajah, serta pantau biaya sewa lahan.</p>
@@ -342,7 +223,7 @@ export default function LandingPage() {
           <p className="text-sm text-slate-450">Pilih jenis komoditas, skala populasi, dan harga pasar saat ini untuk menghitung profit kotor secara instan.</p>
         </div>
 
-        <div className="bg-slate-900/40 border border-teal-500/10 p-8 rounded-3xl shadow-2xl relative grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="glass-panel p-8 rounded-3xl relative grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Controls */}
           <div className="space-y-6">
@@ -437,13 +318,12 @@ export default function LandingPage() {
               {Icons.arrowRight()}
             </Link>
           </div>
-
         </div>
       </section>
 
       {/* Pricing Section */}
       <section id="harga" className="py-24 bg-slate-950/20 border-t border-slate-900/60 px-4">
-        <div className="max-w-4xl mx-auto space-y-12">
+        <div className="max-w-6xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
             <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block">INVESTASI PINTAR</span>
@@ -451,52 +331,74 @@ export default function LandingPage() {
             <p className="text-sm text-slate-450">Nikmati pencatatan siklus cloud dengan harga terjangkau untuk menunjang produktivitas.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             
             {/* Free Tier */}
-            <div className="bg-slate-900/20 border border-slate-850 p-8 rounded-3xl space-y-6 hover:border-slate-800 transition-colors">
+            <div className="bg-slate-900/20 border border-slate-850 p-8 rounded-3xl space-y-6 hover:border-slate-800 transition-colors flex flex-col justify-between">
               <div>
-                <span className="text-xs font-extrabold text-teal-450 uppercase block">Radeya Lite</span>
-                <span className="text-3xl font-black text-white block mt-2">Gratis</span>
+                <span className="text-xs font-extrabold text-slate-400 uppercase block">Radeya Lite</span>
+                <span className="text-3xl font-black text-white block mt-2">Rp 0</span>
                 <span className="text-[10px] text-slate-500 mt-1 block">Selamanya untuk peternak pemula</span>
+                <ul className="space-y-3 text-xs font-semibold text-slate-350 mt-6">
+                  <li className="flex items-center gap-2.5">{Icons.check()} 3 Siklus Ternak Aktif</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Kalender Kerja Harian</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Catat Harian Sederhana</li>
+                  <li className="flex items-center gap-2.5 text-slate-600 line-through">✗ Skala Besar / Komersil</li>
+                  <li className="flex items-center gap-2.5 text-slate-600 line-through">✗ Radeya AI Vet Chat</li>
+                </ul>
               </div>
-              <ul className="space-y-3 text-xs font-semibold text-slate-350">
-                <li className="flex items-center gap-2.5">{Icons.check()} 1 Siklus Ternak Aktif</li>
-                <li className="flex items-center gap-2.5">{Icons.check()} Kalkulator HPP & FCR</li>
-                <li className="flex items-center gap-2.5">{Icons.check()} Ekspor CSV Laporan</li>
-                <li className="flex items-center gap-2.5 opacity-40">{Icons.check()} Kalender Kerja & Jadwal Vaksin</li>
-                <li className="flex items-center gap-2.5 opacity-40">{Icons.check()} Konsultasi Radeya AI Vet</li>
-              </ul>
               <Link
                 href={isLoggedIn ? "/dashboard" : "/register"}
-                className="w-full py-3 bg-slate-950/60 hover:bg-slate-900 text-slate-200 text-xs font-bold rounded-xl border border-slate-800 transition-all text-center block"
+                className="w-full py-3 mt-6 bg-slate-950/60 hover:bg-slate-900 text-slate-200 text-xs font-bold rounded-xl border border-slate-800 transition-all text-center block"
               >
                 Mulai Gratis
               </Link>
             </div>
 
             {/* Pro Tier */}
-            <div className="bg-slate-900/30 border border-teal-500/20 p-8 rounded-3xl space-y-6 relative overflow-hidden shadow-xl shadow-teal-500/2">
+            <div className="bg-slate-900/30 border border-teal-500/20 p-8 rounded-3xl space-y-6 relative overflow-hidden shadow-xl shadow-teal-500/2 flex flex-col justify-between">
               <div className="absolute top-3 right-3 text-[9px] font-black uppercase tracking-wider text-teal-450 bg-teal-950 px-2.5 py-1 rounded-md border border-teal-500/20">
-                Rekomendasi
+                Terpopuler
               </div>
               <div>
-                <span className="text-xs font-extrabold text-teal-400 uppercase block">Radeya Pro</span>
-                <span className="text-3xl font-black text-white block mt-2">Rp 49.000 <span className="text-xs font-bold text-slate-500">/ bulan</span></span>
+                <span className="text-xs font-extrabold text-teal-450 uppercase block">Radeya Pro</span>
+                <span className="text-3xl font-black text-white block mt-2">Rp 50.000 <span className="text-xs font-bold text-slate-500">/ bulan</span></span>
                 <span className="text-[10px] text-slate-500 mt-1 block">Untuk peternak komersil mandiri</span>
+                <ul className="space-y-3 text-xs font-semibold text-slate-350 mt-6">
+                  <li className="flex items-center gap-2.5">{Icons.check()} 10 Siklus Ternak Aktif</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Buka Skala Besar / Komersil</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Radeya AI Vet Chat</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Kalkulator Pearson & FCR</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Ekspor CSV & Laporan</li>
+                </ul>
               </div>
-              <ul className="space-y-3 text-xs font-semibold text-slate-350">
-                <li className="flex items-center gap-2.5">{Icons.check()} **Unlimited** Siklus Ternak</li>
-                <li className="flex items-center gap-2.5">{Icons.check()} Kalender Kerja & Jadwal Vaksin</li>
-                <li className="flex items-center gap-2.5">{Icons.check()} **Konsultasi Radeya AI Vet**</li>
-                <li className="flex items-center gap-2.5">{Icons.check()} Ekspor CSV & Laporan Cetak</li>
-                <li className="flex items-center gap-2.5">{Icons.check()} Prioritas Dukungan Teknis</li>
-              </ul>
               <Link
                 href={isLoggedIn ? "/dashboard" : "/register"}
-                className="w-full py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-bold rounded-xl transition-all text-center block shadow-lg shadow-teal-950/30"
+                className="w-full py-3 mt-6 bg-gradient-to-r from-teal-650 to-emerald-650 hover:from-teal-600 hover:to-emerald-600 text-white text-xs font-bold rounded-xl transition-all text-center block shadow-lg shadow-teal-950/30"
               >
-                Mulai Upgrade Pro
+                Upgrade Pro
+              </Link>
+            </div>
+
+            {/* Enterprise Tier */}
+            <div className="bg-slate-900/20 border border-slate-850 p-8 rounded-3xl space-y-6 hover:border-slate-800 transition-colors flex flex-col justify-between">
+              <div>
+                <span className="text-xs font-extrabold text-emerald-450 uppercase block">Radeya Enterprise</span>
+                <span className="text-3xl font-black text-white block mt-2">Rp 150.000 <span className="text-xs font-bold text-slate-500">/ bulan</span></span>
+                <span className="text-[10px] text-slate-500 mt-1 block">Untuk peternak modern multi-user</span>
+                <ul className="space-y-3 text-xs font-semibold text-slate-350 mt-6">
+                  <li className="flex items-center gap-2.5">{Icons.check()} 100 Siklus Ternak Aktif</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Semua Fitur Paket Pro</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Kolaborasi Multi-user (Tim)</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} 1 Akun Boss + Banyak Pekerja</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} Hak Akses Input Terkendali</li>
+                </ul>
+              </div>
+              <Link
+                href={isLoggedIn ? "/dashboard" : "/register"}
+                className="w-full py-3 mt-6 bg-slate-950/60 hover:bg-slate-900 text-slate-250 text-xs font-bold rounded-xl border border-slate-800 transition-all text-center block"
+              >
+                Pilih Enterprise
               </Link>
             </div>
 

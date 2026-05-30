@@ -44,6 +44,19 @@ const ANIMAL_LABELS: Record<string, string> = {
   ikan_pembesaran: '🐟 Ikan Pembesaran',
 };
 
+const getCategoryName = (selectedAnimal: string) => {
+  if (['ayam_pedaging', 'ayam_petelur', 'bebek_pedaging', 'bebek_petelur', 'enthok_pedaging'].includes(selectedAnimal)) {
+    return 'Unggas (Poultry)';
+  }
+  if (['sapi_pedaging', 'sapi_perah', 'kambing_pedaging', 'kambing_perah'].includes(selectedAnimal)) {
+    return 'Ruminansia (Luminant)';
+  }
+  if (['ikan_pembesaran'].includes(selectedAnimal)) {
+    return 'Perikanan & Lainnya';
+  }
+  return 'Lainnya';
+};
+
 interface NewCycleWizardProps {
   profile: any;
   onClose?: () => void;
@@ -52,11 +65,15 @@ interface NewCycleWizardProps {
 }
 
 export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = false }: NewCycleWizardProps) {
+  console.log('NewCycleWizard render: onSubmit is', onSubmit, typeof onSubmit);
   const [step, setStep] = useState(1);
   const [animal, setAnimal] = useState('');
   const [name, setName] = useState('');
   const [scale, setScale] = useState('kecil');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+  const [jamPakanPagi, setJamPakanPagi] = useState('07:00');
+  const [jamPakanSiang, setJamPakanSiang] = useState('12:00');
+  const [jamPakanSore, setJamPakanSore] = useState('16:00');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -68,6 +85,23 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
   const [capitalHargaKg, setCapitalHargaKg] = useState('55000'); // penggemukan
   const [capitalBetina, setCapitalBetina] = useState('20'); // breeding
   const [capitalJantan, setCapitalJantan] = useState('2'); // breeding
+
+  // New Cage Cost Breakdown & Depreciation states
+  const [isDetailedCageInput, setIsDetailedCageInput] = useState(false);
+  const [cageMaterialCost, setCageMaterialCost] = useState('0');
+  const [cageLaborCost, setCageLaborCost] = useState('0');
+  const [cageOtherCost, setCageOtherCost] = useState('0');
+  const [cageUsefulLifeYears, setCageUsefulLifeYears] = useState('5');
+
+  // Sum up cage construction cost breakdown
+  useEffect(() => {
+    if (isDetailedCageInput) {
+      const mat = parseFloat(cageMaterialCost) || 0;
+      const lab = parseFloat(cageLaborCost) || 0;
+      const oth = parseFloat(cageOtherCost) || 0;
+      setCapitalKandang((mat + lab + oth).toString());
+    }
+  }, [isDetailedCageInput, cageMaterialCost, cageLaborCost, cageOtherCost]);
 
   // Determine mode logic
   const getMode = (selectedAnimal: string) => {
@@ -165,6 +199,10 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
         setError('Skala Besar / Komersil hanya tersedia untuk paket Radeya Pro.');
         return;
       }
+      if (!jamPakanPagi || !jamPakanSiang || !jamPakanSore) {
+        setError('Jadwal waktu pemberian pakan harian wajib diisi.');
+        return;
+      }
     }
     if (step === 3) {
       const capTotal = calculateInitialCapital();
@@ -196,7 +234,10 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
       const males = parseFloat(capitalJantan) || 0;
 
       let modalData: Record<string, any> = {
-        tgl_mulai: startDate
+        tgl_mulai: startDate,
+        jam_pakan_pagi: jamPakanPagi,
+        jam_pakan_siang: jamPakanSiang,
+        jam_pakan_sore: jamPakanSore
       };
 
       if (mode === 'broiler') {
@@ -249,6 +290,18 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
           harga_ekor: price.toString()
         };
       }
+
+      // Add cage breakdown and depreciation details to modalData
+      modalData = {
+        ...modalData,
+        biaya_kandang: cage.toString(),
+        kandang_material: cageMaterialCost,
+        kandang_pekerja: cageLaborCost,
+        kandang_lain: cageOtherCost,
+        kandang_total: cage.toString(),
+        kandang_manfaat_tahun: cageUsefulLifeYears,
+        kandang_detail_aktif: isDetailedCageInput.toString()
+      };
 
       await onSubmit(name, animal, scale, modalData);
     } catch (err: any) {
@@ -392,6 +445,42 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                   className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-sm text-slate-200 font-semibold transition-colors font-mono"
                 />
               </div>
+
+              <div className="space-y-4 pt-4 border-t border-slate-900/60">
+                <label className="text-xs font-black text-teal-400 uppercase tracking-wider block">⏰ Jadwal Pemberian Pakan (Wajib)</label>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <span className="text-[9px] font-bold text-slate-550 block">🌅 Pagi</span>
+                    <input 
+                      type="time" 
+                      value={jamPakanPagi} 
+                      onChange={(e) => setJamPakanPagi(e.target.value)}
+                      required
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-250 font-semibold font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <span className="text-[9px] font-bold text-slate-550 block">☀️ Siang</span>
+                    <input 
+                      type="time" 
+                      value={jamPakanSiang} 
+                      onChange={(e) => setJamPakanSiang(e.target.value)}
+                      required
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-250 font-semibold font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <span className="text-[9px] font-bold text-slate-550 block">🌇 Sore</span>
+                    <input 
+                      type="time" 
+                      value={jamPakanSore} 
+                      onChange={(e) => setJamPakanSore(e.target.value)}
+                      required
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-250 font-semibold font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="space-y-5">
@@ -486,15 +575,6 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                       className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
                     />
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Persiapan Kandang / Kolam (Rp)</label>
-                    <input 
-                      type="number" 
-                      value={capitalKandang} 
-                      onChange={(e) => setCapitalKandang(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
-                    />
-                  </div>
                 </>
               )}
 
@@ -519,15 +599,6 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                       className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
                     />
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Investasi Pembuatan/Sewa Baterai Kandang (Rp)</label>
-                    <input 
-                      type="number" 
-                      value={capitalKandang} 
-                      onChange={(e) => setCapitalKandang(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
-                    />
-                  </div>
                 </>
               )}
 
@@ -549,15 +620,6 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                       type="number" 
                       value={capitalHargaDoc} 
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Sewa / Renovasi Kandang Perah (Rp)</label>
-                    <input 
-                      type="number" 
-                      value={capitalKandang} 
-                      onChange={(e) => setCapitalKandang(e.target.value)}
                       className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
                     />
                   </div>
@@ -596,15 +658,6 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                       />
                     </div>
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Kandang & Infrastruktur Awal (Rp)</label>
-                    <input 
-                      type="number" 
-                      value={capitalKandang} 
-                      onChange={(e) => setCapitalKandang(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
-                    />
-                  </div>
                 </>
               )}
 
@@ -642,6 +695,88 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                   </div>
                 </>
               )}
+
+              {/* Unified Cage Construction Setup Section */}
+              <div className="mt-6 border-t border-slate-800 pt-6 space-y-4">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">🏢 Investasi Kandang & Aset (CapEx)</span>
+                
+                <div className="flex items-center gap-2 pb-2">
+                  <input
+                    type="checkbox"
+                    id="isDetailedCageInput"
+                    checked={isDetailedCageInput}
+                    onChange={(e) => setIsDetailedCageInput(e.target.checked)}
+                    className="w-4 h-4 rounded border-slate-800 text-teal-600 focus:ring-teal-500 bg-slate-950"
+                  />
+                  <label htmlFor="isDetailedCageInput" className="text-xs font-bold text-slate-300 cursor-pointer">
+                    Input Rincian Biaya Pembangunan Kandang Baru
+                  </label>
+                </div>
+
+                {isDetailedCageInput ? (
+                  <div className="space-y-3.5 pl-2 border-l-2 border-teal-500/20 animate-fadeIn">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">1. Biaya Bahan & Material (Baja, Kayu, Semen, dll)</label>
+                      <input
+                        type="number"
+                        value={cageMaterialCost}
+                        onChange={(e) => setCageMaterialCost(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2 text-xs text-slate-200 font-semibold"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">2. Biaya Tenaga Kerja (Labor / Upah Tukang)</label>
+                      <input
+                        type="number"
+                        value={cageLaborCost}
+                        onChange={(e) => setCageLaborCost(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2 text-xs text-slate-200 font-semibold"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">3. Biaya Lain-lain Pembangunan</label>
+                      <input
+                        type="number"
+                        value={cageOtherCost}
+                        onChange={(e) => setCageOtherCost(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2 text-xs text-slate-200 font-semibold"
+                      />
+                    </div>
+                    <div className="p-3 bg-teal-500/5 rounded-xl border border-teal-500/10 text-[10px] text-teal-400 font-bold flex justify-between font-mono">
+                      <span>Total Biaya Konstruksi:</span>
+                      <span>{formatRp(parseFloat(capitalKandang) || 0)}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5 animate-fadeIn">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Kandang / Infrastruktur Awal (Rp)</label>
+                    <input
+                      type="number"
+                      value={capitalKandang}
+                      onChange={(e) => setCapitalKandang(e.target.value)}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                    />
+                  </div>
+                )}
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Estimasi Masa Manfaat Kandang (Tahun)</label>
+                  <select
+                    value={cageUsefulLifeYears}
+                    onChange={(e) => setCageUsefulLifeYears(e.target.value)}
+                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-250 font-semibold font-mono cursor-pointer"
+                  >
+                    {[1, 2, 3, 4, 5, 8, 10, 15, 20].map((yr) => (
+                      <option key={yr} value={yr} className="bg-slate-900 text-slate-100">
+                        {yr} Tahun ({yr * 12} Bulan) {yr === 4 ? ' - Standar Pajak Semi-Permanen' : yr === 5 ? ' - Rekomendasi' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="text-[9px] text-slate-500 block leading-relaxed">
+                    *Masa manfaat ini akan digunakan untuk menghitung penyusutan kandang per hari/siklus demi keakuratan EBITDA & Laba Bersih.
+                  </span>
+                </div>
+              </div>
             </div>
 
             {/* Live Estimation Panel */}
@@ -708,6 +843,10 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                   <span className="font-extrabold">{ANIMAL_LABELS[animal] || animal}</span>
                 </div>
                 <div className="flex justify-between py-2 border-b border-slate-900">
+                  <span className="text-slate-400">🏷️ Kategori:</span>
+                  <span className="font-extrabold text-teal-400">{getCategoryName(animal)}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-900">
                   <span className="text-slate-400">📋 Nama Siklus:</span>
                   <span className="font-extrabold">{name}</span>
                 </div>
@@ -718,6 +857,10 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                 <div className="flex justify-between py-2 border-b border-slate-900">
                   <span className="text-slate-400">📅 Tanggal Mulai:</span>
                   <span className="font-extrabold font-mono">{startDate}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-slate-900">
+                  <span className="text-slate-400">⏰ Jadwal Pakan:</span>
+                  <span className="font-extrabold font-mono text-slate-350">{jamPakanPagi} | {jamPakanSiang} | {jamPakanSore}</span>
                 </div>
                 <div className="flex justify-between py-2">
                   <span className="text-slate-400">💸 Budget Modal Awal:</span>

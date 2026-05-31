@@ -10,9 +10,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use Filament\Models\Contracts\HasTenants;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+
 #[Fillable(['name', 'email', 'password', 'role', 'org_id'])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements HasTenants
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -33,5 +38,15 @@ class User extends Authenticatable
     public function org(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Organization::class, 'org_id');
+    }
+
+    public function getTenants(Panel $panel): Collection
+    {
+        return collect([$this->org])->filter();
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->org_id === $tenant->id;
     }
 }

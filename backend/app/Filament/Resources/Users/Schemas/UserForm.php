@@ -23,7 +23,8 @@ class UserForm
                 TextInput::make('password')
                     ->password()
                     ->required(fn (string $context): bool => $context === 'create')
-                    ->dehydrated(fn ($state) => filled($state)),
+                    ->dehydrated(fn ($state) => filled($state))
+                    ->rule(\Illuminate\Validation\Rules\Password::min(8)->letters()->numbers()),
                 Select::make('role')
                     ->options([
                         'MEMBER' => 'Member',

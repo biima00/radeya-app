@@ -31,5 +31,19 @@ class DatabaseSeeder extends Seeder
             'role' => 'ADMIN',
             'org_id' => $org->id,
         ]);
+
+        // 3. Buat Organisasi, User, dan Cycles Tambahan via Factory
+        \App\Models\Organization::factory(10)->create()->each(function ($organization) {
+            // Buat 5 User untuk setiap organisasi
+            User::factory(5)->create([
+                'org_id' => $organization->id,
+                'role' => 'MEMBER',
+            ]);
+
+            // Buat 20 Cycle untuk setiap organisasi
+            \App\Models\Cycle::factory(20)->create([
+                'org_id' => $organization->id,
+            ]);
+        });
     }
 }

@@ -32,14 +32,46 @@ model Organization {
 }
 
 model Cycle {
-  id        String       @id @default(uuid())
+  id        String           @id @default(uuid())
   name      String
   animal    String
   scale     Int
   mode      String
-  data      Json         @default("{}")
+  data      Json             @default("{}")
   orgId     String
-  org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  org       Organization     @relation(fields: [orgId], references: [id], onDelete: Cascade)
+  animals   AnimalIdentity[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model AnimalIdentity {
+  id         String            @id @default(uuid())
+  cycleId    String
+  cycle      Cycle             @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  earTag     String
+  rfidTag    String?           @unique
+  gender     String            // "MALE" | "FEMALE"
+  birthDate  DateTime?
+  breed      String?
+  fatherTag  String?
+  motherTag  String?
+  status     String            @default("ACTIVE") // "ACTIVE" | "INACTIVE" etc.
+  treatments AnimalTreatment[]
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+model AnimalTreatment {
+  id             String         @id @default(uuid())
+  animalId       String
+  animal         AnimalIdentity @relation(fields: [animalId], references: [id], onDelete: Cascade)
+  diagnose       String
+  medicineName   String
+  dosage         String
+  withdrawalDays Int            @default(0)
+  notes          String?
+  treatmentDate  DateTime       @default(now())
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }

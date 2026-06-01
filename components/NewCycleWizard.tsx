@@ -882,32 +882,90 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
               {/* Estimate Calculations */}
               {(() => {
                 const qty = parseFloat(capitalDoc) || 0;
+                const price = parseFloat(capitalHargaDoc) || 0;
+                const cage = parseFloat(capitalKandang) || 0;
+                const weight = parseFloat(capitalWeight) || 0;
+                const priceKg = parseFloat(capitalHargaKg) || 0;
+                const usefulLifeYears = parseFloat(cageUsefulLifeYears) || 5;
+
                 let modal = initialCapitalTotal;
                 let projectedRevenue = 0;
                 let projectedProfit = 0;
                 let detailsText = '';
 
                 if (mode === 'broiler') {
-                  const weightTotal = qty * 1.6; // 1.6kg average target
-                  projectedRevenue = weightTotal * 22000; // Rp 22.000 / kg standard
-                  projectedProfit = projectedRevenue - modal;
-                  detailsText = `Panen ayam broiler diestimasi selesai pada hari ke-33 dengan rata-rata bobot 1.6kg. Total bobot: ${weightTotal.toLocaleString()} kg.`;
+                  const targetWeight = 1.6; // kg per head
+                  const fcr = 1.5;
+                  const feedRequired = targetWeight * fcr; // kg per head
+                  const feedPriceKg = 10000; // Rp/kg
+                  
+                  const totalDocCost = qty * price;
+                  const totalFeedCost = qty * feedRequired * feedPriceKg;
+                  const totalOpex = qty * 2000; // vaccine, electricity, etc.
+                  const cageDepreciation = (cage / (usefulLifeYears * 365)) * 33; // 33 days cycle
+                  const totalCost = totalDocCost + totalFeedCost + totalOpex + cageDepreciation;
+                  
+                  const weightTotal = qty * targetWeight;
+                  projectedRevenue = weightTotal * 23000; // Rp 23.000 / kg standard
+                  projectedProfit = projectedRevenue - totalCost;
+                  
+                  detailsText = `Panen ayam broiler diestimasi selesai pada hari ke-33 dengan rata-rata bobot ${targetWeight} kg (FCR: ${fcr.toFixed(2)}). Proyeksi total bobot panen: ${weightTotal.toLocaleString('id-ID')} kg, dengan taksiran biaya pakan & operasional harian sebesar ${formatRp(totalFeedCost + totalOpex)}.`;
                 } else if (mode === 'petelur') {
-                  // hen day 80% for 30 days
-                  const eggs = qty * 0.8 * 30;
-                  const kg = eggs / 16; // 16 eggs/kg
-                  projectedRevenue = kg * 24000; // Rp 24.000 / kg standard
-                  projectedProfit = projectedRevenue - modal;
-                  detailsText = `Produksi telur per-bulan diestimasi mencapai ${eggs.toFixed(0)} butir (~${kg.toFixed(1)} kg) dengan asumsi produktivitas Hen Day rata-rata 80%.`;
+                  // monthly projection (30 days)
+                  const hdp = 0.82; // Hen Day Production 82%
+                  const dailyFeedPerHead = 0.115; // kg
+                  const feedPriceKg = 8500;
+                  
+                  const pulletDepreciationMonth = (qty * price) / 12; // Deprecate pullets over 12 months
+                  const monthlyFeedCost = qty * dailyFeedPerHead * 30 * feedPriceKg;
+                  const monthlyOpex = qty * 1500;
+                  const monthlyCageDepreciation = cage / (usefulLifeYears * 12);
+                  const totalMonthlyCost = pulletDepreciationMonth + monthlyFeedCost + monthlyOpex + monthlyCageDepreciation;
+                  
+                  const eggsTotal = qty * hdp * 30;
+                  const kgTotal = eggsTotal / 16; // 16 eggs per kg
+                  projectedRevenue = kgTotal * 26000; // Rp 26.000 / kg standard
+                  projectedProfit = projectedRevenue - totalMonthlyCost;
+                  
+                  detailsText = `Produksi telur bulanan (30 hari) diestimasi mencapai ${eggsTotal.toFixed(0)} butir (~${kgTotal.toFixed(1)} kg) dengan rata-rata HDP ${(hdp * 100).toFixed(0)}%. Total beban operasional bulanan (pakan & penyusutan aset) ditaksir sebesar ${formatRp(totalMonthlyCost)}.`;
+                } else if (mode === 'susu') {
+                  // monthly projection (30 days)
+                  const isSapi = animal.startsWith('sapi');
+                  const litersPerDay = isSapi ? 15 : 2;
+                  const pricePerLiter = isSapi ? 8500 : 15000;
+                  const feedCostPerMonth = isSapi ? 900000 : 200000;
+                  
+                  const milkTotalMonth = qty * litersPerDay * 30;
+                  projectedRevenue = milkTotalMonth * pricePerLiter;
+                  
+                  const monthlyFeedCost = qty * feedCostPerMonth;
+                  const monthlyCageDepreciation = cage / (usefulLifeYears * 12);
+                  const monthlyAnimalDepreciation = (qty * price) / (5 * 12); // Milking animal useful life: 5 years
+                  const totalMonthlyCost = monthlyFeedCost + monthlyCageDepreciation + monthlyAnimalDepreciation;
+                  projectedProfit = projectedRevenue - totalMonthlyCost;
+                  
+                  detailsText = `Produksi susu bulanan (30 hari) diestimasi mencapai ${milkTotalMonth.toLocaleString('id-ID')} Liter dengan produktivitas rata-rata ${litersPerDay} L/hari/ekor. Total beban bulanan (pakan & penyusutan aset) ditaksir sebesar ${formatRp(totalMonthlyCost)}.`;
                 } else if (mode === 'penggemukan') {
-                  // adg 1.1kg for 90 days
-                  const gain = 1.1 * 90;
-                  const endWeight = (parseFloat(capitalWeight) || 300) + gain;
-                  projectedRevenue = qty * endWeight * 55000;
-                  projectedProfit = projectedRevenue - modal;
-                  detailsText = `Sapi penggemukan diestimasikan siap panen setelah 90 hari dengan pertambahan bobot rata-rata 1.1 kg/hari. Bobot akhir: ${endWeight.toFixed(0)} kg.`;
+                  // 90 days fattening cycle
+                  const isSapi = animal.startsWith('sapi');
+                  const adg = isSapi ? 1.1 : 0.15; // Average Daily Gain in kg
+                  const feedCostPerDay = isSapi ? 25000 : 4000;
+                  const sellingPriceKg = isSapi ? 58000 : 65000;
+                  
+                  const totalInitialAnimalCost = qty * weight * priceKg;
+                  const totalFeedCost = qty * feedCostPerDay * 90;
+                  const cageDepreciation = (cage / (usefulLifeYears * 365)) * 90;
+                  const totalCost = totalInitialAnimalCost + totalFeedCost + cageDepreciation;
+                  
+                  const weightGain = adg * 90;
+                  const endWeight = weight + weightGain;
+                  const weightTotal = qty * endWeight;
+                  projectedRevenue = weightTotal * sellingPriceKg;
+                  projectedProfit = projectedRevenue - totalCost;
+                  
+                  detailsText = `Siklus penggemukan selesai setelah 90 hari dengan target pertambahan bobot harian (ADG) ${(adg * 1000).toFixed(0)} gram. Rata-rata bobot akhir per ekor: ${endWeight.toFixed(0)} kg. Taksiran biaya pakan penggemukan: ${formatRp(totalFeedCost)}.`;
                 } else {
-                  // fallback
+                  // fallback for breeding, pembibitan, or other modes
                   projectedRevenue = modal * 1.35;
                   projectedProfit = projectedRevenue - modal;
                   detailsText = 'Perhitungan keuntungan kotor diestimasi sebesar 35% di atas nilai modal awal Anda pada akhir siklus laktasi/panen.';
@@ -922,7 +980,7 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                       </span>
                     </div>
                     <p className="text-[10px] leading-relaxed text-slate-400">{detailsText}</p>
-                    <div className="text-[9px] text-slate-500 leading-normal italic">
+                    <div className="text-[9px] text-slate-550 leading-normal italic">
                       *Catatan: Hasil aktual dipengaruhi oleh rasio konversi pakan harian (FCR), tingkat kelangsungan hidup ternak (SR), dan fluktuasi harga pasar lokal.
                     </div>
                   </div>

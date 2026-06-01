@@ -177,13 +177,13 @@ export default function LandingPage() {
             <p className="text-sm text-slate-450 max-w-xl mx-auto">Tersedia lembar kerja dan kalkulator performa spesifik yang disesuaikan dengan biologis dan proses bisnis tiap komoditas.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             
             {/* Card Unggas */}
             <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🍗</span>
               <h3 className="text-base font-bold text-slate-200 mb-2">Ternak Unggas</h3>
-              <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan Ayam Pedaging (Broiler) & Ayam Petelur (Layer). Otomatisasi FCR, Hen Day %, Indeks Performa (IP), dan pencatatan mortalitas harian.</p>
+              <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan Ayam Pedaging (Broiler), Ayam Petelur (Layer), & Bebek. Otomatisasi FCR, Hen Day %, Indeks Performa (IP), dan pencatatan mortalitas harian.</p>
               <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">Broiler & Layer &middot; Bebek</div>
             </div>
 
@@ -201,14 +201,6 @@ export default function LandingPage() {
               <h3 className="text-base font-bold text-slate-200 mb-2">Budidaya Ikan</h3>
               <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan untuk kolam pembesaran ikan (Nila, Lele, Gurame). Pantau FCR pelet pakan, kepadatan kolam, tingkat kelangsungan hidup (SR), serta jadwal tebar.</p>
               <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">Nila & Lele &middot; Gurame</div>
-            </div>
-
-            {/* Card Pertanian */}
-            <div className="glass-panel p-6 rounded-3xl group">
-              <span className="text-4xl block mb-4">🌴</span>
-              <h3 className="text-base font-bold text-slate-200 mb-2">Tanaman & Kebun</h3>
-              <p className="text-xs text-slate-450 leading-relaxed mb-4">Integrasikan perkebunan penunjang pakan hijau. Jadwalkan pemupukan berkala, catat panen jerami/rumput gajah, serta pantau biaya sewa lahan.</p>
-              <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">Kebun Hijauan &middot; Pertanian</div>
             </div>
 
           </div>

@@ -17,6 +17,70 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Callback setelah Google Auth berhasil
+  const handleGoogleLoginCallback = async (response: any) => {
+    setError('');
+    setIsLoading(true);
+    try {
+      const data = await apiPost('/api/v1/auth/google', { credential: response.credential });
+      if (data.token) {
+        localStorage.setItem('radeya_token', data.token);
+        if (data.orgId) {
+          localStorage.setItem('radeya_org_id', data.orgId);
+        }
+        if (data.needsOnboarding) {
+          router.push('/dashboard/onboarding');
+        } else {
+          router.push('/dashboard');
+        }
+      } else {
+        throw new Error('Token tidak diterima dari server');
+      }
+    } catch (err: any) {
+      setError(err.message || 'Gagal registrasi menggunakan akun Google.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Muat script Google Identity Services (GIS) secara dinamis
+  React.useEffect(() => {
+    const initializeGoogle = () => {
+      const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+      if (!clientId) return;
+
+      // @ts-ignore
+      if (window.google?.accounts?.id) {
+        // @ts-ignore
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: handleGoogleLoginCallback,
+        });
+
+        const btnContainer = document.getElementById('google-signup-btn');
+        if (btnContainer) {
+          // @ts-ignore
+          window.google.accounts.id.renderButton(
+            btnContainer,
+            { theme: 'outline', size: 'large', width: '384' }
+          );
+        }
+      }
+    };
+
+    // @ts-ignore
+    if (window.google?.accounts?.id) {
+      initializeGoogle();
+    } else {
+      const script = document.createElement('script');
+      script.src = 'https://accounts.google.com/gsi/client';
+      script.async = true;
+      script.defer = true;
+      script.onload = initializeGoogle;
+      document.body.appendChild(script);
+    }
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -178,8 +242,23 @@ export default function RegisterPage() {
             </button>
           </form>
 
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-800/80"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-slate-900/60 px-3 text-slate-400 font-bold">Atau daftar dengan</span>
+            </div>
+          </div>
+
+          {/* Google Sign In Button */}
+          <div className="flex justify-center min-h-[46px] w-full">
+            <div id="google-signup-btn" className="w-full"></div>
+          </div>
+
           {/* Login Link */}
-          <div className="mt-8 pt-6 border-t border-slate-800/60 text-center">
+          <div className="mt-6 pt-6 border-t border-slate-800/60 text-center">
             <p className="text-sm text-slate-400">
               Sudah memiliki akun?{' '}
               <a href="/login" className="text-teal-400 font-semibold hover:text-teal-300 transition-colors">

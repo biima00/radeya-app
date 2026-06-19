@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
     const amount = plan === 'PRO' ? 50000 : 150000;
     const timestamp = Date.now();
-    const orderId = `radeya-${plan}-${orgId}-${timestamp}`;
+    const orderId = `radeya_${plan}_${orgId}_${timestamp}`;
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) {
       return NextResponse.json({ error: 'User tidak ditemukan' }, { status: 404 });

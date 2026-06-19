@@ -11,13 +11,8 @@ export default function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
 
-  // Cek apakah token ada, jika tidak, tendang ke halaman login
-  useEffect(() => {
-    const token = localStorage.getItem('radeya_token');
-    if (!token) {
-      router.push('/login');
-    }
-  }, [router]);
+  // Auth check dilakukan via httpOnly cookie — jika 401 terjadi saat API call,
+  // lib/api.ts otomatis redirect ke /login.
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

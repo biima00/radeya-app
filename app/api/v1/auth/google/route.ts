@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
+import { setAuthCookie } from '@/lib/auth-cookie';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.NEXTAUTH_SECRET || 'default-super-secret-key-change-in-production'
-);
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error('FATAL: NEXTAUTH_SECRET environment variable is not set.');
+}
+const JWT_SECRET = new TextEncoder().encode(process.env.NEXTAUTH_SECRET);
 
 export const dynamic = 'force-dynamic';
 
@@ -119,10 +121,9 @@ export async function POST(req: Request) {
       .setExpirationTime('7d')
       .sign(JWT_SECRET);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       message: 'Autentikasi Google berhasil',
-      token,
       orgId: user.orgId,
       needsOnboarding,
       user: {
@@ -130,6 +131,7 @@ export async function POST(req: Request) {
         email: user.email,
       },
     });
+    return setAuthCookie(response, token);
 
   } catch (error: any) {
     console.error('Error during Google authentication:', error);

@@ -1,5 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { z } from 'zod';
+
+const patchCycleSchema = z.object({
+  name: z.string().min(1).max(100).optional(),
+  animal: z.string().min(1).max(50).optional(),
+  scale: z.union([z.number().int().positive(), z.string().regex(/^\d+$/)]).optional().transform(v => v !== undefined ? Number(v) : undefined),
+  mode: z.string().min(1).max(50).optional(),
+  data: z.record(z.unknown()).optional(),
+}).strict();
 
 export async function PATCH(
   req: Request,
@@ -17,8 +26,14 @@ export async function PATCH(
     }
 
     const body = await req.json();
+    const parsed = patchCycleSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: 'Data tidak valid', details: parsed.error.flatten().fieldErrors },
+        { status: 400 }
+      );
+    }
 
-    // Pastikan siklus tersebut milik organisasi user
     const existingCycle = await prisma.cycle.findUnique({
       where: { id },
     });
@@ -30,14 +45,15 @@ export async function PATCH(
       );
     }
 
+    const { name, animal, scale, mode, data } = parsed.data;
     const updatedCycle = await prisma.cycle.update({
       where: { id },
       data: {
-        name: body.name !== undefined ? body.name : undefined,
-        animal: body.animal !== undefined ? body.animal : undefined,
-        scale: body.scale !== undefined ? parseInt(body.scale) : undefined,
-        mode: body.mode !== undefined ? body.mode : undefined,
-        data: body.data !== undefined ? body.data : undefined,
+        ...(name !== undefined && { name }),
+        ...(animal !== undefined && { animal }),
+        ...(scale !== undefined && { scale: Number(scale) }),
+        ...(mode !== undefined && { mode }),
+        ...(data !== undefined && { data }),
       },
     });
 

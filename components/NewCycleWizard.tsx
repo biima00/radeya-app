@@ -27,6 +27,7 @@ const COMMODITY_GROUPS = [
     category: 'Perikanan & Lainnya',
     items: [
       { id: 'ikan_pembesaran', label: '🐟 Ikan Pembesaran', desc: 'Pembesaran benih ikan nila, lele, gurame' },
+      { id: 'ikan_pembibitan', label: '🐟 Ikan Pembibitan', desc: 'Pembenihan dan pendederan benih ikan' },
     ]
   }
 ];
@@ -42,6 +43,7 @@ const ANIMAL_LABELS: Record<string, string> = {
   kambing_perah: '🥛 Kambing Perah',
   kambing_pedaging: '🐐 Kambing Pedaging',
   ikan_pembesaran: '🐟 Ikan Pembesaran',
+  ikan_pembibitan: '🐟 Ikan Pembibitan',
 };
 
 const getCategoryName = (selectedAnimal: string) => {
@@ -51,7 +53,7 @@ const getCategoryName = (selectedAnimal: string) => {
   if (['sapi_pedaging', 'sapi_perah', 'kambing_pedaging', 'kambing_perah'].includes(selectedAnimal)) {
     return 'Ruminansia (Luminant)';
   }
-  if (['ikan_pembesaran'].includes(selectedAnimal)) {
+  if (['ikan_pembesaran', 'ikan_pembibitan'].includes(selectedAnimal)) {
     return 'Perikanan & Lainnya';
   }
   return 'Lainnya';
@@ -91,7 +93,24 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
   const [cageMaterialCost, setCageMaterialCost] = useState('0');
   const [cageLaborCost, setCageLaborCost] = useState('0');
   const [cageOtherCost, setCageOtherCost] = useState('0');
-  const [cageUsefulLifeYears, setCageUsefulLifeYears] = useState('5');
+  const [cageUsefulLifeYears, setCageUsefulLifeYears] = useState('10');
+  const [siklusPerThn, setSiklusPerThn] = useState('6');
+
+  // Bebek-specific states
+  const [strainBebek, setStrainBebek] = useState('Serati');
+  const [umurBibitBebek, setUmurBibitBebek] = useState('1');
+
+  // Fish-specific states
+  const [jenisIkan, setJenisIkan] = useState('lele');
+  const [tipeKolam, setTipeKolam] = useState('terpal');
+  const [sistemKolam, setSistemKolam] = useState('bioflok');
+  const [panjangKolam, setPanjangKolam] = useState('4');
+  const [lebarKolam, setLebarKolam] = useState('2');
+  const [tinggiAirKolam, setTinggiAirKolam] = useState('1');
+  const [bobotAwalIkan, setBobotAwalIkan] = useState('5');
+  const [hargaBenihIkan, setHargaBenihIkan] = useState('500');
+  const [biayaPersiapanAir, setBiayaPersiapanAir] = useState('0');
+  const [biayaAerasiPompa, setBiayaAerasiPompa] = useState('0');
 
   // Sum up cage construction cost breakdown
   useEffect(() => {
@@ -104,21 +123,24 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
   }, [isDetailedCageInput, cageMaterialCost, cageLaborCost, cageOtherCost]);
 
   // Determine mode logic
-  const getMode = (selectedAnimal: string): 'susu' | 'petelur' | 'penggemukan' | 'broiler' | 'pembibitan_unggas' | 'breeding_ruminansia' => {
+  const getMode = (selectedAnimal: string): string => {
+    if (selectedAnimal === 'bebek_pedaging') return 'bebek_pedaging';
+    if (selectedAnimal === 'bebek_petelur') return 'bebek_petelur';
+    if (selectedAnimal === 'ikan_pembesaran') return 'ikan_pembesaran';
+    if (selectedAnimal === 'ikan_pembibitan') return 'ikan_pembibitan';
+
     const isPerah = ['sapi_perah', 'kambing_perah'].includes(selectedAnimal);
-    const isAyamPetelur = ['ayam_petelur', 'bebek_petelur'].includes(selectedAnimal);
+    const isAyamPetelur = ['ayam_petelur'].includes(selectedAnimal);
     const isRuminanPedaging = ['sapi_pedaging', 'kambing_pedaging'].includes(selectedAnimal);
-    const isUnggasPedagingOrIkan = [
+    const isUnggasPedaging = [
       'ayam_pedaging',
-      'bebek_pedaging',
       'enthok_pedaging',
-      'ikan_pembesaran'
     ].includes(selectedAnimal);
 
     if (isPerah) return 'susu';
     if (isAyamPetelur) return 'petelur';
     if (isRuminanPedaging) return 'penggemukan';
-    if (isUnggasPedagingOrIkan) return 'broiler';
+    if (isUnggasPedaging) return 'broiler';
     return 'broiler';
   };
 
@@ -143,14 +165,32 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
         setCapitalDoc('5'); // 5 ekor sapi/kambing
         setCapitalHargaDoc(animal.startsWith('sapi') ? '15000000' : '2000000');
         setCapitalKandang(animal.startsWith('sapi') ? '5000000' : '1500000');
-      } else if (animal === 'ikan_pembesaran') {
-        setCapitalDoc('1000');
-        setCapitalHargaDoc('600'); // 600 rupiah per benih
-        setCapitalKandang('1000000'); // kolam
+        setSiklusPerThn(animal.includes('pedaging') ? '2' : '1');
+      } else if (animal === 'ikan_pembesaran' || animal === 'ikan_pembibitan') {
+        setCapitalDoc('2000');
+        setCapitalHargaDoc('500'); // 500 rupiah per benih
+        setCapitalKandang('1500000'); // kolam
+        setSiklusPerThn('4');
+      } else if (animal === 'bebek_pedaging' || animal === 'enthok_pedaging') {
+        setCapitalDoc('500');
+        setCapitalHargaDoc('10000');
+        setCapitalKandang('2000000');
+        setSiklusPerThn('5');
+      } else if (animal === 'bebek_petelur') {
+        setCapitalDoc('500');
+        setCapitalHargaDoc('12000');
+        setCapitalKandang('2500000');
+        setSiklusPerThn('1');
+      } else if (animal === 'ayam_petelur') {
+        setCapitalDoc('500');
+        setCapitalHargaDoc('9000');
+        setCapitalKandang('2000000');
+        setSiklusPerThn('1');
       } else {
         setCapitalDoc('500');
         setCapitalHargaDoc('9000');
         setCapitalKandang('2000000');
+        setSiklusPerThn('6');
       }
     }
   }, [animal, startDate]);
@@ -165,17 +205,17 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
     const females = parseFloat(capitalBetina) || 0;
     const males = parseFloat(capitalJantan) || 0;
 
-    if (mode === 'broiler') {
+    if (mode === 'broiler' || mode === 'bebek_pedaging') {
       return qty * price + cage;
-    } else if (mode === 'petelur') {
+    } else if (mode === 'petelur' || mode === 'bebek_petelur') {
       return qty * price + cage;
+    } else if (mode === 'ikan_pembesaran' || mode === 'ikan_pembibitan') {
+      return qty * price + cage + (parseFloat(biayaPersiapanAir) || 0) + (parseFloat(biayaAerasiPompa) || 0);
     } else if (mode === 'susu') {
       return qty * price + cage;
     } else if (mode === 'penggemukan') {
       return qty * weight * priceKg + cage;
-    } else if (mode === 'pembibitan_unggas') {
-      return (females + males) * price;
-    } else if (mode === 'breeding_ruminansia') {
+    } else if (mode === 'pembibitan_unggas' || mode === 'breeding_ruminansia') {
       return (females + males) * price;
     }
     return 0;
@@ -246,7 +286,23 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
           tgl_doc: startDate,
           jml_doc: qty.toString(),
           harga_doc: price.toString(),
-          biaya_kandang: cage.toString()
+          biaya_kandang: cage.toString(),
+          down_time_hari: '14',
+          siklus_litter_ke: '1',
+          hari_target_panen: '35'
+        };
+      } else if (mode === 'bebek_pedaging') {
+        modalData = {
+          ...modalData,
+          tgl_doc: startDate,
+          jml_doc: qty.toString(),
+          harga_doc: price.toString(),
+          biaya_kandang: cage.toString(),
+          strain_bebek: strainBebek,
+          umur_bibit: umurBibitBebek,
+          down_time_hari: '14',
+          siklus_litter_ke: '1',
+          hari_target_panen: '40'
         };
       } else if (mode === 'petelur') {
         modalData = {
@@ -254,6 +310,34 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
           tgl_pullet: startDate,
           jml_ekor: qty.toString(),
           harga_ekor: price.toString(),
+          biaya_kandang: cage.toString()
+        };
+      } else if (mode === 'bebek_petelur') {
+        modalData = {
+          ...modalData,
+          tgl_pullet: startDate,
+          jml_ekor: qty.toString(),
+          harga_ekor: price.toString(),
+          biaya_kandang: cage.toString(),
+          strain_bebek: strainBebek,
+          umur_bibit: umurBibitBebek
+        };
+      } else if (mode === 'ikan_pembesaran' || mode === 'ikan_pembibitan') {
+        modalData = {
+          ...modalData,
+          tgl_tebar: startDate,
+          jenis_ikan: jenisIkan,
+          tipe_kolam: tipeKolam,
+          sistem_kolam: sistemKolam,
+          panjang_m: panjangKolam,
+          lebar_m: lebarKolam,
+          tinggi_air_m: tinggiAirKolam,
+          volume_m3: ((parseFloat(panjangKolam) || 0) * (parseFloat(lebarKolam) || 0) * (parseFloat(tinggiAirKolam) || 0)).toString(),
+          jml_tebar: qty.toString(),
+          bobot_awal_g: bobotAwalIkan,
+          harga_benih: price.toString(),
+          biaya_persiapan_air: biayaPersiapanAir,
+          biaya_aerasi_pompa: biayaAerasiPompa,
           biaya_kandang: cage.toString()
         };
       } else if (mode === 'susu') {
@@ -271,7 +355,8 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
           jml_ekor: qty.toString(),
           bb_awal: weight.toString(),
           harga_kg_bakalan: priceKg.toString(),
-          biaya_kandang: cage.toString()
+          biaya_kandang: cage.toString(),
+          hari_target_panen: '120'
         };
       } else if (mode === 'pembibitan_unggas') {
         modalData = {
@@ -300,7 +385,8 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
         kandang_lain: cageOtherCost,
         kandang_total: cage.toString(),
         kandang_manfaat_tahun: cageUsefulLifeYears,
-        kandang_detail_aktif: isDetailedCageInput.toString()
+        kandang_detail_aktif: isDetailedCageInput.toString(),
+        siklus_per_thn: siklusPerThn
       };
 
       await onSubmit(name, animal, scale, modalData);
@@ -578,6 +664,51 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                 </>
               )}
 
+              {/* Bebek Pedaging fields */}
+              {mode === 'bebek_pedaging' && (
+                <>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah DOD / Bibit Bebek (Ekor)</label>
+                    <input 
+                      type="number" 
+                      value={capitalDoc} 
+                      onChange={(e) => setCapitalDoc(e.target.value)}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga beli per DOD / Bibit (Rp)</label>
+                    <input 
+                      type="number" 
+                      value={capitalHargaDoc} 
+                      onChange={(e) => setCapitalHargaDoc(e.target.value)}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Strain Bebek</label>
+                    <select
+                      value={strainBebek}
+                      onChange={(e) => setStrainBebek(e.target.value)}
+                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                    >
+                      {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
+                        <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Umur Bibit saat Masuk (Hari)</label>
+                    <input 
+                      type="number" 
+                      value={umurBibitBebek} 
+                      onChange={(e) => setUmurBibitBebek(e.target.value)}
+                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                </>
+              )}
+
               {/* Poultry Layer Mode fields */}
               {mode === 'petelur' && (
                 <>
@@ -598,6 +729,177 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
                       className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
                     />
+                  </div>
+                </>
+              )}
+
+              {/* Bebek Petelur fields */}
+              {mode === 'bebek_petelur' && (
+                <>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Bayah / Bebek Petelur (Ekor)</label>
+                    <input 
+                      type="number" 
+                      value={capitalDoc} 
+                      onChange={(e) => setCapitalDoc(e.target.value)}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                    <input 
+                      type="number" 
+                      value={capitalHargaDoc} 
+                      onChange={(e) => setCapitalHargaDoc(e.target.value)}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-555 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Strain Bebek</label>
+                    <select
+                      value={strainBebek}
+                      onChange={(e) => setStrainBebek(e.target.value)}
+                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                    >
+                      {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
+                        <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Umur Bayah saat Masuk (Hari)</label>
+                    <input 
+                      type="number" 
+                      value={umurBibitBebek} 
+                      onChange={(e) => setUmurBibitBebek(e.target.value)}
+                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Ikan Pembesaran & Pembibitan fields */}
+              {(mode === 'ikan_pembesaran' || mode === 'ikan_pembibitan') && (
+                <>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jenis Ikan</label>
+                      <select
+                        value={jenisIkan}
+                        onChange={(e) => setJenisIkan(e.target.value)}
+                        className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                      >
+                        {['lele', 'nila', 'gurame', 'mas', 'patin', 'lainnya'].map((ik) => (
+                          <option key={ik} value={ik} className="bg-slate-900 text-slate-100">{ik.toUpperCase()}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Sistem Budidaya</label>
+                      <select
+                        value={sistemKolam}
+                        onChange={(e) => setSistemKolam(e.target.value)}
+                        className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                      >
+                        {['konvensional', 'bioflok', 'RAS'].map((sys) => (
+                          <option key={sys} value={sys} className="bg-slate-900 text-slate-100">{sys.toUpperCase()}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Tipe Wadah/Kolam</label>
+                    <select
+                      value={tipeKolam}
+                      onChange={(e) => setTipeKolam(e.target.value)}
+                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                    >
+                      {['tanah', 'terpal', 'beton', 'bioflok', 'RAS', 'keramba', 'air_deras'].map((t) => (
+                        <option key={t} value={t} className="bg-slate-900 text-slate-100">{t.toUpperCase()}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-400 block uppercase tracking-wider">Panjang (m)</label>
+                      <input 
+                        type="number" 
+                        value={panjangKolam} 
+                        onChange={(e) => setPanjangKolam(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-slate-200 font-semibold font-mono"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-400 block uppercase tracking-wider">Lebar (m)</label>
+                      <input 
+                        type="number" 
+                        value={lebarKolam} 
+                        onChange={(e) => setLebarKolam(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-slate-200 font-semibold font-mono"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-black text-slate-400 block uppercase tracking-wider">Tinggi Air (m)</label>
+                      <input 
+                        type="number" 
+                        value={tinggiAirKolam} 
+                        onChange={(e) => setTinggiAirKolam(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-slate-200 font-semibold font-mono"
+                      />
+                    </div>
+                  </div>
+                  <div className="p-3 bg-teal-500/5 rounded-xl border border-teal-500/10 text-[10px] text-teal-400 font-bold flex justify-between font-mono">
+                    <span>Volume Kolam Terhitung:</span>
+                    <span>{((parseFloat(panjangKolam) || 0) * (parseFloat(lebarKolam) || 0) * (parseFloat(tinggiAirKolam) || 0)).toFixed(2)} m³</span>
+                  </div>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Tebar Benih (Ekor)</label>
+                    <input 
+                      type="number" 
+                      value={capitalDoc} 
+                      onChange={(e) => setCapitalDoc(e.target.value)}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Bobot Awal (gram/ekor)</label>
+                      <input 
+                        type="number" 
+                        value={bobotAwalIkan} 
+                        onChange={(e) => setBobotAwalIkan(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga per Benih (Rp)</label>
+                      <input 
+                        type="number" 
+                        value={capitalHargaDoc} 
+                        onChange={(e) => setCapitalHargaDoc(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Persiapan Air (Rp)</label>
+                      <input 
+                        type="number" 
+                        value={biayaPersiapanAir} 
+                        onChange={(e) => setBiayaPersiapanAir(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Aerasi / Pompa (Rp)</label>
+                      <input 
+                        type="number" 
+                        value={biayaAerasiPompa} 
+                        onChange={(e) => setBiayaAerasiPompa(e.target.value)}
+                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      />
+                    </div>
                   </div>
                 </>
               )}
@@ -774,6 +1076,19 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                   </select>
                   <span className="text-[9px] text-slate-500 block leading-relaxed">
                     *Masa manfaat ini akan digunakan untuk menghitung penyusutan kandang per hari/siklus demi keakuratan EBITDA & Laba Bersih.
+                  </span>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Perkiraan Siklus per Tahun</label>
+                  <input
+                    type="number"
+                    value={siklusPerThn}
+                    onChange={(e) => setSiklusPerThn(e.target.value)}
+                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                  />
+                  <span className="text-[9px] text-slate-500 block leading-relaxed">
+                    *Jumlah siklus pemeliharaan dalam setahun untuk menghitung penyusutan per siklus.
                   </span>
                 </div>
               </div>

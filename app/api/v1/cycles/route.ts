@@ -24,9 +24,14 @@ export async function GET(req: Request) {
       );
     }
 
+    const url = new URL(req.url);
+    const page = parseInt(url.searchParams.get('page') || '0');
+    const pageSize = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
+
     const cycles = await prisma.cycle.findMany({
       where: { orgId },
-      orderBy: { createdAt: 'desc' }, // Mengurutkan dari yang terbaru
+      orderBy: { createdAt: 'desc' },
+      ...(page > 0 && { skip: (page - 1) * pageSize, take: pageSize }),
     });
 
     return NextResponse.json(cycles);

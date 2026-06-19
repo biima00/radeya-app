@@ -23,18 +23,15 @@ export default function RegisterPage() {
     setIsLoading(true);
     try {
       const data = await apiPost('/api/v1/auth/google', { credential: response.credential });
-      if (data.token) {
-        localStorage.setItem('radeya_token', data.token);
-        if (data.orgId) {
-          localStorage.setItem('radeya_org_id', data.orgId);
-        }
+      if (data.success) {
+        if (data.orgId) localStorage.setItem('radeya_org_id', data.orgId);
         if (data.needsOnboarding) {
           router.push('/dashboard/onboarding');
         } else {
           router.push('/dashboard');
         }
       } else {
-        throw new Error('Token tidak diterima dari server');
+        throw new Error('Login gagal');
       }
     } catch (err: any) {
       setError(err.message || 'Gagal registrasi menggunakan akun Google.');
@@ -102,17 +99,13 @@ export default function RegisterPage() {
       // 2. Panggil API Register
       const data = await apiPost('/api/v1/auth/register', { name, email, password });
       
-      // 3. Jika registrasi sukses, secara otomatis simpan token & login
-      if (data.token) {
-        localStorage.setItem('radeya_token', data.token);
-        if (data.orgId) {
-          localStorage.setItem('radeya_org_id', data.orgId);
-        }
-        
+      // 3. Cookie JWT di-set otomatis oleh server (httpOnly)
+      if (data.success) {
+        if (data.orgId) localStorage.setItem('radeya_org_id', data.orgId);
         // 4. Arahkan pengguna langsung ke onboarding untuk memasukkan nama farm
         router.push('/dashboard/onboarding');
       } else {
-        throw new Error('Gagal melakukan pendaftaran otomatis setelah pendaftaran sukses.');
+        throw new Error('Gagal melakukan pendaftaran.');
       }
     } catch (err: any) {
       setError(err.message || 'Gagal mendaftar. Email mungkin sudah terdaftar.');

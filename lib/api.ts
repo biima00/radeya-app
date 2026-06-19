@@ -1,31 +1,20 @@
 /**
- * Helper untuk memanggil API backend Radeya dengan token JWT otomatis.
+ * Helper untuk memanggil API backend Radeya.
+ * Token JWT dikirim otomatis via httpOnly cookie (same-origin).
  */
 
 export async function apiFetch(path: string, options: RequestInit = {}) {
-  // 1. Ambil token JWT dari penyimpanan lokal browser (localStorage)
-  const token = typeof window !== 'undefined' ? localStorage.getItem('radeya_token') : null;
-
-  // 2. Siapkan header default (memberitahu server bahwa kita mengirim data berbentuk JSON)
   const headers = new Headers(options.headers);
   headers.set('Content-Type', 'application/json');
-  
-  // Jika token JWT ditemukan, sisipkan ke dalam header Authorization
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
-  }
 
-  // 3. Panggil fungsi fetch bawaan browser untuk mengirim data ke server
   const response = await fetch(path, {
     ...options,
     headers,
+    credentials: 'same-origin',
   });
 
-  // 4. Jika statusnya 401 (Unauthorized / sudah habis masa berlakunya)
-  // Bersihkan token dari browser dan arahkan pengguna kembali ke halaman Login
   if (response.status === 401) {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('radeya_token');
       window.location.href = '/login';
     }
   }
@@ -33,7 +22,6 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   return response;
 }
 
-// Helper untuk mengambil data (GET)
 export async function apiGet(path: string) {
   const response = await apiFetch(path, { method: 'GET' });
   if (!response.ok) {
@@ -43,7 +31,6 @@ export async function apiGet(path: string) {
   return response.json();
 }
 
-// Helper untuk mengirim/menyimpan data baru (POST)
 export async function apiPost(path: string, body: any) {
   const response = await apiFetch(path, {
     method: 'POST',
@@ -56,7 +43,6 @@ export async function apiPost(path: string, body: any) {
   return data;
 }
 
-// Helper untuk mengubah/mengupdate data (PATCH)
 export async function apiPatch(path: string, body: any) {
   const response = await apiFetch(path, {
     method: 'PATCH',
@@ -69,7 +55,6 @@ export async function apiPatch(path: string, body: any) {
   return data;
 }
 
-// Helper untuk menghapus data (DELETE)
 export async function apiDelete(path: string) {
   const response = await apiFetch(path, { method: 'DELETE' });
   const data = await response.json().catch(() => ({}));

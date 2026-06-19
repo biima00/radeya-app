@@ -10,8 +10,8 @@ export default function LandingPage() {
   const [simHarga, setSimHarga] = useState<number>(22000);
 
   useEffect(() => {
-    const token = localStorage.getItem('radeya_token');
-    if (token) {
+    const orgId = localStorage.getItem('radeya_org_id');
+    if (orgId) {
       setIsLoggedIn(true);
     }
   }, []);

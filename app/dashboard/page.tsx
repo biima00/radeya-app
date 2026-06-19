@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiGet, apiPost, apiPatch, apiDelete } from '@/lib/api';
 import NewCycleWizard from '@/components/NewCycleWizard';
+import FeedFormulator from '@/components/FeedFormulator';
+import { COBB500_STANDARD, LOHMANN_STANDARD, KEPADATAN_STANDAR } from '@/constants/strainStandards';
 
 // --- TS Interfaces ---
 interface Cycle {
@@ -117,6 +119,11 @@ const Icons = {
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
     </svg>
+  ),
+  ventilasi: (className = "w-5 h-5") => (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2" />
+    </svg>
   )
 };
 
@@ -136,23 +143,60 @@ const intToScale = (scaleInt: number): string => {
 };
 
 const determineMode = (animal: string, scaleStr: string): string => {
+  if (animal === 'bebek_pedaging') return 'bebek_pedaging';
+  if (animal === 'bebek_petelur') return 'bebek_petelur';
+  if (animal === 'ikan_pembesaran') return 'ikan_pembesaran';
+  if (animal === 'ikan_pembibitan') return 'ikan_pembibitan';
+
   const isPerah = ['sapi_perah', 'kambing_perah'].includes(animal);
-  const isAyamPetelur = ['ayam_petelur', 'bebek_petelur'].includes(animal);
+  const isAyamPetelur = ['ayam_petelur'].includes(animal);
   const isRuminanPedaging = ['sapi_pedaging', 'kambing_pedaging'].includes(animal);
-  const isUnggasPedagingOrIkan = [
-    'ayam_pedaging',
-    'bebek_pedaging',
-    'enthok_pedaging',
-    'ikan_pembesaran'
-  ].includes(animal);
-  const isPembibitanOrBreeding = ['ikan_pembibitan'].includes(animal);
+  const isUnggasPedaging = ['ayam_pedaging', 'enthok_pedaging'].includes(animal);
 
   if (isPerah) return 'susu';
   if (isAyamPetelur) return 'petelur';
   if (isRuminanPedaging) return 'penggemukan';
-  if (isUnggasPedagingOrIkan) return 'broiler';
-  if (isPembibitanOrBreeding) return 'pembibitan_unggas';
+  if (isUnggasPedaging) return 'broiler';
   return 'broiler';
+};
+
+const normalizeCycle = (c: any): any => {
+  if (!c) return c;
+  let mode = c.mode;
+  if (c.animal === 'bebek_pedaging' && mode === 'broiler') mode = 'bebek_pedaging';
+  if (c.animal === 'bebek_petelur' && mode === 'petelur') mode = 'bebek_petelur';
+  if (c.animal === 'ikan_pembesaran' && mode === 'broiler') mode = 'ikan_pembesaran';
+  if (c.animal === 'ikan_pembibitan' && mode === 'pembibitan_unggas') mode = 'ikan_pembibitan';
+  return { ...c, mode };
+};
+
+const getKepadatanKey = (cycle: any): string => {
+  if (!cycle) return '';
+  const animal = cycle.animal || '';
+  const mode = cycle.mode || '';
+  const m = cycle.data?.modal || {};
+  
+  if (mode === 'broiler') {
+    return m.kepadatan_system === 'welfare' ? 'broiler_welfare' : 'broiler_komersil';
+  }
+  if (mode === 'bebek_pedaging') return 'bebek_pedaging';
+  if (mode === 'bebek_petelur') return 'bebek_petelur';
+  if (mode === 'petelur') {
+    return m.kepadatan_system === 'baterai' ? 'petelur_baterai' : 'petelur_lantai';
+  }
+  if (mode === 'penggemukan' || mode === 'susu' || mode === 'breeding_ruminansia') {
+    return animal.startsWith('sapi') ? 'sapi' : 'kambing';
+  }
+  if (mode === 'ikan_pembesaran' || mode === 'ikan_pembibitan') {
+    const jenis = m.jenis_ikan || 'nila';
+    const sistem = m.sistem_kolam || 'konvensional';
+    if (jenis === 'lele') {
+      return sistem === 'bioflok' ? 'lele_bioflok' : 'lele_konvensional';
+    } else {
+      return sistem === 'bioflok' ? 'nila_bioflok' : 'nila_konvensional';
+    }
+  }
+  return 'broiler_komersil';
 };
 
 // --- Operational Task Templates ---
@@ -202,7 +246,7 @@ const getCalendarTasks = (animal: string, scale: string, startDate: Date) => {
       { id: 'ly_d21', day: 21, date: formatTaskDate(20), title: 'Vaksinasi ND-EDS', desc: 'Lakukan vaksinasi suntik emulsi ND-EDS untuk menjaga kestabilan saluran reproduksi telur.' },
       { id: 'ly_d30', day: 30, date: formatTaskDate(29), title: 'Transisi Pakan Pre-Lay', desc: 'Campurkan pakan pullet dengan pakan layer (fase bertelur) bertahap dengan rasio 50:50.' },
       { id: 'ly_d45', day: 45, date: formatTaskDate(44), title: 'Cek Telur Pertama (Perdana)', desc: 'Evaluasi telur perdana kecil. Pastikan pasokan kalsium (grit/kulit kerang) tercampur baik di pakan.' },
-      { id: 'ly_d60', day: 60, date: formatTaskDate(59), title: 'Evaluasi Hen Day (HD %)', desc: 'Hitung persentase produktivitas telur harian. Target Hen Day minggu ke-8 di atas 50%.' }
+      { id: 'ly_d60', day: 60, date: formatTaskDate(59), title: animal === 'bebek_petelur' ? 'Evaluasi Duck-Day %' : 'Evaluasi Hen Day (HD %)', desc: animal === 'bebek_petelur' ? 'Hitung persentase produktivitas telur bebek harian.' : 'Hitung persentase produktivitas telur harian. Target Hen Day minggu ke-8 di atas 50%.' }
     ];
   } else if (!isUnggas && isPerah) {
     // Sapi / Kambing Perah
@@ -225,6 +269,47 @@ const getCalendarTasks = (animal: string, scale: string, startDate: Date) => {
       { id: 'fm_d60', day: 60, date: formatTaskDate(59), title: 'Timbang Bulanan II & Cek Pakan', desc: 'Cek konsumsi serat kasar rumput segar dan ampas tahu/konsentrat. Sesuaikan protein pakan jika target ADG kurang.' },
       { id: 'fm_d90', day: 90, date: formatTaskDate(89), title: 'Vaksin PMK Booster', desc: 'Suntik vaksin PMK penguat agar antibodi ternak terjaga penuh sampai waktu panen.' }
     ];
+  }
+};
+
+const checkWaterParam = (paramName: string, val: number) => {
+  if (val === undefined || isNaN(val)) return { status: '-', color: 'text-slate-500 bg-slate-900 border-slate-800' };
+  
+  switch (paramName) {
+    case 'suhu':
+      if (val < 24 || val > 32) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
+      if (val < 26 || val > 30) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    case 'ph':
+      if (val < 6.5 || val > 9.0) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
+      if (val < 7.0 || val > 8.5) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    case 'do':
+      if (val < 3.0) return { status: '🔴 Bahaya', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20 animate-pulse' };
+      if (val < 4.0) return { status: '🟡 Kurang', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    case 'amonia':
+      if (val > 0.1) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
+      if (val > 0.02) return { status: '🟡 Tinggi', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    case 'nitrit':
+      if (val > 0.5) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
+      if (val > 0.1) return { status: '🟡 Tinggi', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    case 'kecerahan':
+      if (val < 20 || val > 50) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
+      if (val < 30 || val > 40) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    case 'volume_flok':
+      if (val > 60) return { status: '🔴 Siphon!', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
+      if (val < 30 || val > 50) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    case 'cn_ratio':
+      if (val < 10) return { status: '🔴 Molase!', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
+      if (val < 15 || val > 20) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+    default:
+      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
   }
 };
 
@@ -311,7 +396,7 @@ export default function DashboardPage() {
     const activeCycle = cycles[activeCycleIndex];
     if (!activeCycle) return;
 
-    const startDayTime = activeCycle.data?.modal?.tgl_doc || activeCycle.data?.modal?.tgl_pullet || activeCycle.data?.modal?.tgl_beli || activeCycle.createdAt;
+    const startDayTime = activeCycle.data?.modal?.tgl_doc || activeCycle.data?.modal?.tgl_pullet || activeCycle.data?.modal?.tgl_beli || activeCycle.data?.modal?.tgl_indukan || activeCycle.data?.modal?.tgl_tebar || activeCycle.data?.modal?.tgl_mulai || activeCycle.createdAt;
     const parsedStartDate = new Date(startDayTime);
     const ageInDays = Math.floor((new Date().getTime() - parsedStartDate.getTime()) / (1000 * 60 * 60 * 24));
     const animalName = ANIMAL_LABELS[activeCycle.animal] || activeCycle.animal;
@@ -480,6 +565,7 @@ export default function DashboardPage() {
 
   // --- Simulation States ---
   const [simHarga, setSimHarga] = useState<number>(0);
+  const [overrideKepadatanKey, setOverrideKepadatanKey] = useState<string>('');
 
   // --- AI Vet Chat States ---
   const [chatMessages, setChatMessages] = useState<Array<{ role: 'user' | 'ai'; text: string }>>([]);
@@ -500,12 +586,6 @@ export default function DashboardPage() {
 
   // --- Fetch Data on Mount ---
   useEffect(() => {
-    const token = localStorage.getItem('radeya_token');
-    if (!token) {
-      router.push('/login');
-      return;
-    }
-
     // Load Midtrans Snap Script dynamically
     const script = document.createElement('script');
     const isProd = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true';
@@ -538,7 +618,7 @@ export default function DashboardPage() {
       // 2. Fetch cycles
       const data = await apiGet('/api/v1/cycles');
       if (data && data.length > 0) {
-        setCycles(data);
+        setCycles(data.map(normalizeCycle));
         setActiveCycleIndex(0);
         setIsOnboarding(false);
         setActiveTab('dashboard');
@@ -567,8 +647,10 @@ export default function DashboardPage() {
     setTimeout(() => setToastMsg(''), 2500);
   };
 
-  const handleSignOut = () => {
-    localStorage.removeItem('radeya_token');
+  const handleSignOut = async () => {
+    try {
+      await apiPost('/api/v1/auth/logout', {});
+    } catch {}
     localStorage.removeItem('radeya_org_id');
     localStorage.removeItem('radeya_farm_name');
     router.push('/login');
@@ -639,22 +721,45 @@ export default function DashboardPage() {
   };
 
   // --- API Actions ---
-  const handleSaveCycleData = async (updatedData: any) => {
-    if (activeCycleIndex < 0 || !cycles[activeCycleIndex]) return;
-    const activeCycle = cycles[activeCycleIndex];
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingSaveRef = useRef<{ cycleId: string; data: any } | null>(null);
+
+  const flushSave = useCallback(async () => {
+    const pending = pendingSaveRef.current;
+    if (!pending) return;
+    pendingSaveRef.current = null;
     try {
-      const result = await apiPatch(`/api/v1/cycles/${activeCycle.id}`, {
-        data: updatedData
+      const result = await apiPatch(`/api/v1/cycles/${pending.cycleId}`, {
+        data: pending.data
       });
-      setCycles((prev) => {
-        const next = [...prev];
-        next[activeCycleIndex] = result;
-        return next;
-      });
+      setCycles((prev) =>
+        prev.map((c) => (c.id === pending.cycleId ? normalizeCycle(result) : c))
+      );
     } catch (err: any) {
       showToast('❌ Gagal menyimpan ke cloud: ' + err.message);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, []);
+
+  const handleSaveCycleData = useCallback((updatedData: any) => {
+    if (activeCycleIndex < 0 || !cycles[activeCycleIndex]) return;
+    const activeCycle = cycles[activeCycleIndex];
+
+    setCycles((prev) => {
+      const next = [...prev];
+      next[activeCycleIndex] = { ...next[activeCycleIndex], data: updatedData };
+      return next;
+    });
+
+    pendingSaveRef.current = { cycleId: activeCycle.id, data: updatedData };
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(flushSave, 500);
+  }, [activeCycleIndex, cycles, flushSave]);
 
   const handleCreateCycle = async (name: string, animal: string, scaleStr: string, modalData: any = {}) => {
     if (scaleStr === 'besar' && profile?.organization?.plan === 'FREE') {
@@ -686,7 +791,7 @@ export default function DashboardPage() {
         data: initialData
       });
 
-      setCycles((prev) => [newCycle, ...prev]);
+      setCycles((prev) => [normalizeCycle(newCycle), ...prev]);
       setActiveCycleIndex(0);
       setIsOnboarding(false);
       setActiveTab('dashboard');
@@ -733,16 +838,51 @@ export default function DashboardPage() {
           { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
           { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
           { id: 'panen', icon: Icons.panen(), label: 'Panen' },
-          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' },
+          { id: 'ventilasi', icon: Icons.ventilasi(), label: '💨 Ventilasi' }
         ];
         break;
-      case 'petelur':
+      case 'bebek_pedaging':
         baseTabs = [
           { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
           { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
           { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
-          { id: 'panen', icon: Icons.panen(), label: 'Produksi' },
+          { id: 'harian_log', icon: Icons.panen(), label: 'Log Harian' },
+          { id: 'panen', icon: Icons.panen(), label: 'Panen' },
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
+        ];
+        break;
+      case 'petelur':
+      case 'bebek_petelur':
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
+          { id: 'panen', icon: Icons.panen(), label: activeCycle?.mode === 'bebek_petelur' ? 'Produksi Bebek' : 'Produksi' },
           { id: 'penjualan', icon: Icons.modalAwal(), label: 'Penjualan' },
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
+        ];
+        break;
+      case 'ikan_pembesaran':
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
+          { id: 'sampling', icon: Icons.panen(), label: 'Sampling' },
+          { id: 'kualitas_air', icon: Icons.panen(), label: 'Kualitas Air' },
+          { id: 'panen', icon: Icons.panen(), label: 'Panen / Jual' },
+          { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
+        ];
+        break;
+      case 'ikan_pembibitan':
+        baseTabs = [
+          { id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' },
+          { id: 'modal_awal', icon: Icons.modalAwal(), label: 'Modal Awal' },
+          { id: 'biaya', icon: Icons.biaya(), label: 'Biaya' },
+          { id: 'pemijahan', icon: Icons.panen(), label: '💓 Pemijahan' },
+          { id: 'penetasan', icon: Icons.panen(), label: '🐣 Penetasan' },
+          { id: 'pendederan', icon: Icons.panen(), label: '🌿 Pendederan' },
+          { id: 'penjualan', icon: Icons.modalAwal(), label: '💰 Jual Benih' },
           { id: 'simulasi', icon: Icons.simulasi(), label: 'Simulasi' }
         ];
         break;
@@ -786,6 +926,7 @@ export default function DashboardPage() {
         baseTabs = [{ id: 'dashboard', icon: Icons.dashboard(), label: 'Dashboard' }];
     }
     const finalTabs = [...baseTabs];
+    finalTabs.push({ id: 'feed_formulator', icon: Icons.simulasi(), label: '🌾 Racik Pakan' });
     finalTabs.push({ id: 'jadwal_kerja', icon: Icons.calendar(), label: 'Jadwal Kerja' });
 
     const isFree = profile?.organization?.plan === 'FREE';
@@ -814,24 +955,127 @@ export default function DashboardPage() {
   };
 
   // --- Business Logic Calculation Core ---
-  const calculateStats = () => {
-    const cycle = getActiveCycle();
+  const calculateStats = useMemo(() => {
+    const cycle = (activeCycleIndex >= 0 && cycles[activeCycleIndex]) ? cycles[activeCycleIndex] : null;
     if (!cycle) return null;
 
     const data = cycle.data || {};
     const mode = cycle.mode;
     const m = data.modal || {};
 
-    const startDayTime = m.tgl_doc || m.tgl_pullet || m.tgl_beli || m.tgl_indukan || m.tgl_mulai || cycle.createdAt;
+    const startDayTime = m.tgl_doc || m.tgl_pullet || m.tgl_beli || m.tgl_indukan || m.tgl_tebar || m.tgl_mulai || cycle.createdAt;
     const tglStart = startDayTime ? new Date(startDayTime) : null;
     const umur = tglStart ? Math.max(0, Math.floor((new Date().getTime() - tglStart.getTime()) / 86400000)) : 0;
 
     const biayaKandang = parseFloat(m.kandang_total) || parseFloat(m.biaya_kandang) || 0;
-    const manfaatTahun = parseFloat(m.kandang_manfaat_tahun) || 5;
-    const depresiasiHarian = biayaKandang / (manfaatTahun * 365);
-    const depresiasiKandang = Math.round(depresiasiHarian * umur);
+    const manfaatTahun = parseFloat(m.kandang_manfaat_tahun) || 10;
+    
+    // HPP Akurat & Depreciation helpers
+    const calcPenyusutan = (nilaiKandang: number, umurEconomis: number, siklusPerThn: number) => {
+      return nilaiKandang / Math.max(1, umurEconomis * siklusPerThn);
+    };
 
-    if (mode === 'broiler') {
+    const getHDPMingguan = (harian: any[], totalAyam: number) => {
+      if (!harian || harian.length === 0) return [];
+      const sorted = [...harian].sort((a, b) => new Date(a.tgl).getTime() - new Date(b.tgl).getTime());
+      const weeks: Array<{ weekNum: number; hdp: number; label: string }> = [];
+      let currentWeekButir = 0;
+      let currentWeekDays = 0;
+      let currentWeekMati = 0;
+      let currentPop = totalAyam;
+
+      for (let i = 0; i < sorted.length; i++) {
+        const log = sorted[i];
+        currentWeekButir += parseFloat(log.butir) || 0;
+        currentWeekDays++;
+        currentWeekMati += parseFloat(log.mati) || 0;
+
+        if (currentWeekDays === 7 || i === sorted.length - 1) {
+          const weekNum = Math.floor(i / 7) + 1;
+          const hdp = currentPop > 0 ? (currentWeekButir / (currentWeekDays * currentPop)) * 100 : 0;
+          weeks.push({
+            weekNum,
+            hdp,
+            label: `Mgg ${weekNum}`
+          });
+          currentPop = Math.max(0, currentPop - currentWeekMati);
+          currentWeekButir = 0;
+          currentWeekDays = 0;
+          currentWeekMati = 0;
+        }
+      }
+      return weeks;
+    };
+
+    const calcAvgInterval = (kelahiranList: any[]) => {
+      if (!kelahiranList || kelahiranList.length < 2) return 0;
+      const groups: Record<string, number[]> = {};
+      kelahiranList.forEach((k: any) => {
+        if (k.id_induk && k.tgl) {
+          const t = new Date(k.tgl).getTime();
+          if (!isNaN(t)) {
+            if (!groups[k.id_induk]) groups[k.id_induk] = [];
+            groups[k.id_induk].push(t);
+          }
+        }
+      });
+
+      let totalDiffDays = 0;
+      let countDiffs = 0;
+
+      Object.values(groups).forEach((dates: number[]) => {
+        if (dates.length >= 2) {
+          dates.sort((a, b) => a - b);
+          for (let i = 1; i < dates.length; i++) {
+            const diffDays = (dates[i] - dates[i - 1]) / (24 * 60 * 60 * 1000);
+            totalDiffDays += diffDays;
+            countDiffs++;
+          }
+        }
+      });
+
+      return countDiffs > 0 ? Math.round(totalDiffDays / countDiffs) : 0;
+    };
+
+    const DEFAULT_SIKLUS_PER_THN: Record<string, number> = {
+      broiler: 6,
+      petelur: 1,
+      bebek_pedaging: 5,
+      bebek_petelur: 1,
+      penggemukan: 2,
+      susu: 1,
+      breeding_ruminansia: 1,
+      ikan_pembesaran: 4,
+      ikan_pembibitan: 4
+    };
+
+    const siklusPerThn = parseFloat(m.siklus_per_thn) || DEFAULT_SIKLUS_PER_THN[mode] || 6;
+    const penyusutanSiklus = calcPenyusutan(biayaKandang, manfaatTahun, siklusPerThn);
+    const depresiasiKandang = Math.round(penyusutanSiklus);
+
+    // Operational costs
+    const totalTK = (parseFloat(m.biaya_tk_harian) || 0) * umur;
+    const totalAir = parseFloat(m.biaya_air) || 0;
+    let totalListrik = parseFloat(m.biaya_listrik) || 0;
+
+    // Fish specific utility costs
+    if (mode === 'ikan_pembesaran' || mode === 'ikan_pembibitan') {
+      const sistem = m.sistem_kolam || 'konvensional';
+      if (sistem === 'bioflok' || sistem === 'RAS') {
+        const watt = parseFloat(m.aerasi_watt) || 100;
+        const jam = parseFloat(m.aerasi_jam) || 24;
+        const tarif = parseFloat(m.aerasi_tarif) || 1450;
+        totalListrik += (watt / 1000) * jam * tarif * umur;
+      }
+      if (sistem === 'bioflok') {
+        totalListrik += parseFloat(m.biaya_molase_probiotik) || 0;
+      }
+      if (sistem === 'RAS') {
+        totalListrik += parseFloat(m.biaya_filter_media) || 0;
+      }
+    }
+
+    if (mode === 'broiler' || mode === 'bebek_pedaging') {
       const totalDOC = (parseFloat(m.jml_doc) || 0) * (parseFloat(m.harga_doc) || 0);
       let totalPakan = 0, totalObat = 0, totalLain = 0;
       (data.biaya || []).forEach((b: any) => {
@@ -839,45 +1083,143 @@ export default function DashboardPage() {
         else if (b.type === 'obat') totalObat += parseFloat(b.total) || 0;
         else totalLain += parseFloat(b.total) || 0;
       });
+
+      // Total Modal calculations
       const totalModal = totalDOC + biayaKandang + totalPakan + totalObat + totalLain;
+      const totalModalCash = totalDOC + totalPakan + totalObat + totalLain + totalTK + totalListrik + totalAir;
+      const totalModalAkurat = totalModalCash + penyusutanSiklus;
+
       let totalPendapatan = 0, totalKgPanen = 0;
       const panen = data.panen || [];
       panen.forEach((p: any) => {
         totalPendapatan += (parseFloat(p.kg) || 0) * (parseFloat(p.harga_kg) || 0);
         totalKgPanen += parseFloat(p.kg) || 0;
       });
-      const ebitda = totalPendapatan - (totalDOC + totalPakan + totalObat + totalLain);
+
+      const ebitda = totalPendapatan - (totalDOC + totalPakan + totalObat + totalLain + totalTK + totalListrik + totalAir);
       const laba = ebitda - depresiasiKandang;
-      const mati = panen.reduce((s: number, p: any) => s + (parseFloat(p.jml_mati) || 0), 0);
+      const labaCash = totalPendapatan - totalModalCash;
+
+      const matiDariPanen = panen.reduce((s: number, p: any) => s + (parseFloat(p.jml_mati) || 0), 0);
+      const matiDariHarian = (data.harian || []).reduce((s: number, h: any) => s + (parseFloat(h.mati) || 0), 0);
+      const mati = matiDariPanen + matiDariHarian;
       const jmlDoc = parseFloat(m.jml_doc) || 1;
       const srPct = ((jmlDoc - mati) / jmlDoc) * 100;
-      const hpp = totalKgPanen > 0 ? totalModal / totalKgPanen : 0;
+      
+      const hpp = totalKgPanen > 0 ? totalModalCash / totalKgPanen : 0;
+      const hppAkurat = totalKgPanen > 0 ? totalModalAkurat / totalKgPanen : 0;
+
       const totalKgPakan = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => {
         const sak = parseFloat(b.sak) || 0;
         const kgSak = parseFloat(b.kg_sak) || 0;
         return s + sak * kgSak;
       }, 0);
       const fcr = totalKgPanen > 0 ? totalKgPakan / totalKgPanen : 0;
-      const bbRata = jmlDoc > 0 ? totalKgPanen / (jmlDoc - mati) || 0 : 0;
+      const bbRata = (jmlDoc - mati) > 0 ? totalKgPanen / (jmlDoc - mati) : 0;
       const ip = (fcr > 0 && umur > 0) ? (srPct / 100 * bbRata) / (fcr * umur) * 100 : 0;
 
+      // New broiler indicators
+      const adg = umur > 0 ? (bbRata * 1000) / umur : 0;
+      const epef = ip;
+      const prediksiPanen = tglStart ? new Date(tglStart.getTime() + 35 * 24 * 60 * 60 * 1000) : null;
+      
+      const lightingProgram = mode === 'bebek_pedaging'
+        ? 'N/A'
+        : (umur <= 7 ? '23L : 1D (Stimulasi makan, adaptasi DOC)' : (umur <= 21 ? '21L : 3D (Pertumbuhan normal)' : '16L : 8D (Efisiensi pakan, finishing)'));
+      
+      const siklusLitterKe = parseInt(m.siklus_litter_ke) || 1;
+      const downTimeHari = parseInt(m.down_time_hari) || 14;
+      const alertLitterKuning = mode === 'broiler' && siklusLitterKe >= 5;
+      const alertDowntimeMerah = mode === 'broiler' && downTimeHari < 14;
+
+      // Bebek pedaging targets & metrics
+      const isBebek = mode === 'bebek_pedaging';
+      const fcrTarget = isBebek ? { min: 2.5, max: 3.5 } : { min: 1.4, max: 1.6 };
+      const srTarget = isBebek ? 92 : 95;
+      const airEstimasi = isBebek ? totalKgPakan * 2 : 0;
+      const airAktual = (data.harian || []).reduce((s: number, h: any) => s + (parseFloat(h.air) || 0), 0);
+      let waterAlert = false;
+      const lastHarian = (data.harian || []).slice().sort((a: any, b: any) => new Date(a.tgl).getTime() - new Date(b.tgl).getTime()).pop();
+      if (lastHarian) {
+        const actualAir = parseFloat(lastHarian.air) || 0;
+        const estPakan = parseFloat(lastHarian.pakan_kg) || 0;
+        const estAir = isBebek ? estPakan * 2.0 : 0;
+        if (estAir > 0 && actualAir < estAir * 0.7) {
+          waterAlert = true;
+        }
+      }
+
+      const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
+      const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
+      const iofc = totalPendapatan - totalPakan;
+      const bepHarga = hppAkurat;
+
+      // Ventilation calculations (Modul 08)
+      const panjang_m = parseFloat(m.panjang_m) || 0;
+      const lebar_m = parseFloat(m.lebar_m) || 0;
+      const luas_m2 = panjang_m * lebar_m;
+      
+      const watt_kipas = parseFloat(m.vent_watt_kipas) || 375;
+      const jml_kipas = parseFloat(m.vent_jml_kipas) || 2;
+      
+      const CFM_kebutuhan = jmlDoc * 0.5;
+      const CFM_kapasitas = (watt_kipas * jml_kipas * 0.85) / 0.472;
+      const timer_cap_m3 = luas_m2 * 0.3;
+      
+      const duty_cycle = CFM_kapasitas > 0 ? Math.min(1.0, CFM_kebutuhan / CFM_kapasitas) : 0;
+      const runtime_detik = Math.round(duty_cycle * 300);
+      
+      const suhu_target = Math.max(24, 33 - Math.floor(umur / 7) * 3);
+      const fase = umur < 14 ? 'minimum' : (umur < 21 ? 'transitional' : 'tunnel');
+      const alertKipasKurang = mode === 'broiler' && CFM_kapasitas < CFM_kebutuhan;
+
+      // Cobb Standard comparisons (Modul 09)
+      const standardCobb = COBB500_STANDARD.reduce((prev, curr) => {
+        return Math.abs(curr.hari - umur) < Math.abs(prev.hari - umur) ? curr : prev;
+      });
+      const targetBB = standardCobb.bb_g / 1000;
+      const targetFCR = standardCobb.fcr;
+      const targetADG = standardCobb.adg_g;
+      
+      const gapBB = bbRata - targetBB;
+      const gapBBPct = targetBB > 0 ? (gapBB / targetBB) * 100 : 0;
+      const gapFCR = fcr - targetFCR;
+      const gapFCRPct = targetFCR > 0 ? (gapFCR / targetFCR) * 100 : 0;
+      const gapADG = adg - targetADG;
+      const gapADGPct = targetADG > 0 ? (gapADG / targetADG) * 100 : 0;
+
       return {
-        totalModal, totalPendapatan, laba, ebitda, depresiasi: depresiasiKandang, totalKgPanen, hpp, fcr, srPct, umur, ip, mati, jmlDoc,
+        totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, totalKgPanen, hpp, hppAkurat, fcr, srPct, umur, ip, mati, jmlDoc,
+        fcrTarget, srTarget, airEstimasi, airAktual, waterAlert, isBebek, strainBebek: m.strain_bebek,
+        pakanPct, tkPct, iofc, bepHarga,
+        adg, bbRata, epef, prediksiPanen, lightingProgram, alertLitterKuning, alertDowntimeMerah,
+        luas_m2, panjang_m, lebar_m, watt_kipas, jml_kipas, CFM_kebutuhan, CFM_kapasitas, timer_cap_m3, duty_cycle, runtime_detik, suhu_target, fase, alertKipasKurang,
+        standardCobb, targetBB, targetFCR, targetADG, gapBB, gapBBPct, gapFCR, gapFCRPct, gapADG, gapADGPct,
         breakdown: [
-          { label: 'DOC', val: totalDOC },
-          { label: 'Kandang (Investasi)', val: biayaKandang },
+          { label: 'Ternak / Bibit', val: totalDOC },
+          { label: 'Kandang (Penyusutan)', val: depresiasiKandang },
           { label: 'Pakan', val: totalPakan },
           { label: 'Obat/Vaksin', val: totalObat },
+          { label: 'Tenaga Kerja', val: totalTK },
+          { label: 'Listrik & Air', val: totalListrik + totalAir },
           { label: 'Lain-lain', val: totalLain }
         ]
       };
     }
 
-    if (mode === 'petelur') {
+    if (mode === 'petelur' || mode === 'bebek_petelur') {
       const totalIndukan = (parseFloat(m.jml_ekor) || 0) * (parseFloat(m.harga_ekor) || 0);
-      let totalBiaya = 0;
-      (data.biaya || []).forEach((b: any) => totalBiaya += parseFloat(b.total) || 0);
+      let totalPakan = 0, totalObat = 0, totalLain = 0;
+      (data.biaya || []).forEach((b: any) => {
+        if (b.type === 'pakan') totalPakan += parseFloat(b.total) || 0;
+        else if (b.type === 'obat') totalObat += parseFloat(b.total) || 0;
+        else totalLain += parseFloat(b.total) || 0;
+      });
+      const totalBiaya = totalPakan + totalObat + totalLain;
+
       const totalModal = totalIndukan + biayaKandang + totalBiaya;
+      const totalModalCash = totalIndukan + totalBiaya + totalTK + totalListrik + totalAir;
+      const totalModalAkurat = totalModalCash + penyusutanSiklus;
 
       let totalButir = 0, totalKgTelur = 0, totalRetak = 0;
       (data.harian || []).forEach((h: any) => {
@@ -889,8 +1231,9 @@ export default function DashboardPage() {
       let totalPendapatan = 0;
       (data.penjualan || []).forEach((p: any) => totalPendapatan += (parseFloat(p.kg) || 0) * (parseFloat(p.harga_kg) || 0));
       
-      const ebitda = totalPendapatan - (totalIndukan + totalBiaya);
+      const ebitda = totalPendapatan - (totalIndukan + totalBiaya + totalTK + totalListrik + totalAir);
       const laba = ebitda - depresiasiKandang;
+      const labaCash = totalPendapatan - totalModalCash;
 
       const jmlAyam = parseFloat(m.jml_ekor) || 1;
       const henDay = (data.harian || []).length > 0 ? (totalButir / (data.harian || []).length / jmlAyam) * 100 : 0;
@@ -899,16 +1242,194 @@ export default function DashboardPage() {
         return s + (parseFloat(b.sak) || 0) * (parseFloat(b.kg_sak) || 0);
       }, 0);
       const fcrTelur = totalKgTelur > 0 ? totalKgPakan / totalKgTelur : 0;
-      const hppButir = totalButir > 0 ? totalModal / totalButir : 0;
-      const hppKg = totalKgTelur > 0 ? totalModal / totalKgTelur : 0;
+      const hppButir = totalButir > 0 ? totalModalCash / totalButir : 0;
+      const hppButirAkurat = totalButir > 0 ? totalModalAkurat / totalButir : 0;
+      const hppKg = totalKgTelur > 0 ? totalModalCash / totalKgTelur : 0;
+      const hppKgAkurat = totalKgTelur > 0 ? totalModalAkurat / totalKgTelur : 0;
 
-      return { totalModal, totalPendapatan, laba, ebitda, depresiasi: depresiasiKandang, umur, totalButir, totalKgTelur, totalRetak, henDay, fcrTelur, hppButir, hppKg };
+      const isBebek = mode === 'bebek_petelur';
+      const fcrTarget = isBebek ? { min: 2.8, max: 3.5 } : { min: 2.1, max: 2.3 };
+      const srTarget = isBebek ? 90 : 95;
+      const airEstimasi = isBebek ? totalKgPakan * 2.2 : 0;
+      const airAktual = (data.harian || []).reduce((s: number, h: any) => s + (parseFloat(h.air) || 0), 0);
+      let waterAlert = false;
+      const lastHarian = (data.harian || []).slice().sort((a: any, b: any) => new Date(a.tgl).getTime() - new Date(b.tgl).getTime()).pop();
+      if (lastHarian) {
+        const actualAir = parseFloat(lastHarian.air) || 0;
+        const scaleQty = parseFloat(m.jml_ekor) || 1;
+        const estPakan = scaleQty * 0.15;
+        const estAir = isBebek ? estPakan * 2.2 : 0;
+        if (estAir > 0 && actualAir < estAir * 0.7) {
+          waterAlert = true;
+        }
+      }
+
+      const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
+      const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
+      const iofc = totalPendapatan - totalPakan;
+      const bepHarga = hppButirAkurat;
+
+      // New Layer indicators
+      const beratRataTelur = totalButir > 0 ? (totalKgTelur / totalButir) * 1000 : 0;
+      const biayaPakanPerButir = totalButir > 0 ? totalPakan / totalButir : 0;
+      const hdpMingguan = getHDPMingguan(data.harian || [], jmlAyam);
+      
+      const hdpMingguIni = hdpMingguan.length > 0 ? hdpMingguan[hdpMingguan.length - 1].hdp : 0;
+      const hdpMingguLalu = hdpMingguan.length > 1 ? hdpMingguan[hdpMingguan.length - 2].hdp : 0;
+      const alertDrop = hdpMingguLalu > 0 && (hdpMingguLalu - hdpMingguIni) > 5;
+      const dropPct = hdpMingguLalu - hdpMingguIni;
+
+      const lightingProgram = '16L : 8D (Standard Stimulasi Hormon Peletakan Telur)';
+
+      // Lohmann target comparisons (Modul 09)
+      const targetHDP = LOHMANN_STANDARD.puncak_hdp;
+      const targetFCRTelur = LOHMANN_STANDARD.fcr_produksi;
+      const targetBeratTelur = LOHMANN_STANDARD.berat_telur_g;
+      
+      const gapHDP = henDay - targetHDP;
+      const gapFCRTelur = fcrTelur - targetFCRTelur;
+      const gapBeratTelur = beratRataTelur - targetBeratTelur;
+
+      return {
+        totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, totalButir, totalKgTelur, totalRetak, henDay, fcrTelur, hppButir, hppButirAkurat, hppKg, hppKgAkurat,
+        fcrTarget, srTarget, airEstimasi, airAktual, waterAlert, isBebek, strainBebek: m.strain_bebek,
+        pakanPct, tkPct, iofc, bepHarga,
+        beratRataTelur, biayaPakanPerButir, hdpMingguan, alertDrop, dropPct, lightingProgram,
+        targetHDP, targetFCRTelur, targetBeratTelur, gapHDP, gapFCRTelur, gapBeratTelur,
+        breakdown: [
+          { label: 'Indukan', val: totalIndukan },
+          { label: 'Kandang (Penyusutan)', val: depresiasiKandang },
+          { label: 'Pakan', val: totalPakan },
+          { label: 'Obat/Vaksin', val: totalObat },
+          { label: 'Tenaga Kerja', val: totalTK },
+          { label: 'Listrik & Air', val: totalListrik + totalAir },
+          { label: 'Lain-lain', val: totalLain }
+        ]
+      };
+    }
+
+    if (mode === 'ikan_pembesaran' || mode === 'ikan_pembibitan') {
+      const qtyTebar = parseFloat(m.jml_tebar) || 0;
+      const priceBenih = parseFloat(m.harga_benih) || 0;
+      const totalBenih = qtyTebar * priceBenih + (parseFloat(m.biaya_persiapan_air) || 0) + (parseFloat(m.biaya_aerasi_pompa) || 0);
+
+      let totalPakan = 0, totalObat = 0, totalLain = 0;
+      (data.biaya || []).forEach((b: any) => {
+        if (b.type === 'pakan') totalPakan += parseFloat(b.total) || 0;
+        else if (b.type === 'obat') totalObat += parseFloat(b.total) || 0;
+        else totalLain += parseFloat(b.total) || 0;
+      });
+      const totalBiaya = totalPakan + totalObat + totalLain;
+
+      const totalModal = totalBenih + biayaKandang + totalBiaya;
+      const totalModalCash = totalBenih + totalBiaya + totalTK + totalListrik + totalAir;
+      const totalModalAkurat = totalModalCash + penyusutanSiklus;
+
+      let totalPendapatan = 0, totalKgPanen = 0, totalEkorPanen = 0;
+      const panen = data.panen || [];
+      panen.forEach((p: any) => {
+        totalPendapatan += (parseFloat(p.kg) || 0) * (parseFloat(p.harga_kg) || 0);
+        totalKgPanen += parseFloat(p.kg) || 0;
+        totalEkorPanen += parseFloat(p.jml_hidup) || ((parseFloat(p.kg) || 0) * (parseFloat(p.size_sortir) || 10));
+      });
+
+      const penjualan = data.penjualan || [];
+      if (mode === 'ikan_pembibitan') {
+        penjualan.forEach((p: any) => {
+          totalPendapatan += parseFloat(p.total) || 0;
+          totalEkorPanen += parseFloat(p.jml) || 0;
+        });
+      }
+
+      const ebitda = totalPendapatan - (totalBenih + totalBiaya + totalTK + totalListrik + totalAir);
+      const laba = ebitda - depresiasiKandang;
+      const labaCash = totalPendapatan - totalModalCash;
+
+      const mati = (data.sampling || []).reduce((s: number, sm: any) => s + (parseFloat(sm.jml_mati) || 0), 0) + panen.reduce((s: number, p: any) => s + (parseFloat(p.jml_mati) || 0), 0);
+      const srPct = qtyTebar > 0 ? Math.max(0, Math.min(100, ((qtyTebar - mati) / qtyTebar) * 100)) : 100;
+
+      const sampling = data.sampling || [];
+      const bobotRataTerakhir = sampling.length > 0 ? (parseFloat(sampling[sampling.length - 1].bobot_total_g) / Math.max(1, parseFloat(sampling[sampling.length - 1].jml_sampel) || 1)) : (parseFloat(m.bobot_awal_g) || 5);
+      const biomassaSaatIni = Math.max(0, qtyTebar - mati) * bobotRataTerakhir / 1000;
+      
+      const totalKgPakan = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => {
+        return s + (parseFloat(b.kg) || 0);
+      }, 0);
+
+      const bobotAwalTotal = qtyTebar * (parseFloat(m.bobot_awal_g) || 5) / 1000;
+      const biomassaAkhir = totalKgPanen > 0 ? totalKgPanen : biomassaSaatIni;
+      const pertambahanBiomassa = biomassaAkhir - bobotAwalTotal;
+      const fcr = pertambahanBiomassa > 0 ? totalKgPakan / pertambahanBiomassa : 0;
+
+      const adg = umur > 0 ? (bobotRataTerakhir - (parseFloat(m.bobot_awal_g) || 5)) / umur : 0;
+      const sgr = (umur > 0 && bobotRataTerakhir > 0) ? (Math.log(bobotRataTerakhir) - Math.log(parseFloat(m.bobot_awal_g) || 5)) / umur * 100 : 0;
+
+      const hpp = mode === 'ikan_pembesaran'
+        ? (totalKgPanen > 0 ? totalModalCash / totalKgPanen : 0)
+        : (totalEkorPanen > 0 ? totalModalCash / totalEkorPanen : 0);
+      const hppAkurat = mode === 'ikan_pembesaran'
+        ? (totalKgPanen > 0 ? totalModalAkurat / totalKgPanen : 0)
+        : (totalEkorPanen > 0 ? totalModalAkurat / totalEkorPanen : 0);
+
+      const sistem = m.sistem_kolam || 'konvensional';
+      const fcrTarget = sistem === 'RAS' ? { min: 0.7, max: 0.9 } : sistem === 'bioflok' ? { min: 0.8, max: 1.0 } : { min: 1.1, max: 1.3 };
+      const srTarget = sistem === 'RAS' ? 92 : sistem === 'bioflok' ? 85 : 70;
+      const airEstimasi = 0;
+
+      const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
+      const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
+      const iofc = totalPendapatan - totalPakan;
+      const bepHarga = hppAkurat;
+
+      const isPembibitan = mode === 'ikan_pembibitan';
+
+      // For hatchery (pembibitan)
+      const telurDibuahi = isPembibitan ? (data.pemijahan || []).reduce((s: number, p: any) => s + (parseFloat(p.est_telur) || 0), 0) : 0;
+      const telurMenetas = isPembibitan ? (data.penetasan || []).reduce((s: number, p: any) => s + (parseFloat(p.berhasil_larva) || 0), 0) : 0;
+      const dayaTetas = telurDibuahi > 0 ? (telurMenetas / telurDibuahi) * 100 : 0;
+      const srPendederan = qtyTebar > 0 ? (totalEkorPanen / qtyTebar) * 100 : 0;
+
+      // FCR Pendederan vs FCR Pembesaran
+      const biomassaBenihTerjual = totalEkorPanen * bobotRataTerakhir / 1000;
+      const fcrPendederan = biomassaBenihTerjual > 0 ? totalKgPakan / biomassaBenihTerjual : 0;
+
+      let cv = 0;
+      let needGrading = false;
+      if (sampling.length > 0) {
+        const lastSm = sampling[sampling.length - 1];
+        const bobotRata = (parseFloat(lastSm.bobot_total_g) / Math.max(1, parseFloat(lastSm.jml_sampel) || 1));
+        const stdev = parseFloat(lastSm.stdev_g) || 0;
+        if (stdev > 0 && bobotRata > 0) {
+          cv = (stdev / bobotRata) * 100;
+          if (cv > 20) {
+            needGrading = true;
+          }
+        }
+      }
+
+      return {
+        totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, hpp, hppAkurat, fcr, srPct, mati,
+        fcrTarget, srTarget, airEstimasi, biomassaSaatIni, adg, sgr, bobotRataTerakhir, qtyTebar,
+        pakanPct, tkPct, iofc, bepHarga,
+        dayaTetas, srPendederan, fcrPendederan, telurDibuahi, telurMenetas, isPembibitan, cv, needGrading,
+        breakdown: [
+          { label: 'Benih & Persiapan Air', val: totalBenih },
+          { label: 'Kandang (Penyusutan)', val: depresiasiKandang },
+          { label: 'Pakan', val: totalPakan },
+          { label: 'Obat/Vaksin', val: totalObat },
+          { label: 'Tenaga Kerja', val: totalTK },
+          { label: 'Listrik & Air', val: totalListrik + totalAir },
+          { label: 'Lain-lain', val: totalLain }
+        ]
+      };
     }
 
     if (mode === 'pembibitan_unggas') {
       const totalIndukan = ((parseFloat(m.jml_betina) || 0) + (parseFloat(m.jml_jantan) || 0)) * (parseFloat(m.harga_indukan) || 0);
       const totalBiaya = (data.biaya || []).reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
       const totalModal = totalIndukan + biayaKandang + totalBiaya;
+      const totalModalCash = totalIndukan + totalBiaya + totalTK + totalListrik + totalAir;
+      const totalModalAkurat = totalModalCash + penyusutanSiklus;
 
       const telurMasukTetas = (data.produksi || []).reduce((s: number, p: any) => s + (parseFloat(p.masuk_tetas) || 0), 0);
       const docMenetas = (data.penetasan || []).reduce((s: number, p: any) => s + (parseFloat(p.berhasil) || 0), 0);
@@ -922,11 +1443,18 @@ export default function DashboardPage() {
       const jmlJantan = parseFloat(m.jml_jantan) || 0;
       const populasi = jmlBetina + jmlJantan + docMenetas - totalTerjual;
       
-      const ebitda = totalPendapatan - (totalIndukan + totalBiaya);
+      const ebitda = totalPendapatan - (totalIndukan + totalBiaya + totalTK + totalListrik + totalAir);
       const laba = ebitda - depresiasiKandang;
-      const margin = totalModal > 0 ? (laba / totalModal) * 100 : 0;
+      const labaCash = totalPendapatan - totalModalCash;
+      const margin = totalModalAkurat > 0 ? (laba / totalModalAkurat) * 100 : 0;
 
-      return { totalModal, totalPendapatan, laba, ebitda, depresiasi: depresiasiKandang, umur, margin, dayaTetas, docMenetas, populasi, telurMasukTetas, gagalTetas };
+      const totalPakan = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
+      const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
+      const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
+      const iofc = totalPendapatan - totalPakan;
+      const bepHarga = docMenetas > 0 ? totalModalAkurat / docMenetas : 0;
+
+      return { totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, margin, dayaTetas, docMenetas, populasi, telurMasukTetas, gagalTetas, pakanPct, tkPct, iofc, bepHarga };
     }
 
     if (mode === 'penggemukan') {
@@ -935,9 +1463,12 @@ export default function DashboardPage() {
       const hargaBakalan = parseFloat(m.harga_kg_bakalan) || 0;
       const totalBakalan = jmlEkor * bbAwal * hargaBakalan;
       const totalBiaya = (data.biaya || []).reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
+      
       const totalModal = totalBakalan + biayaKandang + totalBiaya;
+      const totalModalCash = totalBakalan + totalBiaya + totalTK + totalListrik + totalAir;
+      const totalModalAkurat = totalModalCash + penyusutanSiklus;
 
-      let totalPendapatan = 0, totalKgPanen = 0;
+      let totalPendapatan = 0, totalKgPanen = 0, totalEkorPanen = 0;
       const panen = data.panen || [];
       panen.forEach((p: any) => {
         const bbAkhir = parseFloat(p.bb_akhir) || 0;
@@ -946,12 +1477,17 @@ export default function DashboardPage() {
         const kg = bbAkhir * jmlJual;
         totalPendapatan += kg * harga;
         totalKgPanen += kg;
+        totalEkorPanen += jmlJual;
       });
 
-      const ebitda = totalPendapatan - (totalBakalan + totalBiaya);
+      const ebitda = totalPendapatan - (totalBakalan + totalBiaya + totalTK + totalListrik + totalAir);
       const laba = ebitda - depresiasiKandang;
-      const hpp = totalKgPanen > 0 ? totalModal / totalKgPanen : 0;
-      const totalKgPakan = (data.biaya || []).reduce((s: number, b: any) => s + (parseFloat(b.kg) || 0), 0);
+      const labaCash = totalPendapatan - totalModalCash;
+      
+      const hpp = totalKgPanen > 0 ? totalModalCash / totalKgPanen : 0;
+      const hppAkurat = totalKgPanen > 0 ? totalModalAkurat / totalKgPanen : 0;
+      
+      const totalKgPakan = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => s + (parseFloat(b.kg) || 0), 0);
       const fcr = totalKgPanen > 0 ? totalKgPakan / totalKgPanen : 0;
 
       const bbAkhirRata = panen.length > 0 ? parseFloat(panen[panen.length - 1].bb_akhir) || 0 : 0;
@@ -959,19 +1495,35 @@ export default function DashboardPage() {
       const mati = panen.reduce((s: number, p: any) => s + (parseFloat(p.jml_mati) || 0), 0);
       const srPct = jmlEkor > 0 ? ((jmlEkor - mati) / jmlEkor) * 100 : 100;
 
-      return { totalModal, totalPendapatan, laba, ebitda, depresiasi: depresiasiKandang, umur, hpp, fcr, adg, lamaHari: umur, totalKgPanen, srPct, mati, jmlDoc: jmlEkor };
+      const totalPakan = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
+      const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
+      const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
+      const iofc = totalPendapatan - totalPakan;
+      const bepHarga = hppAkurat;
+
+      // New Penggemukan indicators
+      const BK_kebutuhan = jmlEkor * bbAwal * 0.035; // kg BK/hari
+      const biayaPakanPerEkorPerHari = totalPakan / Math.max(1, jmlEkor) / Math.max(1, umur);
+      const hariTargetPanen = parseFloat(m.hari_target_panen) || 120;
+      const prediksiPanen_BB = bbAwal + ((adg || 0) / 1000 * hariTargetPanen);
+      const marginPerEkor = totalEkorPanen > 0 ? (totalPendapatan - totalModalAkurat) / totalEkorPanen : 0;
+
+      return { totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, hpp, hppAkurat, fcr, adg, lamaHari: umur, totalKgPanen, srPct, mati, jmlDoc: jmlEkor, pakanPct, tkPct, iofc, bepHarga, BK_kebutuhan, biayaPakanPerEkorPerHari, prediksiPanen_BB, marginPerEkor };
     }
 
     if (mode === 'susu') {
       const totalIndukan = (parseFloat(m.jml_ekor) || 0) * (parseFloat(m.harga_ekor) || 0);
       const totalBiaya = (data.biaya || []).reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
       const totalModal = totalIndukan + biayaKandang + totalBiaya;
+      const totalModalCash = totalIndukan + totalBiaya + totalTK + totalListrik + totalAir;
+      const totalModalAkurat = totalModalCash + penyusutanSiklus;
 
       const totalLiter = (data.harian || []).reduce((s: number, h: any) => s + (parseFloat(h.liter) || 0), 0);
       const totalPendapatan = (data.penjualan || []).reduce((s: number, p: any) => s + (parseFloat(p.total) || 0), 0);
       
-      const ebitda = totalPendapatan - (totalIndukan + totalBiaya);
+      const ebitda = totalPendapatan - (totalIndukan + totalBiaya + totalTK + totalListrik + totalAir);
       const laba = ebitda - depresiasiKandang;
+      const labaCash = totalPendapatan - totalModalCash;
 
       const jmlEkor = parseFloat(m.jml_ekor) || 1;
       const hariProduksi = (data.harian || []).length;
@@ -979,9 +1531,29 @@ export default function DashboardPage() {
 
       const totalKgPakanKering = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => s + (parseFloat(b.kg) || 0), 0);
       const fcrSusu = totalLiter > 0 ? totalKgPakanKering / totalLiter : 0;
-      const hppLiter = totalLiter > 0 ? totalModal / totalLiter : 0;
+      
+      const hppLiter = totalLiter > 0 ? totalModalCash / totalLiter : 0;
+      const hppLiterAkurat = totalLiter > 0 ? totalModalAkurat / totalLiter : 0;
 
-      return { totalModal, totalPendapatan, laba, ebitda, depresiasi: depresiasiKandang, umur, totalLiter, produksiRata, fcrSusu, hppLiter };
+      const totalPakan = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
+      const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
+      const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
+      const iofc = totalPendapatan - totalPakan;
+      const bepHarga = hppLiterAkurat;
+
+      // New Milk indicators
+      let totalKgLemak = 0;
+      let countLemak = 0;
+      (data.harian || []).forEach((h: any) => {
+        if (h.kadar_lemak !== undefined && h.kadar_lemak !== null) {
+          totalKgLemak += (parseFloat(h.liter) || 0) * ((parseFloat(h.kadar_lemak) || 0) / 100);
+          countLemak++;
+        }
+      });
+      const FCM = countLemak > 0 ? (0.4 * totalLiter + 15 * totalKgLemak) : null;
+      const biayaPakanPerLiter = totalLiter > 0 ? totalPakan / totalLiter : 0;
+
+      return { totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, totalLiter, produksiRata, fcrSusu, hppLiter, hppLiterAkurat, pakanPct, tkPct, iofc, bepHarga, FCM, biayaPakanPerLiter };
     }
 
     if (mode === 'breeding_ruminansia') {
@@ -990,7 +1562,10 @@ export default function DashboardPage() {
       const hargaEkor = parseFloat(m.harga_ekor) || 0;
       const totalIndukan = (jmlBetina + jmlJantan) * hargaEkor;
       const totalBiaya = (data.biaya || []).reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
+      
       const totalModal = totalIndukan + biayaKandang + totalBiaya;
+      const totalModalCash = totalIndukan + totalBiaya + totalTK + totalListrik + totalAir;
+      const totalModalAkurat = totalModalCash + penyusutanSiklus;
 
       let totalLahir = 0, totalLahirJantan = 0, totalLahirBetina = 0;
       (data.kelahiran || []).forEach((k: any) => {
@@ -1010,15 +1585,29 @@ export default function DashboardPage() {
       const bobotTaksiran = parseFloat(m.bobot_taksiran) || 30;
       const nilaiAset = populasiTotal * bobotTaksiran * hargaPasar;
 
-      const ebitda = totalPendapatan - (totalIndukan + totalBiaya);
+      const ebitda = totalPendapatan - (totalIndukan + totalBiaya + totalTK + totalListrik + totalAir);
       const laba = ebitda - depresiasiKandang;
-      const keuntunganPct = totalModal > 0 ? (laba / totalModal) * 100 : 0;
+      const labaCash = totalPendapatan - totalModalCash;
+      const keuntunganPct = totalModalAkurat > 0 ? (laba / totalModalAkurat) * 100 : 0;
 
-      return { totalModal, totalPendapatan, laba, ebitda, depresiasi: depresiasiKandang, umur, keuntunganPct, populasiTotal, populasiBetina, populasiJantan, totalLahir, nilaiAset };
+      const totalPakan = (data.biaya || []).filter((b: any) => b.type === 'pakan').reduce((s: number, b: any) => s + (parseFloat(b.total) || 0), 0);
+      const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
+      const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
+      const iofc = totalPendapatan - totalPakan;
+      const bepHarga = totalLahir > 0 ? totalModalAkurat / totalLahir : 0;
+
+      // New Breeding indicators
+      const jmlKawin = (data.perkawinan || []).length;
+      const jmlBunting = (data.perkawinan || []).filter((p: any) => p.status === 'bunting').length;
+      const conceptionRate = jmlKawin > 0 ? (jmlBunting / jmlKawin) * 100 : 0;
+      const spc = jmlBunting > 0 ? jmlKawin / jmlBunting : 0;
+      const calvingInterval = calcAvgInterval(data.kelahiran || []);
+
+      return { totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, keuntunganPct, populasiTotal, populasiBetina, populasiJantan, totalLahir, nilaiAset, pakanPct, tkPct, iofc, bepHarga, conceptionRate, spc, calvingInterval };
     }
 
     return null;
-  };
+  }, [activeCycleIndex, cycles]);
 
   // --- Currency Formatter ---
   const formatRp = (val: any) => {
@@ -1037,13 +1626,14 @@ export default function DashboardPage() {
     let title = 'Grafik Produksi';
     let unit = '';
 
-    if (cycle.mode === 'petelur') {
-      points = (cycle.data?.harian || []).map((h: any) => ({
-        date: h.tgl.slice(5),
-        value: parseFloat(h.butir) || 0
+    if (cycle.mode === 'petelur' || cycle.mode === 'bebek_petelur') {
+      const hdpMingguan = stats?.hdpMingguan || [];
+      points = hdpMingguan.map((w: any) => ({
+        date: w.label,
+        value: w.hdp
       }));
-      title = 'Tren Produksi Telur (Butir)';
-      unit = 'butir';
+      title = `Tren Produksi Telur (${cycle.mode === 'bebek_petelur' ? 'Duck' : 'Hen'} Day % Harian/Mingguan)`;
+      unit = '%';
     } else if (cycle.mode === 'susu') {
       points = (cycle.data?.harian || []).map((h: any) => ({
         date: h.tgl.slice(5),
@@ -1121,7 +1711,7 @@ export default function DashboardPage() {
                 <g key={i}>
                   <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="#1e293b" strokeDasharray="3 3" />
                   <text x={paddingLeft - 10} y={y + 4} textAnchor="end" className="text-[10px] font-bold fill-slate-500 font-mono">
-                    {val.toFixed(0)}
+                    {val.toFixed(0)}{unit}
                   </text>
                 </g>
               );
@@ -1143,7 +1733,7 @@ export default function DashboardPage() {
                   {/* Tooltip text on top of dots if small array */}
                   {points.length <= 10 && (
                     <text x={x} y={y - 8} textAnchor="middle" className="text-[9px] font-black fill-teal-300 font-mono">
-                      {p.value}
+                      {unit === '%' ? p.value.toFixed(1) + '%' : p.value}
                     </text>
                   )}
                   {/* Date/X Label */}
@@ -1230,7 +1820,27 @@ export default function DashboardPage() {
       setFormFields({ tgl: todayStr, kg: '', harga_kg: '', jml_mati: '0' });
     } else if (type === 'modal_harian_petelur') {
       setModalTitle('🥚 Produksi Harian');
-      setFormFields({ tgl: todayStr, butir: '', kg: '', retak: '0' });
+      setFormFields({ tgl: todayStr, butir: '', kg: '', retak: '0', air: '0' });
+    } else if (type === 'modal_harian_pedaging') {
+      setModalTitle('🦆 Log Harian Bebek Pedaging');
+      setFormFields({ tgl: todayStr, air: '', pakan_kg: '', mati: '0' });
+    } else if (type === 'modal_sampling_ikan') {
+      setModalTitle('🔬 Catat Sampling Pertumbuhan');
+      const estPop = qtyTebar - (data.sampling || []).reduce((s: number, sm: any) => s + (parseFloat(sm.jml_mati) || 0), 0);
+      setFormFields({ tgl: todayStr, jml_sampel: '50', bobot_total_g: '', jml_estimasi: estPop.toString(), jml_mati: '0', stdev_g: '0' });
+    } else if (type === 'modal_air_ikan') {
+      setModalTitle('💧 Monitor Kualitas Air');
+      setFormFields({ tgl: todayStr, suhu: '28', ph: '7.5', do: '5.0', amonia: '0.01', nitrit: '0.01', kecerahan: '35', volume_flok: '30', cn_ratio: '15' });
+    } else if (type === 'modal_pemijahan') {
+      setModalTitle('💓 Catat Pemijahan Induk');
+      setFormFields({ tgl: todayStr, jantan_ekor: '1', betina_ekor: '2', est_telur: '100000' });
+    } else if (type === 'modal_penetasan_ikan') {
+      setModalTitle('🐣 Catat Hasil Penetasan');
+      setFormFields({ tgl: todayStr, berhasil_larva: '', gagal_butir: '0' });
+    } else if (type === 'modal_jual_benih') {
+      setModalTitle('💰 Penjualan Benih Ikan');
+      setFormFields({ tgl: todayStr, jml: '', harga_ekor: '500', ukuran_cm: '5-7' });
+      setPreviewVal('Rp 0');
     } else if (type === 'modal_jual_petelur') {
       setModalTitle('💰 Catat Penjualan Telur');
       setFormFields({ tgl: todayStr, kg: '', harga_kg: '' });
@@ -1252,14 +1862,17 @@ export default function DashboardPage() {
       setFormFields({ tgl: todayStr, jml_jual: '', bb_akhir: '', harga_kg: '', jml_mati: '0' });
     } else if (type === 'modal_harian_susu') {
       setModalTitle('🥛 Produksi Susu Harian');
-      setFormFields({ tgl: todayStr, liter: '' });
+      setFormFields({ tgl: todayStr, liter: '', kadar_lemak: '' });
     } else if (type === 'modal_jual_susu') {
       setModalTitle('💰 Catat Setoran Susu');
       setFormFields({ tgl: todayStr, liter: '', harga_liter: '' });
       setPreviewVal('Rp 0');
     } else if (type === 'modal_kelahiran') {
       setModalTitle('🐣 Catat Kelahiran');
-      setFormFields({ tgl: todayStr, id_induk: '', jantan: '0', betina: '0' });
+      setFormFields({ tgl: todayStr, id_induk: '', jantan: '0', betina: '0', tgl_kawin: '', id_pejantan: '' });
+    } else if (type === 'modal_perkawinan') {
+      setModalTitle('💖 Catat Perkawinan');
+      setFormFields({ tgl: todayStr, id_induk: '', id_pejantan: '', status: 'menunggu' });
     } else if (type === 'modal_jual_breeding') {
       setModalTitle('💰 Catat Penjualan');
       setFormFields({ tgl: todayStr, kategori: 'Bakalan', jenis: 'jantan', jml: '', harga_ekor: '' });
@@ -1296,10 +1909,104 @@ export default function DashboardPage() {
       data.panen = [...(data.panen || []), { tgl, kg: parseFloat(kg), harga_kg: parseFloat(harga_kg), jml_mati: parseInt(jml_mati) }];
       showToast('✅ Panen tersimpan!');
     } else if (activeModal === 'modal_harian_petelur') {
-      const { tgl, butir, kg, retak } = formFields;
+      const { tgl, butir, kg, retak, air } = formFields;
       if (!butir) return;
-      data.harian = [...(data.harian || []), { tgl, butir: parseInt(butir), kg: parseFloat(kg || 0), retak: parseInt(retak) }];
+      data.harian = [
+        ...(data.harian || []),
+        {
+          tgl,
+          butir: parseInt(butir),
+          kg: parseFloat(kg || 0),
+          retak: parseInt(retak || 0),
+          air: parseFloat(air || 0)
+        }
+      ];
       showToast('✅ Produksi harian disimpan!');
+    } else if (activeModal === 'modal_harian_pedaging') {
+      const { tgl, air, pakan_kg, mati } = formFields;
+      if (!air || !pakan_kg) return;
+      data.harian = [
+        ...(data.harian || []),
+        {
+          tgl,
+          air: parseFloat(air),
+          pakan_kg: parseFloat(pakan_kg),
+          mati: parseInt(mati || 0)
+        }
+      ];
+      showToast('✅ Log harian disimpan!');
+    } else if (activeModal === 'modal_sampling_ikan') {
+      const { tgl, jml_sampel, bobot_total_g, jml_estimasi, jml_mati, stdev_g } = formFields;
+      if (!jml_sampel || !bobot_total_g) return;
+      data.sampling = [
+        ...(data.sampling || []),
+        {
+          tgl,
+          jml_sampel: parseInt(jml_sampel),
+          bobot_total_g: parseFloat(bobot_total_g),
+          jml_estimasi: parseInt(jml_estimasi || 0),
+          jml_mati: parseInt(jml_mati || 0),
+          stdev_g: parseFloat(stdev_g || 0)
+        }
+      ];
+      showToast('✅ Data sampling disimpan!');
+    } else if (activeModal === 'modal_air_ikan') {
+      const { tgl, suhu, ph, do: doVal, amonia, nitrit, kecerahan, volume_flok, cn_ratio } = formFields;
+      data.kualitas_air = [
+        ...(data.kualitas_air || []),
+        {
+          tgl,
+          suhu: parseFloat(suhu || 0),
+          ph: parseFloat(ph || 0),
+          do: parseFloat(doVal || 0),
+          amonia: parseFloat(amonia || 0),
+          nitrit: parseFloat(nitrit || 0),
+          kecerahan: parseFloat(kecerahan || 0),
+          volume_flok: parseFloat(volume_flok || 0),
+          cn_ratio: parseFloat(cn_ratio || 0)
+        }
+      ];
+      showToast('✅ Data kualitas air disimpan!');
+    } else if (activeModal === 'modal_pemijahan') {
+      const { tgl, jantan_ekor, betina_ekor, est_telur } = formFields;
+      if (!est_telur) return;
+      data.pemijahan = [
+        ...(data.pemijahan || []),
+        {
+          tgl,
+          jantan_ekor: parseInt(jantan_ekor || 0),
+          betina_ekor: parseInt(betina_ekor || 0),
+          est_telur: parseInt(est_telur)
+        }
+      ];
+      showToast('✅ Log pemijahan disimpan!');
+    } else if (activeModal === 'modal_penetasan_ikan') {
+      const { tgl, berhasil_larva, gagal_butir } = formFields;
+      if (!berhasil_larva) return;
+      data.penetasan = [
+        ...(data.penetasan || []),
+        {
+          tgl,
+          berhasil_larva: parseInt(berhasil_larva),
+          gagal_butir: parseInt(gagal_butir || 0)
+        }
+      ];
+      showToast('✅ Log penetasan disimpan!');
+    } else if (activeModal === 'modal_jual_benih') {
+      const { tgl, jml, harga_ekor, ukuran_cm } = formFields;
+      if (!jml || !harga_ekor) return;
+      const total = (parseInt(jml) || 0) * (parseFloat(harga_ekor) || 0);
+      data.penjualan = [
+        ...(data.penjualan || []),
+        {
+          tgl,
+          jml: parseInt(jml),
+          harga_ekor: parseFloat(harga_ekor),
+          ukuran_cm,
+          total
+        }
+      ];
+      showToast('✅ Penjualan benih disimpan!');
     } else if (activeModal === 'modal_jual_petelur') {
       const { tgl, kg, harga_kg } = formFields;
       if (!kg || !harga_kg) return;
@@ -1333,9 +2040,9 @@ export default function DashboardPage() {
       data.panen = [...(data.panen || []), { tgl, jml_jual: parseInt(jml_jual), bb_akhir: parseFloat(bb_akhir), harga_kg: parseFloat(harga_kg), jml_mati: parseInt(jml_mati) }];
       showToast('✅ Data panen tersimpan!');
     } else if (activeModal === 'modal_harian_susu') {
-      const { tgl, liter } = formFields;
+      const { tgl, liter, kadar_lemak } = formFields;
       if (!liter) return;
-      data.harian = [...(data.harian || []), { tgl, liter: parseFloat(liter) }];
+      data.harian = [...(data.harian || []), { tgl, liter: parseFloat(liter), kadar_lemak: kadar_lemak ? parseFloat(kadar_lemak) : null }];
       showToast('✅ Produksi susu tersimpan!');
     } else if (activeModal === 'modal_jual_susu') {
       const { tgl, liter, harga_liter } = formFields;
@@ -1344,9 +2051,13 @@ export default function DashboardPage() {
       data.penjualan = [...(data.penjualan || []), { tgl, liter: parseFloat(liter), harga_liter: parseFloat(harga_liter), total }];
       showToast('✅ Setoran susu tersimpan!');
     } else if (activeModal === 'modal_kelahiran') {
-      const { tgl, id_induk, jantan, betina } = formFields;
-      data.kelahiran = [...(data.kelahiran || []), { tgl, id_induk, jantan: parseInt(jantan), betina: parseInt(betina) }];
+      const { tgl, id_induk, jantan, betina, tgl_kawin, id_pejantan } = formFields;
+      data.kelahiran = [...(data.kelahiran || []), { tgl, id_induk, jantan: parseInt(jantan), betina: parseInt(betina), tgl_kawin, id_pejantan }];
       showToast('🐣 Kelahiran tercatat!');
+    } else if (activeModal === 'modal_perkawinan') {
+      const { tgl, id_induk, id_pejantan, status } = formFields;
+      data.perkawinan = [...(data.perkawinan || []), { tgl, id_induk, id_pejantan, status }];
+      showToast('💖 Perkawinan tercatat!');
     } else if (activeModal === 'modal_jual_breeding') {
       const { tgl, kategori, jenis, jml, harga_ekor } = formFields;
       if (!jml || !harga_ekor) return;
@@ -1451,6 +2162,21 @@ export default function DashboardPage() {
       csv += `${p.tgl || ''},${p.kg || p.jml || p.liter || ''},${p.total || 0}\n`;
     });
 
+    if (cycle.mode === 'ikan_pembesaran' || cycle.mode === 'ikan_pembibitan') {
+      csv += `\nSAMPLING PERTUMBUHAN\n`;
+      csv += `Tanggal,Jumlah Sampel,Bobot Total (g),Estimasi Populasi,Mati,Stdev (g),CV (%)\n`;
+      (cycle.data?.sampling || []).forEach((s: any) => {
+        const rata = parseFloat(s.bobot_total_g) / Math.max(1, parseFloat(s.jml_sampel) || 1);
+        const cvVal = s.stdev_g && rata > 0 ? (parseFloat(s.stdev_g) / rata) * 100 : 0;
+        csv += `${s.tgl || ''},${s.jml_sampel || 0},${s.bobot_total_g || 0},${s.jml_estimasi || 0},${s.jml_mati || 0},${s.stdev_g || 0},${cvVal.toFixed(1)}%\n`;
+      });
+      csv += `\nMONITORING KUALITAS AIR\n`;
+      csv += `Tanggal,Suhu,pH,DO,Amonia,Nitrit,Kecerahan,Volume Flok,C/N Ratio\n`;
+      (cycle.data?.kualitas_air || []).forEach((w: any) => {
+        csv += `${w.tgl || ''},${w.suhu || 0},${w.ph || 0},${w.do || 0},${w.amonia || 0},${w.nitrit || 0},${w.kecerahan || 0},${w.volume_flok || 0},${w.cn_ratio || 0}\n`;
+      });
+    }
+
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -1479,6 +2205,10 @@ export default function DashboardPage() {
         const harga = parseFloat(next.harga_liter) || 0;
         setPreviewVal(formatRp(liter * harga));
       } else if (activeModal === 'modal_jual_breeding') {
+        const jml = parseFloat(next.jml) || 0;
+        const harga = parseFloat(next.harga_ekor) || 0;
+        setPreviewVal(formatRp(jml * harga));
+      } else if (activeModal === 'modal_jual_benih') {
         const jml = parseFloat(next.jml) || 0;
         const harga = parseFloat(next.harga_ekor) || 0;
         setPreviewVal(formatRp(jml * harga));
@@ -1601,10 +2331,10 @@ export default function DashboardPage() {
   if (!activeCycle) return null;
 
   const tabs = getTabsForMode(activeCycle.mode);
-  const stats = calculateStats();
+  const stats = calculateStats;
 
   // Get Calendar list based on active conditions
-  const startDayTime = activeCycle.data?.modal?.tgl_doc || activeCycle.data?.modal?.tgl_pullet || activeCycle.data?.modal?.tgl_beli || activeCycle.createdAt;
+  const startDayTime = activeCycle.data?.modal?.tgl_doc || activeCycle.data?.modal?.tgl_pullet || activeCycle.data?.modal?.tgl_beli || activeCycle.data?.modal?.tgl_indukan || activeCycle.data?.modal?.tgl_tebar || activeCycle.data?.modal?.tgl_mulai || activeCycle.createdAt;
   const parsedStartDate = new Date(startDayTime);
   const calendarTasks = getCalendarTasks(activeCycle.animal, intToScale(activeCycle.scale), parsedStartDate);
 
@@ -1849,19 +2579,101 @@ export default function DashboardPage() {
         {stats && activeTab === 'dashboard' && (
           <div className="space-y-8 animate-fadeIn">
             
-            {/* Laba Bersih Card */}
-            <div className={`p-8 rounded-3xl relative overflow-hidden shadow-2xl border ${
-              stats.laba >= 0 
-                ? 'bg-gradient-to-br from-emerald-600/90 to-teal-700/95 text-white border-emerald-500/20' 
-                : 'bg-gradient-to-br from-rose-700/90 to-red-800/95 text-white border-rose-500/20'
-            }`}>
-              <div className="absolute -top-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl animate-pulse" />
-              <span className="text-xs font-bold uppercase tracking-wider opacity-85">Laba Bersih Siklus Ini</span>
-              <h3 className="text-5xl font-black mt-2 tracking-tight">{formatRp(stats.laba)}</h3>
-              <p className="text-xs mt-3 opacity-90 font-bold flex items-center gap-1.5">
-                {stats.laba >= 0 ? '🎉 Selamat! Hasil panen menghasilkan profit.' : '⚠️ Evaluasi pengeluaran Anda untuk menekan kerugian.'}
-              </p>
+            {/* Laba Bersih Card (Dual: Akuntansi vs Cashflow) */}
+            <div className="bg-[#0B1519] border border-teal-500/10 p-8 rounded-3xl relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl" />
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 divide-y md:divide-y-0 md:divide-x divide-slate-800/80">
+                <div className="space-y-3">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">📊 Laba Akuntansi (Accounting Profit)</span>
+                  <h3 className={`text-4xl font-black font-mono tracking-tight ${stats.laba >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {formatRp(stats.laba)}
+                  </h3>
+                  <div className="text-[10px] text-slate-450 font-semibold space-y-1 font-mono">
+                    <div className="flex justify-between">
+                      <span>Total Modal (Akurat):</span>
+                      <span>{formatRp(stats.totalModalAkurat)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Penyusutan Kandang:</span>
+                      <span className="text-slate-500">-{formatRp(stats.depresiasi)}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="pt-6 md:pt-0 md:pl-8 space-y-3">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">💵 Laba Cashflow (Aliran Kas)</span>
+                  <h3 className={`text-4xl font-black font-mono tracking-tight ${stats.labaCash >= 0 ? 'text-teal-400' : 'text-rose-400'}`}>
+                    {formatRp(stats.labaCash)}
+                  </h3>
+                  <div className="text-[10px] text-slate-450 font-semibold space-y-1 font-mono">
+                    <div className="flex justify-between">
+                      <span>Total Pengeluaran Kas:</span>
+                      <span>{formatRp(stats.totalModalCash)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>EBITDA Operasional:</span>
+                      <span className="text-teal-400/90">{formatRp(stats.ebitda)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-slate-900/60 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-semibold text-slate-400 relative z-10">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-2.5 w-2.5 relative">
+                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${stats.laba >= 0 ? 'bg-emerald-400' : 'bg-rose-400'}`}></span>
+                    <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${stats.laba >= 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                  </span>
+                  <span>{stats.laba >= 0 ? 'Kinerja keuangan profitabel secara akuntansi.' : 'Kinerja keuangan mengalami defisit.'}</span>
+                </div>
+                {stats.depresiasi > 0 && (
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    *Penyusutan dihitung per siklus (umur kandang {activeCycle.data?.modal?.kandang_manfaat_tahun || '10'} thn)
+                  </span>
+                )}
+              </div>
             </div>
+
+            {/* Sprint 3 Dashboard Banners */}
+            {activeCycle.mode === 'broiler' && (
+              <div className="space-y-3">
+                {stats.totalKgPanen === 0 && stats.prediksiPanen && (
+                  <div className="bg-teal-500/10 border border-teal-500/20 text-teal-400 p-4 rounded-2xl flex items-center justify-between font-semibold text-xs animate-fadeIn">
+                    <div className="flex items-center gap-2">
+                      <span>🗓️</span>
+                      <span>
+                        Estimasi Panen Siklus ini: <strong className="text-white">{new Date(stats.prediksiPanen).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong> (Pada umur hari ke-35)
+                      </span>
+                    </div>
+                    <span className="text-[10px] bg-teal-500/25 px-2.5 py-0.5 rounded-lg text-white font-mono uppercase tracking-wider font-bold">Broiler</span>
+                  </div>
+                )}
+
+                {stats.alertLitterKuning && (
+                  <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
+                    <span>🟡</span>
+                    <span><strong>Peringatan Litter (Sekam):</strong> Litter sudah memasuki siklus ke-<strong>{activeCycle.data?.modal?.siklus_litter_ke}</strong>. Pertimbangkan untuk mengganti litter sekam sepenuhnya untuk menjaga kualitas udara dan mencegah penyebaran bakteri jahat.</span>
+                  </div>
+                )}
+
+                {stats.alertDowntimeMerah && (
+                  <div className="bg-rose-500/10 border border-rose-500/20 text-rose-450 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs">
+                    <span>🔴</span>
+                    <span><strong>Kritis (Down-time Kandang):</strong> Waktu kosong kandang (downtime) hanya <strong>{activeCycle.data?.modal?.down_time_hari} hari</strong> (Target standar industri: minimal 14 hari). Risiko tinggi penularan penyakit sisa siklus sebelumnya!</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* HDP Drop Alert for Layer */}
+            {(activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && stats.alertDrop && (
+              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-450 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
+                <span>⚠️</span>
+                <span><strong>Peringatan Produksi Telur Drop:</strong> Produksi (HDP) menurun tajam sebesar <strong className="text-rose-400">{(stats.dropPct || 0).toFixed(1)}%</strong> dibanding minggu lalu! Segera evaluasi kecukupan pakan, air minum, atau tanda-tanda penyakit pada ayam.</span>
+              </div>
+            )}
 
             {/* Visual Charts Layout (Responsive Grid) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1869,8 +2681,9 @@ export default function DashboardPage() {
               {/* Stat Cards */}
               <div className="md:col-span-2 grid grid-cols-2 gap-4">
                 <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl hover:border-slate-800 transition-colors">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Modal</span>
-                  <span className="text-xl font-extrabold text-rose-400 mt-2 block font-mono">{formatRp(stats.totalModal)}</span>
+                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Modal (Akurat vs Cash)</span>
+                  <span className="text-xl font-extrabold text-rose-400 mt-2 block font-mono">{formatRp(stats.totalModalAkurat)}</span>
+                  <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold font-mono">Cashflow: {formatRp(stats.totalModalCash)}</span>
                 </div>
                 <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl hover:border-slate-800 transition-colors">
                   <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Pendapatan</span>
@@ -1881,25 +2694,157 @@ export default function DashboardPage() {
                 {activeCycle.mode === 'broiler' && (
                   <>
                     <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / kg</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hpp)}</span>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / kg (Akurat vs Cash)</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppAkurat)}</span>
+                      <span className="text-[10px] text-slate-400 block mt-1.5 font-medium font-mono flex justify-between">
+                        <span>HPP Cashflow:</span>
+                        <span>{formatRp(stats.hpp)}</span>
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Pakan (Target)</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                        {(stats.fcr || 0).toFixed(2)}{' '}
+                        <span className="text-xs text-slate-500 font-semibold font-sans">
+                          ({stats.fcrTarget.min}-{stats.fcrTarget.max})
+                        </span>
+                      </span>
+                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                        {stats.fcr >= stats.fcrTarget.min && stats.fcr <= stats.fcrTarget.max ? (
+                          <span className="text-emerald-400">Target Tercapai</span>
+                        ) : stats.fcr < stats.fcrTarget.min && stats.fcr > 0 ? (
+                          <span className="text-teal-400">Sangat Efisien</span>
+                        ) : stats.fcr === 0 ? (
+                          <span className="text-slate-550">Belum Ada Data</span>
+                        ) : (
+                          <span className="text-rose-400">Tidak Efisien</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">ADG (Rata-rata Gain)</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                        {(stats.adg || 0).toFixed(1)} <span className="text-xs text-slate-500">g/hari</span>
+                      </span>
+                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                        {stats.adg >= 50 && stats.adg <= 60 ? (
+                          <span className="text-emerald-400">Target Ideal (50-60g)</span>
+                        ) : stats.adg > 60 ? (
+                          <span className="text-teal-400">Sangat Cepat</span>
+                        ) : stats.adg === 0 ? (
+                          <span className="text-slate-550">Belum Ada Data</span>
+                        ) : (
+                          <span className="text-yellow-400">Kurang Optimal (&lt;50g)</span>
+                        )}
+                      </span>
                     </div>
                     <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Pakan</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.fcr || 0).toFixed(2)}</span>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Berat Rata / Ekor</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">
+                        {(stats.bbRata || 0).toFixed(2)} <span className="text-xs text-slate-500">kg</span>
+                      </span>
+                      <span className="text-[10px] text-slate-450 block mt-1.5 font-semibold">
+                        Target panen: 1.4 - 2.0 kg
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold" title="European Poultry Efficiency Factor">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider flex items-center gap-1">
+                        EPEF (IP)
+                        <span className="cursor-help text-slate-450 bg-slate-800/80 px-1 rounded text-[8px]" title="European Poultry Efficiency Factor, setara Indeks Performa">?</span>
+                      </span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                        {(stats.epef || 0).toFixed(0)}
+                      </span>
+                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                        {stats.epef >= 300 ? (
+                          <span className="text-emerald-400">Sangat Baik (&gt;300)</span>
+                        ) : stats.epef > 0 ? (
+                          <span className="text-yellow-400">Cukup (Target &gt;300)</span>
+                        ) : (
+                          <span className="text-slate-550">Belum Ada Data</span>
+                        )}
+                      </span>
                     </div>
                   </>
                 )}
 
-                {activeCycle.mode === 'petelur' && (
+                {activeCycle.mode === 'bebek_pedaging' && (
                   <>
                     <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Hen Day %</span>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / kg (Akurat vs Cash)</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppAkurat)}</span>
+                      <span className="text-[10px] text-slate-400 block mt-1.5 font-medium font-mono flex justify-between">
+                        <span>HPP Cashflow:</span>
+                        <span>{formatRp(stats.hpp)}</span>
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Pakan (Target)</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                        {(stats.fcr || 0).toFixed(2)}{' '}
+                        <span className="text-xs text-slate-500 font-semibold font-sans">
+                          ({stats.fcrTarget.min}-{stats.fcrTarget.max})
+                        </span>
+                      </span>
+                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                        {stats.fcr >= stats.fcrTarget.min && stats.fcr <= stats.fcrTarget.max ? (
+                          <span className="text-emerald-400">Target Tercapai</span>
+                        ) : stats.fcr < stats.fcrTarget.min && stats.fcr > 0 ? (
+                          <span className="text-teal-400">Sangat Efisien</span>
+                        ) : stats.fcr === 0 ? (
+                          <span className="text-slate-550">Belum Ada Data</span>
+                        ) : (
+                          <span className="text-rose-400">Tidak Efisien</span>
+                        )}
+                      </span>
+                    </div>
+                  </>
+                )}
+
+                {(activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">
+                        {activeCycle.mode === 'bebek_petelur' ? 'Duck Day %' : 'Hen Day %'}
+                      </span>
                       <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.henDay || 0).toFixed(1)}%</span>
+                      <span className="text-[10px] text-slate-550 block mt-1.5 font-semibold">
+                        Kualitas produksi telur harian
+                      </span>
                     </div>
                     <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Butir</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppButir)}</span>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Butir (Akurat vs Cash)</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppButirAkurat)}</span>
+                      <span className="text-[10px] text-slate-450 block mt-1.5 font-medium font-mono flex justify-between">
+                        <span>HPP Cashflow:</span>
+                        <span>{formatRp(stats.hppButir)}</span>
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Berat Rata Telur</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                        {(stats.beratRataTelur || 0).toFixed(1)} <span className="text-xs text-slate-500">g</span>
+                      </span>
+                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                        {stats.beratRataTelur >= 60 && stats.beratRataTelur <= 65 ? (
+                          <span className="text-emerald-400">Target Ideal (60-65g)</span>
+                        ) : stats.beratRataTelur > 0 && stats.beratRataTelur < 60 ? (
+                          <span className="text-yellow-400">Ukuran Kecil (&lt;60g)</span>
+                        ) : stats.beratRataTelur > 65 ? (
+                          <span className="text-teal-400">Ukuran Jumbo (&gt;65g)</span>
+                        ) : (
+                          <span className="text-slate-550">Belum Ada Data</span>
+                        )}
+                      </span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Biaya Pakan / Butir</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">
+                        {formatRp(stats.biayaPakanPerButir)}
+                      </span>
+                      <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold">
+                        Efisiensi konversi pakan harian
+                      </span>
                     </div>
                   </>
                 )}
@@ -1927,6 +2872,26 @@ export default function DashboardPage() {
                       <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Lama Penggemukan</span>
                       <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.lamaHari} Hari</span>
                     </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Kebutuhan BK / Hari</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{(stats.BK_kebutuhan || 0).toFixed(1)} <span className="text-xs text-slate-500">kg/hari</span></span>
+                      <span className="text-[10px] text-slate-550 block mt-1.5 font-semibold">*3.5% dari Bobot Awal</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">IOFC (Income over Feed Cost)</span>
+                      <span className="text-xl font-extrabold text-emerald-400 mt-2 block font-mono">{formatRp(stats.iofc)}</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Margin per Ekor</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{formatRp(stats.marginPerEkor)}</span>
+                    </div>
+                    {stats.totalKgPanen === 0 && (
+                      <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Prediksi BB Panen</span>
+                        <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{(stats.prediksiPanen_BB || 0).toFixed(1)} kg</span>
+                        <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold">Target: {activeCycle.data?.modal?.hari_target_panen || 120} hari</span>
+                      </div>
+                    )}
                   </>
                 )}
 
@@ -1937,8 +2902,17 @@ export default function DashboardPage() {
                       <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.produksiRata || 0).toFixed(1)} L/hari</span>
                     </div>
                     <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Liter</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppLiter)}</span>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Liter (Akurat vs Cash)</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppLiterAkurat)}</span>
+                      <span className="text-[10px] text-slate-450 block mt-1.5 font-semibold font-mono">Cashflow HPP: {formatRp(stats.hppLiter)}</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCM 4% (Fat Corrected)</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{stats.FCM !== null ? stats.FCM.toFixed(1) + ' L' : 'N/A'}</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Biaya Pakan / Liter</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.biayaPakanPerLiter)}</span>
                     </div>
                   </>
                 )}
@@ -1953,13 +2927,78 @@ export default function DashboardPage() {
                       <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Kelahiran</span>
                       <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.totalLahir} ekor</span>
                     </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Conception Rate (CR)</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.conceptionRate || 0).toFixed(1)}%</span>
+                      <span className="text-[10px] text-slate-550 block mt-1.5 font-semibold">Target: &gt;80%</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Calving Interval</span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.calvingInterval > 0 ? stats.calvingInterval + ' Hari' : '-'}</span>
+                      <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold">Target: &lt;365 Hari</span>
+                    </div>
                   </>
+                )}
+
+                {(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
+                  <>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">
+                        {activeCycle.mode === 'ikan_pembesaran' ? 'HPP / kg (Akurat vs Cash)' : 'HPP / Ekor (Akurat vs Cash)'}
+                      </span>
+                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppAkurat)}</span>
+                      <span className="text-[10px] text-slate-450 block mt-1.5 font-semibold font-mono">Cashflow HPP: {formatRp(stats.hpp)}</span>
+                    </div>
+                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Ikan (Target)</span>
+                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                        {(stats.fcr || 0).toFixed(2)}{' '}
+                        <span className="text-xs text-slate-500 font-semibold font-sans">
+                          ({stats.fcrTarget.min}-{stats.fcrTarget.max})
+                        </span>
+                      </span>
+                    </div>
+                  </>
+                )}
+
+                {/* Water tracker card for duck modes */}
+                {stats.isBebek && (
+                  <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl col-span-2 font-semibold">
+                    <span className="text-[10px] font-bold text-slate-550 uppercase block tracking-wider">Pelacakan Konsumsi Air (Aktual vs Estimasi)</span>
+                    <div className="flex items-baseline gap-2 mt-2">
+                      <span className="text-xl font-extrabold text-slate-200 font-mono">
+                        {stats.airAktual || 0} L / {Math.round(stats.airEstimasi || 0)} L
+                      </span>
+                      <span className={`px-2.5 py-0.5 rounded text-[9px] font-black uppercase ${stats.waterAlert ? 'bg-rose-500/10 text-rose-455 border border-rose-500/20 animate-pulse' : 'bg-emerald-500/10 text-emerald-450'}`}>
+                        {stats.waterAlert ? '🚨 DROP >30%' : '✅ NORMAL'}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal">
+                      *Estimasi pakan bebek dikali {activeCycle.mode === 'bebek_petelur' ? '2.2' : '2.0'}. Jika konsumsi drop, segera cek kesehatan bebek!
+                    </span>
+                  </div>
+                )}
+
+                {/* Lighting Program Card for Broiler/Layer */}
+                {(activeCycle.mode === 'broiler' || activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && (
+                  <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl col-span-2 font-semibold">
+                    <span className="text-[10px] font-bold text-slate-550 uppercase block tracking-wider flex items-center gap-1.5">
+                      💡 Program Pencahayaan Otomatis (Lighting Program)
+                    </span>
+                    <div className="mt-2 text-sm font-bold text-slate-200">
+                      Program Aktif (Umur {stats.umur} Hari):{' '}
+                      <span className="text-teal-400">{stats.lightingProgram}</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal">
+                      *Manajemen cahaya optimal membantu menyeimbangkan asupan pakan harian dan waktu istirahat organ pencernaan.
+                    </span>
+                  </div>
                 )}
               </div>
 
               {/* Dynamic Chart (Line or Circular Gauge) */}
               <div className="w-full">
-                {['broiler', 'penggemukan'].includes(activeCycle.mode) ? (
+                {['broiler', 'bebek_pedaging', 'ikan_pembesaran', 'ikan_pembibitan', 'penggemukan'].includes(activeCycle.mode) ? (
                   renderSVGGauge(stats.srPct || 100, stats.mati || 0, stats.jmlDoc || 0)
                 ) : (
                   renderSVGLineChart()
@@ -2038,6 +3077,59 @@ export default function DashboardPage() {
                   <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Laba Bersih (Net Profit)</span>
                   <span className="text-xl font-extrabold text-emerald-400 mt-1.5 block font-mono">{formatRp(stats.laba)}</span>
                   <span className="text-[9px] text-slate-500 mt-1 block leading-normal">Laba bersih setelah dikurangi akumulasi penyusutan kandang.</span>
+                </div>
+              </div>
+
+              {/* Indikator Kelayakan Finansial Lanjutan */}
+              <div className="border-t border-slate-850/60 pt-5 space-y-3">
+                <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block font-sans">
+                  📈 Indikator Kelayakan Finansial Lanjutan
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-semibold">
+                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                    <div>
+                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">% Pakan dari Modal</span>
+                      <span className="text-slate-200 font-mono mt-1.5 block font-bold text-sm">
+                        {stats.pakanPct?.toFixed(1) || '0.0'}%
+                      </span>
+                    </div>
+                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                      Porsi biaya pakan terhadap total modal operasional.
+                    </span>
+                  </div>
+                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                    <div>
+                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">% TK dari Modal</span>
+                      <span className="text-slate-200 font-mono mt-1.5 block font-bold text-sm">
+                        {stats.tkPct?.toFixed(1) || '0.0'}%
+                      </span>
+                    </div>
+                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                      Porsi biaya tenaga kerja terhadap total modal operasional.
+                    </span>
+                  </div>
+                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                    <div>
+                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">IOFC (Income Over Feed Cost)</span>
+                      <span className="text-emerald-450 font-mono mt-1.5 block font-bold text-sm">
+                        {formatRp(stats.iofc)}
+                      </span>
+                    </div>
+                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                      Pendapatan kotor dikurangi total pengeluaran biaya pakan.
+                    </span>
+                  </div>
+                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                    <div>
+                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">BEP Harga Jual</span>
+                      <span className="text-teal-400 font-mono mt-1.5 block font-bold text-sm">
+                        {formatRp(stats.bepHarga)}
+                      </span>
+                    </div>
+                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                      Titik impas harga jual minimum per kg/butir/liter/ekor.
+                    </span>
+                  </div>
                 </div>
               </div>
 
@@ -2145,6 +3237,340 @@ export default function DashboardPage() {
                     }}
                     className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Siklus Litter (Sekam) Ke</label>
+                    <input
+                      type="number"
+                      placeholder="Contoh: 1"
+                      value={activeCycle.data?.modal?.siklus_litter_ke || '1'}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), siklus_litter_ke: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Down-time Kandang (Hari)</label>
+                    <input
+                      type="number"
+                      placeholder="Contoh: 14"
+                      value={activeCycle.data?.modal?.down_time_hari || '14'}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), down_time_hari: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activeCycle.mode === 'bebek_pedaging' && (
+              <div className="space-y-4 font-semibold">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk DOD</label>
+                  <input
+                    type="date"
+                    value={activeCycle.data?.modal?.tgl_doc || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), tgl_doc: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah DOD (Ekor)</label>
+                  <input
+                    type="number"
+                    placeholder="Contoh: 500"
+                    value={activeCycle.data?.modal?.jml_doc || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), jml_doc: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                  <input
+                    type="number"
+                    placeholder="Contoh: 10000"
+                    value={activeCycle.data?.modal?.harga_doc || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), harga_doc: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Strain Bebek</label>
+                  <select
+                    value={activeCycle.data?.modal?.strain_bebek || 'Serati'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), strain_bebek: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-250 font-semibold cursor-pointer"
+                  >
+                    {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
+                      <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Umur Bibit saat Masuk (Hari)</label>
+                  <input
+                    type="number"
+                    value={activeCycle.data?.modal?.umur_bibit || '1'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), umur_bibit: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                  />
+                </div>
+              </div>
+            )}
+
+            {activeCycle.mode === 'bebek_petelur' && (
+              <div className="space-y-4 font-semibold">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk Bayah</label>
+                  <input
+                    type="date"
+                    value={activeCycle.data?.modal?.tgl_pullet || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), tgl_pullet: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Bebek Petelur (Ekor)</label>
+                  <input
+                    type="number"
+                    placeholder="Contoh: 500"
+                    value={activeCycle.data?.modal?.jml_ekor || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                  <input
+                    type="number"
+                    placeholder="Contoh: 12000"
+                    value={activeCycle.data?.modal?.harga_ekor || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Strain Bebek</label>
+                  <select
+                    value={activeCycle.data?.modal?.strain_bebek || 'Mojosari'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), strain_bebek: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-250 font-semibold cursor-pointer"
+                  >
+                    {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
+                      <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Umur Bayah saat Masuk (Hari)</label>
+                  <input
+                    type="number"
+                    value={activeCycle.data?.modal?.umur_bibit || '150'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), umur_bibit: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                  />
+                </div>
+              </div>
+            )}
+
+            {(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
+              <div className="space-y-4 font-semibold">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Tebar Benih</label>
+                  <input
+                    type="date"
+                    value={activeCycle.data?.modal?.tgl_tebar || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), tgl_tebar: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Jenis Ikan</label>
+                    <select
+                      value={activeCycle.data?.modal?.jenis_ikan || 'lele'}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), jenis_ikan: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-200 font-semibold cursor-pointer"
+                    >
+                      {['lele', 'nila', 'gurame', 'mas', 'patin', 'lainnya'].map((ik) => (
+                        <option key={ik} value={ik} className="bg-slate-900 text-slate-100">{ik.toUpperCase()}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Sistem Kolam</label>
+                    <select
+                      value={activeCycle.data?.modal?.sistem_kolam || 'bioflok'}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), sistem_kolam: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-200 font-semibold cursor-pointer"
+                    >
+                      {['konvensional', 'bioflok', 'RAS'].map((sys) => (
+                        <option key={sys} value={sys} className="bg-slate-900 text-slate-100">{sys.toUpperCase()}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Tipe Wadah/Kolam</label>
+                  <select
+                    value={activeCycle.data?.modal?.tipe_kolam || 'terpal'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), tipe_kolam: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-200 font-semibold cursor-pointer"
+                  >
+                    {['tanah', 'terpal', 'beton', 'bioflok', 'RAS', 'keramba', 'air_deras'].map((t) => (
+                      <option key={t} value={t} className="bg-slate-900 text-slate-100">{t.toUpperCase()}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-550 block uppercase">Panjang (m)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.panjang_m || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), panjang_m: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-550 block uppercase">Lebar (m)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.lebar_m || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), lebar_m: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-550 block uppercase">Tinggi Air (m)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.tinggi_air_m || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), tinggi_air_m: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-955/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Tebar Benih (Ekor)</label>
+                  <input
+                    type="number"
+                    value={activeCycle.data?.modal?.jml_tebar || ''}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), jml_tebar: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-955/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Bobot Awal (g/ekor)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.bobot_awal_g || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), bobot_awal_g: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Harga per Benih (Rp)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.harga_benih || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), harga_benih: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Persiapan Air (Rp)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.biaya_persiapan_air || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), biaya_persiapan_air: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Aerasi / Pompa (Rp)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.biaya_aerasi_pompa || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), biaya_aerasi_pompa: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-955/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    />
+                  </div>
                 </div>
               </div>
             )}
@@ -2287,6 +3713,19 @@ export default function DashboardPage() {
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
                     className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Target Hari Panen</label>
+                  <input
+                    type="number"
+                    placeholder="Contoh: 120"
+                    value={activeCycle.data?.modal?.hari_target_panen || '120'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), hari_target_panen: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
                   />
                 </div>
               </div>
@@ -2523,10 +3962,41 @@ export default function DashboardPage() {
                 </div>
               )}
 
+              {!(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Panjang Kandang (Meter)</label>
+                    <input
+                      type="number"
+                      placeholder="Contoh: 10"
+                      value={activeCycle.data?.modal?.panjang_m || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), panjang_m: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Lebar Kandang (Meter)</label>
+                    <input
+                      type="number"
+                      placeholder="Contoh: 8"
+                      value={activeCycle.data?.modal?.lebar_m || ''}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), lebar_m: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-550 block uppercase tracking-wider">Masa Manfaat Kandang (Tahun)</label>
+                <label className="text-[10px] font-black text-slate-555 block uppercase tracking-wider">Masa Manfaat Kandang (Tahun)</label>
                 <select
-                  value={activeCycle.data?.modal?.kandang_manfaat_tahun || '5'}
+                  value={activeCycle.data?.modal?.kandang_manfaat_tahun || '10'}
                   onChange={(e) => {
                     const modal = { ...(activeCycle.data?.modal || {}), kandang_manfaat_tahun: e.target.value };
                     handleSaveCycleData({ ...activeCycle.data, modal });
@@ -2540,16 +4010,31 @@ export default function DashboardPage() {
                   ))}
                 </select>
               </div>
+
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-555 block uppercase tracking-wider">Perkiraan Siklus per Tahun</label>
+                <input
+                  type="number"
+                  value={activeCycle.data?.modal?.siklus_per_thn || '6'}
+                  onChange={(e) => {
+                    const modal = { ...(activeCycle.data?.modal || {}), siklus_per_thn: e.target.value };
+                    handleSaveCycleData({ ...activeCycle.data, modal });
+                  }}
+                  className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                />
+              </div>
             </div>
 
             <div className="bg-[#0c1a1f] border border-teal-500/10 p-5 rounded-2xl text-xs font-semibold text-slate-400">
               <div className="text-[10px] font-bold block uppercase opacity-70 mb-2">Rincian Nilai Modal Awal:</div>
               <div className="text-xl font-black text-teal-400 font-mono">
                 {formatRp(
-                  activeCycle.mode === 'broiler'
+                  activeCycle.mode === 'broiler' || activeCycle.mode === 'bebek_pedaging'
                     ? (parseFloat(activeCycle.data?.modal?.jml_doc) || 0) * (parseFloat(activeCycle.data?.modal?.harga_doc) || 0) + (parseFloat(activeCycle.data?.modal?.biaya_kandang) || 0)
-                    : activeCycle.mode === 'petelur'
+                    : activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur'
                     ? (parseFloat(activeCycle.data?.modal?.jml_ekor) || 0) * (parseFloat(activeCycle.data?.modal?.harga_ekor) || 0) + (parseFloat(activeCycle.data?.modal?.biaya_kandang) || 0)
+                    : (activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan')
+                    ? (parseFloat(activeCycle.data?.modal?.jml_tebar) || 0) * (parseFloat(activeCycle.data?.modal?.harga_benih) || 0) + (parseFloat(activeCycle.data?.modal?.biaya_kandang) || 0) + (parseFloat(activeCycle.data?.modal?.biaya_persiapan_air) || 0) + (parseFloat(activeCycle.data?.modal?.biaya_aerasi_pompa) || 0)
                     : activeCycle.mode === 'pembibitan_unggas'
                     ? ((parseFloat(activeCycle.data?.modal?.jml_betina) || 0) + (parseFloat(activeCycle.data?.modal?.jml_jantan) || 0)) * (parseFloat(activeCycle.data?.modal?.harga_indukan) || 0)
                     : activeCycle.mode === 'penggemukan'
@@ -2566,7 +4051,7 @@ export default function DashboardPage() {
         )}        {/* --- TAB: BIAYA OPERASIONAL --- */}
         {activeTab === 'biaya' && (
           <div className="space-y-6 animate-fadeIn">
-            {(activeCycle.mode === 'broiler' || activeCycle.mode === 'petelur') ? (
+            {(['broiler', 'petelur', 'bebek_pedaging', 'bebek_petelur', 'ikan_pembesaran', 'ikan_pembibitan'].includes(activeCycle.mode)) ? (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Pakan */}
@@ -2712,6 +4197,151 @@ export default function DashboardPage() {
                 </button>
               </div>
             )}
+
+            {/* Kategori SDM & Utilitas */}
+            <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl mt-6">
+              <h4 className="font-bold text-slate-200 mb-4 flex items-center gap-2">
+                <span>⚡ SDM & Utilitas</span>
+                <span className="text-[10px] text-slate-550 font-normal font-sans">Biaya operasional siklus</span>
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Tenaga Kerja (Rp/Hari)</label>
+                  <input
+                    type="number"
+                    value={activeCycle.data?.modal?.biaya_tk_harian || '0'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), biaya_tk_harian: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                  />
+                </div>
+                
+                {/* Listrik Input */}
+                {!(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') ? (
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Listrik (Rp/Siklus)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.biaya_listrik || '0'}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), biaya_listrik: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Tarif Listrik (Rp/kWh)</label>
+                    <input
+                      type="number"
+                      value={activeCycle.data?.modal?.aerasi_tarif || '1450'}
+                      onChange={(e) => {
+                        const modal = { ...(activeCycle.data?.modal || {}), aerasi_tarif: e.target.value };
+                        handleSaveCycleData({ ...activeCycle.data, modal });
+                      }}
+                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    />
+                  </div>
+                )}
+
+                {/* Air Input */}
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Air (Rp/Siklus)</label>
+                  <input
+                    type="number"
+                    value={activeCycle.data?.modal?.biaya_air || '0'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), biaya_air: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* Khusus Bioflok / RAS Ikan */}
+              {(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
+                <div className="mt-4 pt-4 border-t border-slate-850/60 space-y-4">
+                  <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block">🔧 Input Tambahan Sistem {(activeCycle.data?.modal?.sistem_kolam || 'konvensional').toUpperCase()}</span>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {((activeCycle.data?.modal?.sistem_kolam === 'bioflok' || activeCycle.data?.modal?.sistem_kolam === 'RAS')) && (
+                      <>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Daya Kipas/Aerasi (Watt)</label>
+                          <input
+                            type="number"
+                            value={activeCycle.data?.modal?.aerasi_watt || '100'}
+                            onChange={(e) => {
+                              const modal = { ...(activeCycle.data?.modal || {}), aerasi_watt: e.target.value };
+                              handleSaveCycleData({ ...activeCycle.data, modal });
+                            }}
+                            className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Durasi Aerasi (Jam/Hari)</label>
+                          <input
+                            type="number"
+                            value={activeCycle.data?.modal?.aerasi_jam || '24'}
+                            onChange={(e) => {
+                              const modal = { ...(activeCycle.data?.modal || {}), aerasi_jam: e.target.value };
+                              handleSaveCycleData({ ...activeCycle.data, modal });
+                            }}
+                            className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                          />
+                        </div>
+                        <div className="p-3.5 bg-teal-500/5 rounded-xl border border-teal-500/10 text-[10px] text-teal-400 font-bold flex flex-col justify-center font-mono">
+                          <div className="flex justify-between">
+                            <span>Estimasi Listrik:</span>
+                            <span>
+                              {formatRp(
+                                ((parseFloat(activeCycle.data?.modal?.aerasi_watt) || 100) / 1000) *
+                                  (parseFloat(activeCycle.data?.modal?.aerasi_jam) || 24) *
+                                  (parseFloat(activeCycle.data?.modal?.aerasi_tarif) || 1450)
+                              )} / hari
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {activeCycle.data?.modal?.sistem_kolam === 'bioflok' && (
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Molase & Probiotik Rutin (Rp)</label>
+                        <input
+                          type="number"
+                          value={activeCycle.data?.modal?.biaya_molase_probiotik || '0'}
+                          onChange={(e) => {
+                            const modal = { ...(activeCycle.data?.modal || {}), biaya_molase_probiotik: e.target.value };
+                            handleSaveCycleData({ ...activeCycle.data, modal });
+                          }}
+                          className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-250 font-semibold"
+                        />
+                      </div>
+                    )}
+
+                    {activeCycle.data?.modal?.sistem_kolam === 'RAS' && (
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Filter & Media Biofilter (Rp)</label>
+                        <input
+                          type="number"
+                          value={activeCycle.data?.modal?.biaya_filter_media || '0'}
+                          onChange={(e) => {
+                            const modal = { ...(activeCycle.data?.modal || {}), biaya_filter_media: e.target.value };
+                            handleSaveCycleData({ ...activeCycle.data, modal });
+                          }}
+                          className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-555 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-250 font-semibold"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -2854,21 +4484,6 @@ export default function DashboardPage() {
 
               {activeCycle.mode === 'breeding_ruminansia' && (
                 <>
-                  {(activeCycle.data?.kelahiran || []).length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada kelahiran tercatat.</div>
-                  ) : (
-                    (activeCycle.data?.kelahiran || []).map((k: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
-                        <div>
-                          <div className="text-xs font-bold text-slate-200 font-sans">{k.tgl} — ID Induk: {k.id_induk || '-'}</div>
-                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Anak Jantan: {k.jantan} ekor · Anak Betina: {k.betina} ekor</div>
-                        </div>
-                        <button onClick={() => handleDeleteListItem('kelahiran', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
-                      </div>
-                    ))
-                  )}
-                  <button
-                    onClick={() => openModalForm('modal_kelahiran')}
                     className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Kelahiran Baru
@@ -2979,6 +4594,32 @@ export default function DashboardPage() {
                         onChange={(e) => setSimHarga(parseInt(e.target.value))}
                         className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
                       />
+                      {/* BEP / HPP Info Reference */}
+                      {stats && (
+                        <div className="bg-teal-955/20 border border-teal-500/10 p-4 rounded-2xl text-xs font-semibold text-slate-300 font-mono space-y-1.5 mt-2">
+                          <div className="flex justify-between">
+                            <span className="text-slate-400">Harga Simulasi:</span>
+                            <span className="text-white font-bold">Rp {currentHarga.toLocaleString('id-ID')}</span>
+                          </div>
+                          <div className="flex justify-between border-b border-slate-850/60 pb-1.5">
+                            <span className="text-slate-400">HPP / Titik BEP (Akurat):</span>
+                            <span className="text-teal-400 font-bold">Rp {Math.round(stats.bepHarga || stats.hppAkurat || 0).toLocaleString('id-ID')}</span>
+                          </div>
+                          {(() => {
+                            const bepHarga = stats.bepHarga || stats.hppAkurat || 0;
+                            const margin = currentHarga - bepHarga;
+                            const marginPct = bepHarga > 0 ? (margin / bepHarga) * 100 : 0;
+                            return (
+                              <div className="flex justify-between pt-0.5">
+                                <span className="text-slate-400">Estimasi Margin:</span>
+                                <span className={margin >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-455 font-bold'}>
+                                  Rp {Math.round(margin).toLocaleString('id-ID')} ({marginPct.toFixed(1)}%)
+                                </span>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
                       <div className="grid grid-cols-2 gap-4 mt-6">
                         <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
                           <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Total Pendapatan (Simulasi)</span>
@@ -2993,6 +4634,327 @@ export default function DashboardPage() {
                   );
                 })()}
               </div>
+
+              {/* Benchmark Standar Strain (Modul 09) */}
+              {(activeCycle.mode === 'broiler' || activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && stats && (
+                <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                    <span>📊</span> Perbandingan Standar Performa ({activeCycle.mode === 'broiler' ? 'Cobb 500' : 'Lohmann Brown'})
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Bandingkan pencapaian performa aktual peternakan Anda dengan standar genetik global pada umur saat ini (<strong className="text-white">{stats.umur} hari</strong>).
+                  </p>
+
+                  <div className="space-y-4">
+                    {activeCycle.mode === 'broiler' ? (
+                      <>
+                        {/* BB Rata */}
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-400 font-bold">Bobot Badan (BB) Rata-rata</span>
+                            <span className="font-mono text-slate-350 text-[10px]">
+                              Target Cobb: <strong className="text-white">{(stats.targetBB || 0).toFixed(3)} kg</strong>
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
+                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.bbRata || 0).toFixed(3)} kg</strong>
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
+                              stats.gapBBPct >= -5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapBBPct >= -15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                            }`}>
+                              {stats.gapBB >= 0 ? '+' : ''}{(stats.gapBB || 0).toFixed(3)} kg ({stats.gapBBPct >= 0 ? '+' : ''}{(stats.gapBBPct || 0).toFixed(1)}%)
+                            </span>
+                          </div>
+                          <span className="text-[9px] text-slate-500 block leading-relaxed font-semibold">
+                            *Status: {stats.gapBBPct >= -5 ? '🟢 Optimal (Sesuai/Melebihi standar)' : stats.gapBBPct >= -15 ? '🟡 Deviasi Ringan (Cek kecukupan pakan & suhu)' : '🔴 Deviasi Kritis (Evaluasi gejala penyakit atau stres)'}
+                          </span>
+                        </div>
+
+                        {/* FCR */}
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-400 font-bold">Rasio Konversi Pakan (FCR)</span>
+                            <span className="font-mono text-slate-350 text-[10px]">
+                              Target Cobb: <strong className="text-white">{(stats.targetFCR || 0).toFixed(2)}</strong>
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
+                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.fcr || 0).toFixed(2)}</strong>
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
+                              stats.gapFCRPct <= 5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapFCRPct <= 15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-455 border border-rose-500/20'
+                            }`}>
+                              {stats.gapFCR >= 0 ? '+' : ''}{(stats.gapFCR || 0).toFixed(2)} ({stats.gapFCRPct >= 0 ? '+' : ''}{(stats.gapFCRPct || 0).toFixed(1)}%)
+                            </span>
+                          </div>
+                          <span className="text-[9px] text-slate-550 block leading-relaxed font-semibold">
+                            *Catatan FCR: Semakin kecil angka FCR, semakin baik dan efisien penggunaan pakan.
+                          </span>
+                        </div>
+
+                        {/* ADG */}
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-400 font-bold">Average Daily Gain (ADG)</span>
+                            <span className="font-mono text-slate-355 text-[10px]">
+                              Target Cobb: <strong className="text-white">{(stats.targetADG || 0).toFixed(0)} g/hari</strong>
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
+                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.adg || 0).toFixed(1)} g/hari</strong>
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
+                              stats.gapADGPct >= -5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapADGPct >= -15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                            }`}>
+                              {stats.gapADG >= 0 ? '+' : ''}{(stats.gapADG || 0).toFixed(1)} g ({stats.gapADGPct >= 0 ? '+' : ''}{(stats.gapADGPct || 0).toFixed(1)}%)
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* HDP */}
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-400 font-bold">{activeCycle.mode === 'bebek_petelur' ? 'Duck-Day' : 'Hen-Day'} Production (HDP)</span>
+                            <span className="font-mono text-slate-355 text-[10px]">
+                              Target Lohmann: <strong className="text-white">{stats.targetHDP}%</strong>
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
+                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.henDay || 0).toFixed(1)}%</strong>
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
+                              stats.gapHDP >= -5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapHDP >= -15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                            }`}>
+                              {stats.gapHDP >= 0 ? '+' : ''}{(stats.gapHDP || 0).toFixed(1)}%
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* FCR */}
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-400 font-bold">FCR Telur</span>
+                            <span className="font-mono text-slate-355 text-[10px]">
+                              Target Lohmann: <strong className="text-white">{stats.targetFCRTelur}</strong>
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
+                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.fcrTelur || 0).toFixed(2)}</strong>
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
+                              stats.gapFCRTelur <= 0.1 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapFCRTelur <= 0.3 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-455 border border-rose-500/20'
+                            }`}>
+                              {stats.gapFCRTelur >= 0 ? '+' : ''}{(stats.gapFCRTelur || 0).toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Berat Rata Telur */}
+                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                          <div className="flex justify-between items-center text-xs">
+                            <span className="text-slate-400 font-bold">Berat Rata-rata Telur</span>
+                            <span className="font-mono text-slate-355 text-[10px]">
+                              Target Lohmann: <strong className="text-white">{stats.targetBeratTelur} g</strong>
+                            </span>
+                          </div>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
+                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.beratRataTelur || 0).toFixed(1)} g</strong>
+                            <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
+                              stats.gapBeratTelur >= -2 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapBeratTelur >= -5 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                            }`}>
+                              {stats.gapBeratTelur >= 0 ? '+' : ''}{(stats.gapBeratTelur || 0).toFixed(1)} g
+                            </span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <span className="text-[9px] text-slate-500 block leading-relaxed font-semibold">
+                    *Disclaimer: Standar rujukan performa didasarkan pada Cobb 500 Performance Guide & Lohmann Brown Layer Management Guide.
+                  </span>
+                </div>
+              )}
+
+              {/* Kalkulator Kapasitas Kandang / Kolam (Modul 10) */}
+              {stats && (
+                <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                    <span>🏠</span> Kalkulator Kapasitas Kandang & Kolam
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Analisis kepadatan populasi ternak aktual vs kapasitas ideal berdasarkan prinsip animal welfare standar industri.
+                  </p>
+
+                  {(() => {
+                    const m = activeCycle.data?.modal || {};
+                    const panjang = parseFloat(m.panjang_m) || 0;
+                    const lebar = parseFloat(m.lebar_m) || 0;
+                    const tinggiAir = parseFloat(m.tinggi_air_m) || 1.0;
+                    const luas_m2 = panjang * lebar;
+                    const volume_m3 = luas_m2 * tinggiAir;
+                    
+                    const isFish = activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan';
+                    const autoKey = getKepadatanKey(activeCycle);
+                    const kKey = overrideKepadatanKey || autoKey || 'broiler_komersil';
+                    const std = KEPADATAN_STANDAR[kKey];
+
+                    const currentPop = isFish
+                      ? (parseFloat(m.jml_tebar) || 0) - (stats.mati || 0)
+                      : (activeCycle.mode === 'breeding_ruminansia')
+                      ? (parseFloat(m.jml_betina) || 0) + (parseFloat(m.jml_jantan) || 0) + (stats.totalLahir || 0)
+                      : (parseFloat(m.jml_doc) || parseFloat(m.jml_ekor) || 0) - (stats.mati || 0);
+
+                    const isBaterai = kKey === 'petelur_baterai';
+                    
+                    let kapasitasIdeal = 0;
+                    let kapasitasWelfare = 0;
+                    let densitasAktual = 0;
+                    let densitasIdeal = 0;
+                    let densitasWelfare = 0;
+                    let rasio = 0;
+
+                    if (!isBaterai && std) {
+                      if (std.per_m3 !== undefined && std.per_m3 !== null) {
+                        kapasitasIdeal = Math.round(volume_m3 * (std.per_m3 || 0));
+                        kapasitasWelfare = Math.round(volume_m3 * (std.welfare || 0));
+                        densitasAktual = volume_m3 > 0 ? currentPop / volume_m3 : 0;
+                        densitasIdeal = std.per_m3 || 0;
+                        densitasWelfare = std.welfare || 0;
+                      } else {
+                        kapasitasIdeal = Math.round(luas_m2 * (std.per_m2 || 0));
+                        kapasitasWelfare = Math.round(luas_m2 * (std.welfare || 0));
+                        densitasAktual = luas_m2 > 0 ? currentPop / luas_m2 : 0;
+                        densitasIdeal = std.per_m2 || 0;
+                        densitasWelfare = std.welfare || 0;
+                      }
+                      rasio = kapasitasIdeal > 0 ? currentPop / kapasitasIdeal : 0;
+                    }
+
+                    let statusLabel = 'Optimal';
+                    let statusColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+                    let statusIcon = '🟢';
+                    
+                    if (rasio <= 0.85) {
+                      statusLabel = 'Under-stocked';
+                      statusColor = 'text-sky-400 bg-sky-500/10 border-sky-500/20';
+                      statusIcon = '🔵';
+                    } else if (rasio <= 1.0) {
+                      statusLabel = 'Optimal';
+                      statusColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+                      statusIcon = '🟢';
+                    } else if (rasio <= 1.15) {
+                      statusLabel = 'Sedikit Padat';
+                      statusColor = 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+                      statusIcon = '🟡';
+                    } else {
+                      statusLabel = 'Over-stocked ⚠️';
+                      statusColor = 'text-rose-450 bg-rose-500/10 border-rose-500/20 animate-pulse';
+                      statusIcon = '🔴';
+                    }
+
+                    return (
+                      <div className="space-y-4">
+                        {/* Dimensi Alert if length/width is 0 */}
+                        {(panjang <= 0 || lebar <= 0) && (
+                          <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 p-4 rounded-2xl text-xs font-semibold">
+                            ⚠️ <strong>Dimensi Belum Diisi:</strong> Panjang atau Lebar kandang masih bernilai 0. Silakan isi dimensi kandang Anda di tab <strong>Modal Awal</strong> agar kalkulator kapasitas dapat menghitung secara akurat.
+                          </div>
+                        )}
+
+                        {/* Over-stocked warning */}
+                        {!isBaterai && rasio > 1.15 && (
+                          <div className="bg-rose-500/15 border border-rose-500/30 text-rose-400 p-4 rounded-2xl text-xs font-semibold leading-relaxed space-y-1">
+                            <span className="font-bold text-sm block">⚠️ Bahaya Kepadatan Tinggi (Over-stocked):</span>
+                            <span>Kepadatan aktual kandang Anda melebihi batas toleransi ideal sebesar <strong className="text-white">{(rasio * 100 - 100).toFixed(0)}%</strong>. Kepadatan yang terlalu tinggi dapat memicu:</span>
+                            <ul className="list-disc pl-4 space-y-0.5 mt-1 text-slate-350">
+                              <li>Stress panas (heat stress) dan peningkatan kanibalisme.</li>
+                              <li>Penurunan efisiensi penyerapan pakan (FCR membengkak).</li>
+                              <li>Sirkulasi udara memburuk, amonia naik, dan mempermudah penularan penyakit.</li>
+                            </ul>
+                          </div>
+                        )}
+
+                        {/* Dropdown System Selector */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tipe Sistem Kepadatan</label>
+                            <select
+                              value={kKey}
+                              onChange={(e) => setOverrideKepadatanKey(e.target.value)}
+                              className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer font-sans"
+                            >
+                              <optgroup label="Unggas (Poultry)" className="bg-slate-900 text-slate-450 font-sans">
+                                <option value="broiler_komersil" className="text-slate-100 bg-slate-900">Broiler Skala Komersil</option>
+                                <option value="broiler_welfare" className="text-slate-100 bg-slate-900">Broiler Skala Welfare</option>
+                                <option value="petelur_lantai" className="text-slate-100 bg-slate-900">Ayam Petelur Lantai (Free-range/Postal)</option>
+                                <option value="petelur_baterai" className="text-slate-100 bg-slate-900">Ayam Petelur Baterai (Kandang Sekat)</option>
+                                <option value="bebek_pedaging" className="text-slate-100 bg-slate-900">Bebek Pedaging</option>
+                                <option value="bebek_petelur" className="text-slate-100 bg-slate-900">Bebek Petelur</option>
+                              </optgroup>
+                              <optgroup label="Ruminansia" className="bg-slate-900 text-slate-455 font-sans">
+                                <option value="kambing" className="text-slate-100 bg-slate-900">Kambing / Domba</option>
+                                <option value="sapi" className="text-slate-100 bg-slate-900">Sapi Potong / Perah</option>
+                              </optgroup>
+                              <optgroup label="Perikanan" className="bg-slate-900 text-slate-455 font-sans">
+                                <option value="lele_konvensional" className="text-slate-100 bg-slate-900">Lele Konvensional</option>
+                                <option value="lele_bioflok" className="text-slate-100 bg-slate-900">Lele Bioflok</option>
+                                <option value="nila_konvensional" className="text-slate-100 bg-slate-900">Nila Konvensional</option>
+                                <option value="nila_bioflok" className="text-slate-100 bg-slate-900">Nila Bioflok</option>
+                              </optgroup>
+                            </select>
+                          </div>
+                          
+                          <div className="space-y-1">
+                            <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Status Kepadatan Aktual</label>
+                            <div className={`w-full border rounded-xl px-4 py-2.5 text-xs font-black flex items-center justify-between font-sans ${statusColor}`}>
+                              <span>Status: {statusLabel}</span>
+                              <span className="text-sm">{statusIcon}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Specs Grid */}
+                        <div className="grid grid-cols-3 gap-3">
+                          <div className="bg-slate-950/40 p-3.5 rounded-2xl border border-slate-850">
+                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Dimensi Luas</span>
+                            <span className="text-xs font-black text-slate-200 font-mono">{panjang.toFixed(1)}m × {lebar.toFixed(1)}m = <strong className="text-white">{luas_m2.toFixed(1)} m²</strong></span>
+                          </div>
+                          <div className="bg-slate-950/40 p-3.5 rounded-2xl border border-slate-850">
+                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Dimensi Volume</span>
+                            <span className="text-xs font-black text-slate-200 font-mono">{luas_m2.toFixed(1)}m² × {tinggiAir.toFixed(1)}m = <strong className="text-white">{volume_m3.toFixed(1)} m³</strong></span>
+                          </div>
+                          <div className="bg-slate-950/40 p-3.5 rounded-2xl border border-slate-850">
+                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Populasi Saat Ini</span>
+                            <span className="text-xs font-black text-slate-200 font-mono"><strong className="text-white">{currentPop.toLocaleString('id-ID')}</strong> ekor</span>
+                          </div>
+                        </div>
+
+                        {/* Analysis Box */}
+                        {!isBaterai && std ? (
+                          <div className="bg-[#0c1a1f] border border-teal-500/10 p-5 rounded-2xl text-xs space-y-2">
+                            <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block mb-2">📋 Hasil Analisis Kepadatan</span>
+                            <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60 font-sans">
+                              <span>Kapasitas Ideal ({std.per_m3 !== undefined && std.per_m3 !== null ? `${std.per_m3} ekor/m³` : `${std.per_m2} ekor/m²`}):</span>
+                              <span className="text-white font-extrabold font-mono text-sm">{kapasitasIdeal.toLocaleString('id-ID')} ekor</span>
+                            </div>
+                            <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60 font-sans">
+                              <span>Kapasitas Welfare ({std.welfare ? `${std.welfare} ekor/${std.satuan.includes('m³') ? 'm³' : 'm²'}` : 'N/A'}):</span>
+                              <span className="text-teal-400 font-extrabold font-mono text-sm">{kapasitasWelfare.toLocaleString('id-ID')} ekor</span>
+                            </div>
+                            <div className="flex justify-between items-center text-slate-350 font-semibold py-1 font-sans">
+                              <span>Kepadatan Aktual Sekarang:</span>
+                              <span className={`font-extrabold font-mono text-sm ${rasio > 1.15 ? 'text-rose-400' : 'text-slate-200'}`}>
+                                {densitasAktual.toFixed(2)} {std.satuan}
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 text-xs text-slate-400 leading-relaxed font-semibold font-sans">
+                            ℹ️ <strong>Kepadatan Baterai (Sekat):</strong> Budidaya menggunakan kandang baterai (individual sekat) tidak dibatasi oleh dimensi meter persegi kandang global, melainkan ditentukan langsung oleh jumlah slot pintu kandang baterai fisik yang Anda pasang.
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                </div>
+              )}
 
               {/* Pearson Square Feed Formulation */}
               <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
@@ -3247,6 +5209,146 @@ export default function DashboardPage() {
           )
         )}
 
+        {/* --- TAB: VENTILASI BROILER (Modul 08) --- */}
+        {activeTab === 'ventilasi' && (
+          <div className="max-w-2xl mx-auto space-y-8 animate-fadeIn">
+            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+              <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                <span>💨</span> Kalkulator Ventilasi Kandang Broiler
+              </h3>
+              <p className="text-xs text-slate-400">
+                Hitung kebutuhan udara kandang (CFM) dan status operasional kipas angin berdasarkan populasi saat ini.
+              </p>
+
+              {/* Fan specs input grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Daya Motor Kipas (Watt)</label>
+                  <input
+                    type="number"
+                    value={activeCycle.data?.modal?.vent_watt_kipas || '375'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), vent_watt_kipas: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                  />
+                  <span className="text-[10px] text-slate-550 block mt-1">Standard: 375W (0.5 HP) atau 750W (1.0 HP)</span>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Kipas Aktif (Unit)</label>
+                  <input
+                    type="number"
+                    value={activeCycle.data?.modal?.vent_jml_kipas || '2'}
+                    onChange={(e) => {
+                      const modal = { ...(activeCycle.data?.modal || {}), vent_jml_kipas: e.target.value };
+                      handleSaveCycleData({ ...activeCycle.data, modal });
+                    }}
+                    className="w-full bg-slate-955/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                  />
+                  <span className="text-[10px] text-slate-550 block mt-1">Jumlah blower yang dioperasikan</span>
+                </div>
+              </div>
+
+              {/* Live calculations display */}
+              {stats && (
+                <div className="space-y-4">
+                  {/* Alert if fans are insufficient */}
+                  {stats.alertKipasKurang && (
+                    <div className="bg-rose-500/10 border border-rose-500/20 text-rose-450 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
+                      <span>⚠️</span>
+                      <span><strong>Kritis (Kapasitas Kipas Kurang):</strong> Total kapasitas kipas ({Math.round(stats.CFM_kapasitas).toLocaleString('id-ID')} CFM) berada di bawah kebutuhan minimum ayam ({Math.round(stats.CFM_kebutuhan).toLocaleString('id-ID')} CFM). Tambahkan unit kipas atau tingkatkan dayanya untuk menghindari stress panas (heat stress) pada ayam!</span>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kebutuhan Udara (Tropis)</span>
+                      <span className="text-sm font-black text-slate-200 font-mono">{Math.round(stats.CFM_kebutuhan).toLocaleString('id-ID')} CFM</span>
+                    </div>
+                    <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Total Kapasitas Kipas</span>
+                      <span className="text-sm font-black text-slate-200 font-mono">{Math.round(stats.CFM_kapasitas).toLocaleString('id-ID')} CFM</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#0b1b1e] border border-teal-500/10 p-5 rounded-2xl text-xs space-y-2">
+                    <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block mb-2">📋 Hasil Analisis Ventilasi</span>
+                    <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60">
+                      <span>Fase Ventilasi:</span>
+                      <span className="text-white font-extrabold uppercase bg-teal-500/15 border border-teal-500/20 px-2 py-0.5 rounded text-[10px] tracking-wider">
+                        {stats.fase === 'minimum' ? '❄️ Minimum (Umur < 14 hr)' : stats.fase === 'transitional' ? '🌀 Transitional (Umur 14-20 hr)' : '🔥 Tunnel / Terowongan (Umur >= 21 hr)'}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60">
+                      <span>Target Suhu Kandang:</span>
+                      <span className="text-white font-extrabold font-mono text-sm">{stats.suhu_target} °C</span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60">
+                      <span>Rasio Kebutuhan (Duty Cycle):</span>
+                      <span className="text-white font-extrabold font-mono">{(stats.duty_cycle * 100).toFixed(1)} %</span>
+                    </div>
+                    <div className="flex justify-between items-center text-slate-355 font-semibold py-1">
+                      <span>Rekomendasi Siklus Timer (5 Menit):</span>
+                      <span className="text-teal-400 font-extrabold font-mono text-sm">
+                        {stats.runtime_detik >= 300 ? 'ON TERUS (Kipas Jalan Non-stop)' : `ON: ${stats.runtime_detik} dtk | OFF: ${300 - stats.runtime_detik} dtk`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Suhu Target Cobb 500 Guide */}
+            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-4">
+              <h4 className="text-sm font-bold text-slate-250 flex items-center gap-2">
+                <span>🌡️</span> Panduan Suhu Ideal Cobb 500 (As-Hatched)
+              </h4>
+              <p className="text-xs text-slate-400">
+                Suhu standar industri untuk meminimalkan FCR dan mengoptimalkan ADG berdasarkan kelompok umur ayam:
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-500">
+                      <th className="py-2 font-bold uppercase">Umur (Hari)</th>
+                      <th className="py-2 font-bold uppercase">Target Suhu (°C)</th>
+                      <th className="py-2 font-bold uppercase">Fase Ventilasi</th>
+                      <th className="py-2 font-bold uppercase">Toleransi Kelembaban</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-slate-350 divide-y divide-slate-850/40">
+                    <tr>
+                      <td className="py-2 font-mono">Hari 1–7</td>
+                      <td className="py-2 font-mono text-white">32°C - 33°C</td>
+                      <td className="py-2 text-teal-450 font-semibold">Minimum</td>
+                      <td className="py-2">60% - 70%</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 font-mono">Hari 8–14</td>
+                      <td className="py-2 font-mono text-white">29°C - 30°C</td>
+                      <td className="py-2 text-teal-450 font-semibold">Minimum</td>
+                      <td className="py-2">60% - 70%</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 font-mono">Hari 15–21</td>
+                      <td className="py-2 font-mono text-white">26°C - 27°C</td>
+                      <td className="py-2 text-yellow-450 font-semibold">Transitional</td>
+                      <td className="py-2">60% - 70%</td>
+                    </tr>
+                    <tr>
+                      <td className="py-2 font-mono">Hari 22–35+</td>
+                      <td className="py-2 font-mono text-white">21°C - 24°C</td>
+                      <td className="py-2 text-rose-455 font-semibold">Tunnel</td>
+                      <td className="py-2">60% - 70%</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* --- TAB: KALENDER OPERASIONAL & VAKSINASI --- */}
         {activeTab === 'jadwal_kerja' && (
           <div className="max-w-3xl mx-auto space-y-6 animate-fadeIn">
@@ -3411,6 +5513,544 @@ export default function DashboardPage() {
           )
         )}
 
+        {/* --- TAB: FEED FORMULATOR --- */}
+        {activeTab === 'feed_formulator' && (
+          <FeedFormulator
+            activeCycle={activeCycle}
+            savedRecipes={activeCycle?.data?.resep_pakan || []}
+            onSaveRecipe={async (recipeData) => {
+              const currentResep = activeCycle?.data?.resep_pakan || [];
+              const updatedResep = [...currentResep, recipeData];
+              await handleSaveCycleData({
+                ...activeCycle.data,
+                resep_pakan: updatedResep
+              });
+            }}
+          />
+        )}
+
+        {/* --- TAB: HARIAN LOG (BEBEK PEDAGING) --- */}
+        {activeTab === 'harian_log' && (
+          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+              <span>🦆 Log Harian Bebek Pedaging</span>
+              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+                {(activeCycle.data?.harian || []).length} Catatan
+              </span>
+            </h3>
+
+            <div className="space-y-3">
+              {(activeCycle.data?.harian || []).length === 0 ? (
+                <div className="text-center py-10 text-slate-500 text-xs">Belum ada log harian dicatat.</div>
+              ) : (
+                (activeCycle.data?.harian || []).map((h: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                    <div>
+                      <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
+                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                        Pakan: {h.pakan_kg || 0} kg · Air: {h.air || 0} L · Kematian: {h.mati || 0} ekor
+                      </div>
+                    </div>
+                    <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                  </div>
+                ))
+              )}
+              <button
+                onClick={() => openModalForm('modal_harian_pedaging')}
+                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+              >
+                + Catat Log Harian Bebek
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB: SAMPLING (IKAN) --- */}
+        {activeTab === 'sampling' && (
+          <div className="max-w-4xl mx-auto space-y-6 animate-fadeIn">
+            {/* Summary Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-slate-550 block uppercase font-black">Bobot Rata-rata</span>
+                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+                  {stats?.bobotRataTerakhir?.toFixed(1) || '0.0'} g
+                </span>
+              </div>
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-slate-555 block uppercase font-black">ADG</span>
+                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+                  {stats?.adg?.toFixed(2) || '0.00'} g/hari
+                </span>
+              </div>
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-slate-555 block uppercase font-black">SGR</span>
+                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+                  {stats?.sgr?.toFixed(2) || '0.00'} %/hari
+                </span>
+              </div>
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-slate-555 block uppercase font-black">Biomassa</span>
+                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+                  {stats?.biomassaSaatIni?.toFixed(1) || '0.0'} kg
+                </span>
+              </div>
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center col-span-2 md:col-span-1">
+                <span className="text-[10px] text-slate-555 block uppercase font-black">Keseragaman (CV)</span>
+                <span className={`text-xl font-extrabold mt-1 block font-mono ${stats?.cv > 20 ? 'text-rose-455' : 'text-emerald-400'}`}>
+                  {stats?.cv ? `${stats.cv.toFixed(1)}%` : '-'}
+                </span>
+              </div>
+            </div>
+
+            {/* Grading Warning Alert */}
+            {stats?.needGrading && (
+              <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-2xl flex items-center gap-3 font-semibold font-sans">
+                <span className="text-xl">⚠️</span>
+                <div>
+                  <strong>Peringatan Keseragaman (CV &gt; 20%):</strong> Pertumbuhan ukuran ikan tidak merata. Lakukan penyortiran (grading) wadah/kolam sesegera mungkin untuk mencegah kanibalisme dan memastikan kompetisi pakan yang merata.
+                </div>
+              </div>
+            )}
+
+            {/* Dosis Pakan Rekomendasi */}
+            <div className="bg-gradient-to-tr from-teal-950/20 to-emerald-950/20 border border-teal-500/10 p-5 rounded-3xl space-y-2">
+              <h4 className="text-xs font-black text-teal-400 uppercase tracking-widest font-sans">🍽️ Rekomendasi Pemberian Pakan Harian</h4>
+              <p className="text-xs text-slate-400 font-semibold leading-relaxed">
+                Berdasarkan biomassa saat ini ({stats?.biomassaSaatIni?.toFixed(1) || 0} kg), dosis pakan harian standar yang disarankan berkisar antara <strong>3% - 5%</strong> dari total biomassa:
+              </p>
+              <div className="flex items-baseline gap-2 pt-1 font-sans">
+                <span className="text-2xl font-black text-white font-mono">
+                  {((stats?.biomassaSaatIni || 0) * 0.03).toFixed(1)} - {((stats?.biomassaSaatIni || 0) * 0.05).toFixed(1)} kg / hari
+                </span>
+                <span className="text-slate-500 text-[10px] font-bold">(*Sesuaikan dengan nafsu makan dan suhu air kolam)</span>
+              </div>
+            </div>
+
+            {/* Table / List of Sampling */}
+            <div className="bg-[#0B1416] border border-slate-850 p-6 rounded-3xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-200">Riwayat Sampling Pertumbuhan</h3>
+              
+              <div className="overflow-x-auto rounded-2xl border border-slate-850 bg-slate-950/20">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-950 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-850">
+                      <th className="px-4 py-3">Tanggal</th>
+                      <th className="px-4 py-3 text-center">Jml Sampel</th>
+                      <th className="px-4 py-3 text-center">Bobot Sampel (g)</th>
+                      <th className="px-4 py-3 text-center">Rata-rata (g)</th>
+                      <th className="px-4 py-3 text-center">Stdev (g)</th>
+                      <th className="px-4 py-3 text-center">CV (%)</th>
+                      <th className="px-4 py-3 text-center">Populasi Est.</th>
+                      <th className="px-4 py-3 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-850 text-slate-300 font-semibold">
+                    {(activeCycle.data?.sampling || []).length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="text-center py-8 text-slate-550">Belum ada data sampling pertumbuhan.</td>
+                      </tr>
+                    ) : (
+                      (activeCycle.data?.sampling || []).map((sm: any, i: number) => {
+                        const rata = parseFloat(sm.bobot_total_g) / Math.max(1, parseFloat(sm.jml_sampel) || 1);
+                        const rowCv = sm.stdev_g && rata > 0 ? (parseFloat(sm.stdev_g) / rata) * 100 : 0;
+                        return (
+                          <tr key={i} className="hover:bg-slate-900/10">
+                            <td className="px-4 py-3.5 font-mono">{sm.tgl}</td>
+                            <td className="px-4 py-3.5 text-center font-mono">{sm.jml_sampel}</td>
+                            <td className="px-4 py-3.5 text-center font-mono">{sm.bobot_total_g} g</td>
+                            <td className="px-4 py-3.5 text-center font-mono">{rata.toFixed(1)} g</td>
+                            <td className="px-4 py-3.5 text-center font-mono">{sm.stdev_g || '-'}</td>
+                            <td className={`px-4 py-3.5 text-center font-mono ${rowCv > 20 ? 'text-rose-450' : 'text-slate-400'}`}>
+                              {rowCv > 0 ? `${rowCv.toFixed(1)}%` : '-'}
+                            </td>
+                            <td className="px-4 py-3.5 text-center font-mono">{sm.jml_estimasi?.toLocaleString('id-ID') || '-'}</td>
+                            <td className="px-4 py-3.5 text-center font-sans">
+                              <button onClick={() => handleDeleteListItem('sampling', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <button
+                onClick={() => openModalForm('modal_sampling_ikan')}
+                className="w-full py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+              >
+                + Catat Sampling Pertumbuhan
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB: KUALITAS AIR (IKAN) --- */}
+        {activeTab === 'kualitas_air' && (
+          <div className="max-w-4xl mx-auto space-y-6 animate-fadeIn">
+            {/* Live Status Cards */}
+            {(() => {
+              const logs = activeCycle.data?.kualitas_air || [];
+              const lastLog = logs[logs.length - 1] || {};
+              const isBioflok = activeCycle.data?.modal?.sistem_kolam === 'bioflok';
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-semibold">
+                  {/* Suhu */}
+                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-555 block uppercase font-black">Suhu Air</span>
+                      <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                        {lastLog.suhu !== undefined ? `${lastLog.suhu}°C` : '-'}
+                      </span>
+                    </div>
+                    {lastLog.suhu !== undefined && (
+                      <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('suhu', lastLog.suhu).color}`}>
+                        {checkWaterParam('suhu', lastLog.suhu).status}
+                      </span>
+                    )}
+                  </div>
+                  {/* pH */}
+                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-555 block uppercase font-black">pH Air</span>
+                      <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                        {lastLog.ph !== undefined ? lastLog.ph.toFixed(1) : '-'}
+                      </span>
+                    </div>
+                    {lastLog.ph !== undefined && (
+                      <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('ph', lastLog.ph).color}`}>
+                        {checkWaterParam('ph', lastLog.ph).status}
+                      </span>
+                    )}
+                  </div>
+                  {/* DO */}
+                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-555 block uppercase font-black">Oksigen Terlarut (DO)</span>
+                      <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                        {lastLog.do !== undefined ? `${lastLog.do} mg/L` : '-'}
+                      </span>
+                    </div>
+                    {lastLog.do !== undefined && (
+                      <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('do', lastLog.do).color}`}>
+                        {checkWaterParam('do', lastLog.do).status}
+                      </span>
+                    )}
+                  </div>
+                  {/* Amonia */}
+                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-555 block uppercase font-black">Amonia NH₃</span>
+                      <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                        {lastLog.amonia !== undefined ? `${lastLog.amonia} mg/L` : '-'}
+                      </span>
+                    </div>
+                    {lastLog.amonia !== undefined && (
+                      <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('amonia', lastLog.amonia).color}`}>
+                        {checkWaterParam('amonia', lastLog.amonia).status}
+                      </span>
+                    )}
+                  </div>
+                  {/* Nitrit */}
+                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-555 block uppercase font-black">Nitrit NO₂</span>
+                      <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                        {lastLog.nitrit !== undefined ? `${lastLog.nitrit} mg/L` : '-'}
+                      </span>
+                    </div>
+                    {lastLog.nitrit !== undefined && (
+                      <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('nitrit', lastLog.nitrit).color}`}>
+                        {checkWaterParam('nitrit', lastLog.nitrit).status}
+                      </span>
+                    )}
+                  </div>
+                  {/* Kecerahan */}
+                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                    <div>
+                      <span className="text-[10px] text-slate-555 block uppercase font-black">Kecerahan Air</span>
+                      <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                        {lastLog.kecerahan !== undefined ? `${lastLog.kecerahan} cm` : '-'}
+                      </span>
+                    </div>
+                    {lastLog.kecerahan !== undefined && (
+                      <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('kecerahan', lastLog.kecerahan).color}`}>
+                        {checkWaterParam('kecerahan', lastLog.kecerahan).status}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Bioflok parameters */}
+                  {isBioflok && (
+                    <>
+                      <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                        <div>
+                          <span className="text-[10px] text-slate-555 block uppercase font-black">Volume Flok</span>
+                          <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                            {lastLog.volume_flok !== undefined ? `${lastLog.volume_flok} ml/L` : '-'}
+                          </span>
+                        </div>
+                        {lastLog.volume_flok !== undefined && (
+                          <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('volume_flok', lastLog.volume_flok).color}`}>
+                            {checkWaterParam('volume_flok', lastLog.volume_flok).status}
+                          </span>
+                        )}
+                      </div>
+                      <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                        <div>
+                          <span className="text-[10px] text-slate-555 block uppercase font-black">C/N Ratio</span>
+                          <span className="text-xl font-extrabold text-white mt-1 block font-mono">
+                            {lastLog.cn_ratio !== undefined ? `${lastLog.cn_ratio}:1` : '-'}
+                          </span>
+                        </div>
+                        {lastLog.cn_ratio !== undefined && (
+                          <span className={`px-2.5 py-1 text-[10px] font-black rounded-lg border uppercase ${checkWaterParam('cn_ratio', lastLog.cn_ratio).color}`}>
+                            {checkWaterParam('cn_ratio', lastLog.cn_ratio).status}
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* Riwayat Data Kualitas Air */}
+            <div className="bg-[#0B1416] border border-slate-850 p-6 rounded-3xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-200">Riwayat Parameter Kualitas Air</h3>
+              
+              <div className="overflow-x-auto rounded-2xl border border-slate-850 bg-slate-950/20 font-semibold">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-slate-950 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-850">
+                      <th className="px-4 py-3">Tanggal</th>
+                      <th className="px-4 py-3 text-center">Suhu (°C)</th>
+                      <th className="px-4 py-3 text-center">pH</th>
+                      <th className="px-4 py-3 text-center">DO (mg/L)</th>
+                      <th className="px-4 py-3 text-center">Amonia (mg/L)</th>
+                      <th className="px-4 py-3 text-center">Nitrit (mg/L)</th>
+                      <th className="px-4 py-3 text-center">Kecerahan (cm)</th>
+                      {activeCycle.data?.modal?.sistem_kolam === 'bioflok' && (
+                        <>
+                          <th className="px-4 py-3 text-center">Flok (ml/L)</th>
+                          <th className="px-4 py-3 text-center">C/N Ratio</th>
+                        </>
+                      )}
+                      <th className="px-4 py-3 text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-850 text-slate-300 font-semibold font-mono">
+                    {(activeCycle.data?.kualitas_air || []).length === 0 ? (
+                      <tr>
+                        <td colSpan={activeCycle.data?.modal?.sistem_kolam === 'bioflok' ? 9 : 7} className="text-center py-8 text-slate-550 font-sans">
+                          Belum ada data monitoring kualitas air.
+                        </td>
+                      </tr>
+                    ) : (
+                      (activeCycle.data?.kualitas_air || []).map((w: any, i: number) => (
+                        <tr key={i} className="hover:bg-slate-900/10">
+                          <td className="px-4 py-3.5">{w.tgl}</td>
+                          <td className="px-4 py-3.5 text-center">{w.suhu}°C</td>
+                          <td className="px-4 py-3.5 text-center">{w.ph}</td>
+                          <td className="px-4 py-3.5 text-center">{w.do}</td>
+                          <td className="px-4 py-3.5 text-center">{w.amonia}</td>
+                          <td className="px-4 py-3.5 text-center">{w.nitrit}</td>
+                          <td className="px-4 py-3.5 text-center">{w.kecerahan} cm</td>
+                          {activeCycle.data?.modal?.sistem_kolam === 'bioflok' && (
+                            <>
+                              <td className="px-4 py-3.5 text-center">{w.volume_flok}</td>
+                              <td className="px-4 py-3.5 text-center">{w.cn_ratio}</td>
+                            </>
+                          )}
+                          <td className="px-4 py-3.5 text-center font-sans">
+                            <button onClick={() => handleDeleteListItem('kualitas_air', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              <button
+                onClick={() => openModalForm('modal_air_ikan')}
+                className="w-full py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+              >
+                + Catat Kualitas Air
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB: PEMIJAHAN (IKAN PEMBIBITAN) --- */}
+        {activeTab === 'pemijahan' && (
+          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+              <span>💓 Log Pemijahan Induk</span>
+              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+                {(activeCycle.data?.pemijahan || []).length} Catatan
+              </span>
+            </h3>
+
+            <div className="space-y-3">
+              {(activeCycle.data?.pemijahan || []).length === 0 ? (
+                <div className="text-center py-10 text-slate-500 text-xs">Belum ada data pemijahan dicatat.</div>
+              ) : (
+                (activeCycle.data?.pemijahan || []).map((p: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                    <div>
+                      <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl}</div>
+                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                        Jantan: {p.jantan_ekor || 0} ekor · Betina: {p.betina_ekor || 0} ekor · Est. Telur: {p.est_telur?.toLocaleString('id-ID')} butir
+                      </div>
+                    </div>
+                    <button onClick={() => handleDeleteListItem('pemijahan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                  </div>
+                ))
+              )}
+              <button
+                onClick={() => openModalForm('modal_pemijahan')}
+                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+              >
+                + Catat Pemijahan Baru
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB: PENETASAN (IKAN PEMBIBITAN) --- */}
+        {activeTab === 'penetasan' && (
+          <div className="max-w-xl mx-auto space-y-6 animate-fadeIn font-semibold">
+            {/* Summary statistics */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
+                <span className="text-[9px] text-slate-500 block uppercase font-black">Telur Dibuahi</span>
+                <span className="text-sm font-extrabold text-white mt-1 block font-mono">
+                  {stats?.telurDibuahi?.toLocaleString('id-ID') || '0'}
+                </span>
+              </div>
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
+                <span className="text-[9px] text-slate-500 block uppercase font-black">Larva Menetas</span>
+                <span className="text-sm font-extrabold text-white mt-1 block font-mono">
+                  {stats?.telurMenetas?.toLocaleString('id-ID') || '0'}
+                </span>
+              </div>
+              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
+                <span className="text-[9px] text-slate-500 block uppercase font-black">Daya Tetas</span>
+                <span className="text-sm font-extrabold text-teal-450 mt-1 block font-mono">
+                  {stats?.dayaTetas?.toFixed(1) || '0.0'}%
+                </span>
+              </div>
+            </div>
+
+            <div className="bg-[#0B1416] border border-slate-850 p-6 rounded-3xl space-y-4">
+              <h3 className="text-sm font-bold text-slate-200 flex justify-between font-sans">
+                <span>🐣 Catatan Hasil Penetasan</span>
+                <span className="text-[10px] px-2 bg-slate-950 text-slate-400 rounded font-mono font-normal">
+                  {(activeCycle.data?.penetasan || []).length} Log
+                </span>
+              </h3>
+
+              <div className="space-y-3">
+                {(activeCycle.data?.penetasan || []).length === 0 ? (
+                  <div className="text-center py-10 text-slate-500 text-xs font-sans">Belum ada data penetasan dicatat.</div>
+                ) : (
+                  (activeCycle.data?.penetasan || []).map((p: any, i: number) => (
+                    <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                      <div>
+                        <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl}</div>
+                        <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                          Berhasil (Larva): <strong className="text-emerald-450">{p.berhasil_larva?.toLocaleString('id-ID')} ekor</strong> · Gagal: {p.gagal_butir?.toLocaleString('id-ID')} butir
+                        </div>
+                      </div>
+                      <button onClick={() => handleDeleteListItem('penetasan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2 font-sans">✕</button>
+                    </div>
+                  ))
+                )}
+                <button
+                  onClick={() => openModalForm('modal_penetasan_ikan')}
+                  className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                >
+                  + Catat Hasil Penetasan
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB: PENDEDERAN LOG (IKAN PEMBIBITAN) --- */}
+        {activeTab === 'pendederan' && (
+          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+              <span>🌿 Log Harian Pendederan</span>
+              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+                {(activeCycle.data?.harian || []).length} Catatan
+              </span>
+            </h3>
+
+            <div className="space-y-3">
+              {(activeCycle.data?.harian || []).length === 0 ? (
+                <div className="text-center py-10 text-slate-500 text-xs">Belum ada log pendederan dicatat.</div>
+              ) : (
+                (activeCycle.data?.harian || []).map((h: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                    <div>
+                      <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
+                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                        Pakan: {h.pakan_kg || 0} kg · Air: {h.air || 0} L · Kematian: {h.mati || 0} ekor
+                      </div>
+                    </div>
+                    <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                  </div>
+                ))
+              )}
+              <button
+                onClick={() => openModalForm('modal_harian_pedaging')}
+                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+              >
+                + Catat Log Harian Pendederan
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* --- TAB: PENJUALAN BENIH (IKAN PEMBIBITAN) --- */}
+        {activeTab === 'penjualan' && activeCycle.mode === 'ikan_pembibitan' && (
+          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn font-semibold">
+            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+              <span>💰 Data Penjualan Benih</span>
+              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+                {(activeCycle.data?.penjualan || []).length} Transaksi
+              </span>
+            </h3>
+
+            <div className="space-y-3">
+              {(activeCycle.data?.penjualan || []).length === 0 ? (
+                <div className="text-center py-10 text-slate-500 text-xs font-sans">Belum ada penjualan benih dicatat.</div>
+              ) : (
+                (activeCycle.data?.penjualan || []).map((p: any, i: number) => (
+                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                    <div>
+                      <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} — {p.jml?.toLocaleString('id-ID')} Ekor</div>
+                      <div className="text-[10px] text-slate-550 mt-1 font-bold">
+                        Harga: {formatRp(p.harga_ekor)}/ekor · Ukuran: {p.ukuran_cm || '-'} cm
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black text-emerald-450">{formatRp(p.total)}</span>
+                      <button onClick={() => handleDeleteListItem('penjualan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2 font-sans">✕</button>
+                    </div>
+                  </div>
+                ))
+              )}
+              <button
+                onClick={() => openModalForm('modal_jual_benih')}
+                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+              >
+                + Catat Penjualan Benih Baru
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* --- TAB: TEAM MANAGEMENT --- */}
         {activeTab === 'team_management' && (
           profile?.organization?.plan !== 'ENTERPRISE' ? (
@@ -3509,7 +6149,7 @@ export default function DashboardPage() {
       </main>
 
       {/* FAB Floating Action Button (Only visible on input tabs) */}
-      {['biaya', 'panen', 'penjualan'].includes(activeTab) && (
+      {['biaya', 'panen', 'penjualan', 'harian_log'].includes(activeTab) && (
         <button
           onClick={() => {
             if (activeTab === 'biaya') {
@@ -3538,6 +6178,8 @@ export default function DashboardPage() {
                   ? 'modal_jual_doc'
                   : 'modal_jual_breeding'
               );
+            } else if (activeTab === 'harian_log') {
+              openModalForm('modal_harian_pedaging');
             }
           }}
           className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-tr from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-xl shadow-teal-500/25 hover:scale-105 active:scale-95 transition-all z-45"
@@ -3577,6 +6219,49 @@ export default function DashboardPage() {
               {/* Feed Fields */}
               {activeModal === 'modal_pakan' && (
                 <>
+                  {activeCycle?.data?.resep_pakan && activeCycle.data.resep_pakan.length > 0 && (
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Gunakan Resep Formulator</label>
+                      <select
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === 'manual') {
+                            setFormFields((prev: any) => ({
+                              ...prev,
+                              jenis: '',
+                              kg_sak: '50',
+                              harga_sak: ''
+                            }));
+                          } else {
+                            const recipe = activeCycle.data.resep_pakan.find((r: any) => r.id === val);
+                            if (recipe) {
+                              setFormFields((prev: any) => {
+                                const next = {
+                                  ...prev,
+                                  jenis: `Resep: ${recipe.nama}`,
+                                  kg_sak: '50',
+                                  harga_sak: (recipe.result.biaya_kg * 50).toString()
+                                };
+                                const sak = parseFloat(next.sak) || 0;
+                                const harga = parseFloat(next.harga_sak) || 0;
+                                setPreviewVal(formatRp(sak * harga));
+                                return next;
+                              });
+                            }
+                          }
+                        }}
+                        defaultValue="manual"
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold cursor-pointer"
+                      >
+                        <option value="manual">-- Input Manual (Bukan Formulasi) --</option>
+                        {activeCycle.data.resep_pakan.map((r: any) => (
+                          <option key={r.id} value={r.id} className="bg-slate-900">
+                            {r.nama} ({r.result.pk}% PK · Rp {r.result.biaya_kg.toLocaleString('id-ID')}/kg)
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jenis Pakan</label>
                     <input
@@ -3777,6 +6462,57 @@ export default function DashboardPage() {
                       className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                     />
                   </div>
+                  {activeCycle?.mode === 'bebek_petelur' && (
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Konsumsi Air Aktual (Liter)</label>
+                      <input
+                        type="number"
+                        placeholder="Contoh: 150"
+                        value={formFields.air}
+                        onChange={(e) => updateFormField('air', e.target.value)}
+                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      />
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Bebek Pedaging Daily Log Fields */}
+              {activeModal === 'modal_harian_pedaging' && (
+                <>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Konsumsi Air Harian (Liter)</label>
+                    <input
+                      type="number"
+                      required
+                      placeholder="Contoh: 120"
+                      value={formFields.air}
+                      onChange={(e) => updateFormField('air', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Konsumsi Pakan Harian (kg)</label>
+                    <input
+                      type="number"
+                      required
+                      placeholder="Contoh: 60"
+                      value={formFields.pakan_kg}
+                      onChange={(e) => updateFormField('pakan_kg', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kematian Harian (Ekor)</label>
+                    <input
+                      type="number"
+                      required
+                      placeholder="Contoh: 2"
+                      value={formFields.mati}
+                      onChange={(e) => updateFormField('mati', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    />
+                  </div>
                 </>
               )}
 
@@ -3916,18 +6652,31 @@ export default function DashboardPage() {
 
               {/* Milk Yield Fields */}
               {activeModal === 'modal_harian_susu' && (
-                <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Produksi Susu (Liter)</label>
-                  <input
-                    type="number"
-                    required
-                    step="0.1"
-                    placeholder="Contoh: 50"
-                    value={formFields.liter}
-                    onChange={(e) => updateFormField('liter', e.target.value)}
-                    className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
-                  />
-                </div>
+                <>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Produksi Susu (Liter)</label>
+                    <input
+                      type="number"
+                      required
+                      step="0.1"
+                      placeholder="Contoh: 50"
+                      value={formFields.liter}
+                      onChange={(e) => updateFormField('liter', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kadar Lemak Susu % (Opsional)</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      placeholder="Contoh: 4.2"
+                      value={formFields.kadar_lemak || ''}
+                      onChange={(e) => updateFormField('kadar_lemak', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono"
+                    />
+                  </div>
+                </>
               )}
 
               {/* Milk Sales Fields */}
@@ -3996,6 +6745,65 @@ export default function DashboardPage() {
                         className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
                       />
                     </div>
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tanggal Kawin (Mulai Kebuntingan - Opsional)</label>
+                    <input
+                      type="date"
+                      value={formFields.tgl_kawin || ''}
+                      onChange={(e) => updateFormField('tgl_kawin', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Pejantan (Opsional)</label>
+                    <input
+                      type="text"
+                      placeholder="Contoh: P-99"
+                      value={formFields.id_pejantan || ''}
+                      onChange={(e) => updateFormField('id_pejantan', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Breeding Mating Fields */}
+              {activeModal === 'modal_perkawinan' && (
+                <>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Indukan Betina</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: A-01, B-03"
+                      value={formFields.id_induk}
+                      onChange={(e) => updateFormField('id_induk', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Pejantan</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Contoh: P-02, P-05"
+                      value={formFields.id_pejantan}
+                      onChange={(e) => updateFormField('id_pejantan', e.target.value)}
+                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Status Hasil Perkawinan</label>
+                    <select
+                      value={formFields.status}
+                      onChange={(e) => updateFormField('status', e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold cursor-pointer"
+                    >
+                      <option value="menunggu">Menunggu Konfirmasi / Cek Bunting</option>
+                      <option value="bunting">Berhasil (Bunting)</option>
+                      <option value="gagal">Gagal Kawin (Kawin Ulang)</option>
+                    </select>
                   </div>
                 </>
               )}

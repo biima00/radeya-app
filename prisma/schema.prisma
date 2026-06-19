@@ -17,6 +17,8 @@ model User {
   org       Organization @relation(fields: [orgId], references: [id], onDelete: Cascade)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+
+  @@index([orgId])
 }
 
 model Organization {
@@ -45,6 +47,8 @@ model Cycle {
   inventoryUsages InventoryUsage[]
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
+
+  @@index([orgId])
 }
 
 model AnimalIdentity {
@@ -62,6 +66,8 @@ model AnimalIdentity {
   treatments AnimalTreatment[]
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
+
+  @@index([cycleId])
 }
 
 model AnimalTreatment {
@@ -76,6 +82,8 @@ model AnimalTreatment {
   treatmentDate  DateTime       @default(now())
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
+
+  @@index([animalId])
 }
 
 model InventoryItem {
@@ -91,6 +99,8 @@ model InventoryItem {
   usages      InventoryUsage[]
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
+
+  @@index([orgId])
 }
 
 model InventoryUsage {
@@ -103,4 +113,7 @@ model InventoryUsage {
   notes     String?
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
+
+  @@index([itemId])
+  @@index([cycleId])
 }

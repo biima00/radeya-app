@@ -21,18 +21,15 @@ export default function LoginPage() {
     setIsLoading(true);
     try {
       const data = await apiPost('/api/v1/auth/google', { credential: response.credential });
-      if (data.token) {
-        localStorage.setItem('radeya_token', data.token);
-        if (data.orgId) {
-          localStorage.setItem('radeya_org_id', data.orgId);
-        }
+      if (data.success) {
+        if (data.orgId) localStorage.setItem('radeya_org_id', data.orgId);
         if (data.needsOnboarding) {
           router.push('/dashboard/onboarding');
         } else {
           router.push('/dashboard');
         }
       } else {
-        throw new Error('Token tidak diterima dari server');
+        throw new Error('Login gagal');
       }
     } catch (err: any) {
       setError(err.message || 'Gagal login menggunakan akun Google.');
@@ -88,14 +85,11 @@ export default function LoginPage() {
       // 1. Kirim data login ke API backend
       const data = await apiPost('/api/v1/auth/login', { email, password });
       
-      // 2. Simpan token JWT ke localStorage browser
-      if (data.token) {
-        localStorage.setItem('radeya_token', data.token);
-        if (data.orgId) {
-          localStorage.setItem('radeya_org_id', data.orgId);
-        }
-        
-        // 3. Arahkan pengguna ke dashboard utama atau onboarding jika nama peternakan belum diatur
+      // 2. Cookie JWT di-set otomatis oleh server (httpOnly)
+      if (data.success) {
+        if (data.orgId) localStorage.setItem('radeya_org_id', data.orgId);
+
+        // 3. Arahkan pengguna ke dashboard utama atau onboarding
         if (data.needsOnboarding) {
           router.push('/dashboard/onboarding');
         } else {

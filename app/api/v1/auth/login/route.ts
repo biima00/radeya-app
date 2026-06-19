@@ -2,13 +2,25 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
+import { rateLimit, getClientIp } from '@/lib/rate-limit';
+import { setAuthCookie } from '@/lib/auth-cookie';
 
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.NEXTAUTH_SECRET || 'default-super-secret-key-change-in-production'
-);
+if (!process.env.NEXTAUTH_SECRET) {
+  throw new Error('FATAL: NEXTAUTH_SECRET environment variable is not set.');
+}
+const JWT_SECRET = new TextEncoder().encode(process.env.NEXTAUTH_SECRET);
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req);
+    const rl = rateLimit(ip, 10, 15 * 60 * 1000);
+    if (!rl.success) {
+      return NextResponse.json(
+        { error: 'Terlalu banyak percobaan login. Coba lagi nanti.' },
+        { status: 429, headers: { 'Retry-After': String(Math.ceil((rl.reset - Date.now()) / 1000)) } }
+      );
+    }
+
     const { email, password } = await req.json();
 
     // 1. Validasi input
@@ -59,11 +71,10 @@ export async function POST(req: Request) {
     // Jika nama organisasi masih default "Peternakan Saya", user perlu onboarding
     const needsOnboarding = user.org.name === 'Peternakan Saya';
 
-    // 6. Return data sukses
-    return NextResponse.json({
+    // 6. Return data sukses + set httpOnly cookie
+    const response = NextResponse.json({
       success: true,
       message: 'Login berhasil',
-      token,
       orgId: user.orgId,
       needsOnboarding,
       user: {
@@ -71,6 +82,7 @@ export async function POST(req: Request) {
         email: user.email,
       }
     });
+    return setAuthCookie(response, token);
 
   } catch (error: any) {
     console.error('Error during login:', error);

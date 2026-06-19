@@ -128,16 +128,24 @@ export async function POST(req: Request) {
     }
 
     const { message, animal } = await req.json();
-    if (!message) {
+    if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return NextResponse.json({ error: 'Pesan tidak boleh kosong' }, { status: 400 });
     }
+    // Batasi panjang input untuk mencegah penyalahgunaan biaya (cost-DoS) ke Gemini
+    if (message.length > 2000) {
+      return NextResponse.json(
+        { error: 'Pesan terlalu panjang (maksimal 2000 karakter).' },
+        { status: 400 }
+      );
+    }
+    const safeAnimal = typeof animal === 'string' ? animal.slice(0, 50) : '';
 
     const geminiKey = process.env.GEMINI_API_KEY;
 
     if (geminiKey) {
       try {
         const systemPrompt = `Anda adalah Radeya AI Vet, asisten dokter hewan digital dan konsultan peternakan profesional di Indonesia. 
-Ternak aktif pengguna saat ini adalah jenis: ${animal || 'Umum'}.
+Ternak aktif pengguna saat ini adalah jenis: ${safeAnimal || 'Umum'}.
 Berikan analisis medis, solusi pakan, sanitasi kandang, dan saran operasional yang konkret dan aman untuk peternak.
 Gunakan bahasa Indonesia yang ramah, sopan, praktis, serta mudah dipahami oleh peternak skala kecil maupun komersil.
 Gunakan markdown tebal, poin-poin, dan list bernomor untuk menjelaskan tindakan medis atau langkah pertolongan pertama.
@@ -186,7 +194,7 @@ SELALU ingatkan peternak di akhir jawaban untuk menghubungi dokter hewan atau Di
     }
 
     // Jika key tidak ada atau call API gagal, gunakan fallback cerdas offline
-    const reply = getOfflineResponse(message, animal);
+    const reply = getOfflineResponse(message, safeAnimal);
     return NextResponse.json({ reply });
 
   } catch (error: any) {

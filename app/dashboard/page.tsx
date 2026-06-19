@@ -721,8 +721,8 @@ export default function DashboardPage() {
   };
 
   // --- API Actions ---
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pendingSaveRef = useRef<{ cycleId: string; data: any } | null>(null);
+  const saveTimerRef = useRef<any>(null);
+  const pendingSaveRef = useRef<any>(null);
 
   const flushSave = useCallback(async () => {
     const pending = pendingSaveRef.current;

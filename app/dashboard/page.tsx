@@ -955,7 +955,7 @@ export default function DashboardPage() {
   };
 
   // --- Business Logic Calculation Core ---
-  const calculateStats = useMemo(() => {
+  const _calculateStats = () => {
     const cycle = (activeCycleIndex >= 0 && cycles[activeCycleIndex]) ? cycles[activeCycleIndex] : null;
     if (!cycle) return null;
 
@@ -1607,7 +1607,8 @@ export default function DashboardPage() {
     }
 
     return null;
-  }, [activeCycleIndex, cycles]);
+  };
+  const calculateStats = useMemo(() => _calculateStats(), [activeCycleIndex, cycles]);
 
   // --- Currency Formatter ---
   const formatRp = (val: any) => {

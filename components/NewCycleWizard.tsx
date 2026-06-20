@@ -398,29 +398,29 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
   };
 
   return (
-    <div className={`w-full ${isModal ? 'max-w-4xl mx-auto' : 'max-w-4xl mx-auto py-8 px-4'} flex flex-col font-sans text-slate-100`}>
+    <div className={`w-full ${isModal ? 'max-w-4xl mx-auto' : 'max-w-4xl mx-auto py-8 px-4'} flex flex-col font-sans text-[#3C3530]`}>
       
       {/* progress bar */}
       <div className="mb-10">
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-2xl font-black bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-black font-serif text-[#3C3530]">
             {isModal ? '➕ Buat Siklus Baru' : '🌿 Setup Siklus Peternakan Pertama Anda'}
           </h1>
           {onClose && (
             <button 
               onClick={onClose}
-              className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center hover:bg-slate-850 hover:border-slate-700 transition-colors"
+              className="w-8 h-8 rounded-xl bg-[#FAF7F0] border border-[#EADDC9] flex items-center justify-center hover:bg-[#EADDC9] text-[#3C3530]/80 transition-colors"
             >
               ✕
             </button>
           )}
         </div>
-
+ 
         {/* Step Indicator */}
         <div className="relative">
-          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-slate-800 -translate-y-1/2 -z-10" />
+          <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-[#EADDC9] -translate-y-1/2 -z-10" />
           <div 
-            className="absolute top-1/2 left-0 h-0.5 bg-gradient-to-r from-teal-500 to-emerald-500 -translate-y-1/2 -z-10 transition-all duration-500" 
+            className="absolute top-1/2 left-0 h-0.5 bg-[#859681] -translate-y-1/2 -z-10 transition-all duration-500" 
             style={{ width: `${((step - 1) / 3) * 100}%` }}
           />
           <div className="flex justify-between">
@@ -430,24 +430,24 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
               if (s === 2) label = 'Pengaturan';
               if (s === 3) label = 'Modal Awal';
               if (s === 4) label = 'Peluncuran';
-
+ 
               const active = step >= s;
               const current = step === s;
-
+ 
               return (
                 <div key={s} className="flex flex-col items-center">
                   <div 
                     className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all duration-300 ${
                       current 
-                        ? 'bg-teal-500 text-slate-950 ring-4 ring-teal-950 scale-110 shadow-lg shadow-teal-500/20' 
+                        ? 'bg-[#859681] text-[#FCFAF6] ring-4 ring-[#859681]/25 scale-110 shadow-sm' 
                         : active 
-                        ? 'bg-emerald-500 text-slate-950' 
-                        : 'bg-slate-900 text-slate-500 border border-slate-800'
+                        ? 'bg-[#859681]/80 text-[#FCFAF6]' 
+                        : 'bg-[#FAF7F0] text-[#3C3530]/50 border border-[#EADDC9]'
                     }`}
                   >
                     {s}
                   </div>
-                  <span className={`text-[10px] uppercase font-bold tracking-wider mt-2 transition-colors duration-300 ${active ? 'text-teal-400' : 'text-slate-500'}`}>
+                  <span className={`text-[10px] uppercase font-bold tracking-wider mt-2 transition-colors duration-300 ${active ? 'text-[#4D5D4A]' : 'text-[#3C3530]/40'}`}>
                     {label}
                   </span>
                 </div>
@@ -456,9 +456,9 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
           </div>
         </div>
       </div>
-
+ 
       {error && (
-        <div className="mb-6 p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold rounded-2xl flex items-start gap-3 animate-fadeIn">
+        <div className="mb-6 p-4 bg-[#A76A57]/10 border border-[#A76A57]/20 text-[#A76A57] text-xs font-semibold rounded-2xl flex items-start gap-3 animate-fadeIn">
           <svg className="w-5 h-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
@@ -470,28 +470,28 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
       {step === 1 && (
         <div className="space-y-6 animate-fadeIn">
           <div className="text-center sm:text-left">
-            <h2 className="text-xl font-bold text-slate-100">Pilih Komoditas Ternak</h2>
-            <p className="text-xs text-slate-400 mt-1">Formulir kerja, grafik laktasi/panen, dan AI Vet Dokter akan otomatis menyesuaikan komoditas pilihan Anda.</p>
+            <h2 className="text-xl font-bold text-[#3C3530]">Pilih Komoditas Ternak</h2>
+            <p className="text-xs text-[#3C3530]/75 mt-1 font-sans">Formulir kerja, grafik laktasi/panen, dan AI Vet Dokter akan otomatis menyesuaikan komoditas pilihan Anda.</p>
           </div>
-
+ 
           <div className="space-y-8">
             {COMMODITY_GROUPS.map((group, idx) => (
               <div key={idx} className="space-y-3">
-                <span className="text-xs font-black uppercase tracking-wider text-slate-500 block border-b border-slate-900 pb-1.5">{group.category}</span>
+                <span className="text-xs font-black uppercase tracking-wider text-[#3C3530]/65 block border-b border-[#EADDC9] pb-1.5">{group.category}</span>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {group.items.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => setAnimal(item.id)}
-                      className={`flex flex-col items-start bg-slate-900/40 backdrop-blur border p-5 rounded-2xl text-left transition-all duration-300 group hover:border-slate-700 ${
+                      className={`flex flex-col items-start bg-[#FCFAF6] border p-5 rounded-2xl text-left transition-all duration-300 group hover:border-[#859681] ${
                         animal === item.id 
-                          ? 'border-teal-500 bg-teal-950/20 text-teal-400 shadow-[0_0_15px_rgba(13,148,136,0.15)] scale-[1.02]' 
-                          : 'border-slate-850/80 text-slate-300'
+                          ? 'border-[#859681] bg-[#859681]/10 text-[#4D5D4A] shadow-sm scale-[1.02]' 
+                          : 'border-[#EADDC9] text-[#3C3530]'
                       }`}
                     >
                       <div className="text-3xl mb-3 group-hover:scale-110 transition-transform">{item.label.split(' ')[0]}</div>
-                      <div className="font-extrabold text-sm mb-1 text-slate-100 group-hover:text-teal-400 transition-colors">{item.label.split(' ').slice(1).join(' ')}</div>
-                      <div className="text-[11px] leading-relaxed text-slate-400">{item.desc}</div>
+                      <div className="font-extrabold text-sm mb-1 text-[#3C3530] group-hover:text-[#4D5D4A] transition-colors">{item.label.split(' ').slice(1).join(' ')}</div>
+                      <div className="text-[11px] leading-relaxed text-[#3C3530]/70 font-sans">{item.desc}</div>
                     </button>
                   ))}
                 </div>
@@ -505,64 +505,64 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
       {step === 2 && (
         <div className="space-y-6 animate-fadeIn">
           <div>
-            <h2 className="text-xl font-bold text-slate-100">Identitas & Skala Siklus</h2>
-            <p className="text-xs text-slate-400 mt-1">Lengkapi nama, skala usaha, dan tanggal mulai siklus.</p>
+            <h2 className="text-xl font-bold text-[#3C3530]">Identitas & Skala Siklus</h2>
+            <p className="text-xs text-[#3C3530]/70 mt-1">Lengkapi nama, skala usaha, dan tanggal mulai siklus.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Nama Siklus</label>
+                <label className="text-xs font-bold text-[#3C3530]/80 uppercase tracking-wider block">Nama Siklus</label>
                 <input 
                   type="text" 
                   value={name} 
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Contoh: Siklus Broiler - Mei 2026"
-                  className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-sm text-slate-200 font-semibold transition-colors"
+                  className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-3 text-sm text-[#3C3530] font-semibold transition-colors"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Tanggal Mulai Siklus</label>
+                <label className="text-xs font-bold text-[#3C3530]/80 uppercase tracking-wider block">Tanggal Mulai Siklus</label>
                 <input 
                   type="date" 
                   value={startDate} 
                   onChange={(e) => setStartDate(e.target.value)}
-                  className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-sm text-slate-200 font-semibold transition-colors font-mono"
+                  className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-3 text-sm text-[#3C3530] font-semibold transition-colors font-mono"
                 />
               </div>
 
-              <div className="space-y-4 pt-4 border-t border-slate-900/60">
-                <label className="text-xs font-black text-teal-400 uppercase tracking-wider block">⏰ Jadwal Pemberian Pakan (Wajib)</label>
+              <div className="space-y-4 pt-4 border-t border-[#EADDC9]">
+                <label className="text-xs font-black text-[#859681] uppercase tracking-wider block">⏰ Jadwal Pemberian Pakan (Wajib)</label>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1.5">
-                    <span className="text-[9px] font-bold text-slate-550 block">🌅 Pagi</span>
+                    <span className="text-[9px] font-bold text-[#3C3530]/60 block">🌅 Pagi</span>
                     <input 
                       type="time" 
                       value={jamPakanPagi} 
                       onChange={(e) => setJamPakanPagi(e.target.value)}
                       required
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-250 font-semibold font-mono"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <span className="text-[9px] font-bold text-slate-550 block">☀️ Siang</span>
+                    <span className="text-[9px] font-bold text-[#3C3530]/60 block">☀️ Siang</span>
                     <input 
                       type="time" 
                       value={jamPakanSiang} 
                       onChange={(e) => setJamPakanSiang(e.target.value)}
                       required
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-250 font-semibold font-mono"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <span className="text-[9px] font-bold text-slate-550 block">🌇 Sore</span>
+                    <span className="text-[9px] font-bold text-[#3C3530]/60 block">🌇 Sore</span>
                     <input 
                       type="time" 
                       value={jamPakanSore} 
                       onChange={(e) => setJamPakanSore(e.target.value)}
                       required
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-250 font-semibold font-mono"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 </div>
@@ -571,52 +571,52 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
 
             <div className="space-y-5">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Pilih Skala Usaha</label>
+                <label className="text-xs font-bold text-[#3C3530]/80 uppercase tracking-wider block">Pilih Skala Usaha</label>
                 <div className="space-y-3">
                   {/* Skala Kecil */}
                   <button
                     onClick={() => setScale('kecil')}
-                    className={`w-full flex items-start gap-4 bg-slate-900/40 border-2 p-4 rounded-xl text-left transition-all duration-300 ${
+                    className={`w-full flex items-start gap-4 bg-[#FCFAF6] border-2 p-4 rounded-xl text-left transition-all duration-300 ${
                       scale === 'kecil'
-                        ? 'border-teal-500 bg-teal-950/20 text-teal-400 shadow-md shadow-teal-500/5'
-                        : 'border-slate-850 text-slate-300 hover:border-slate-800'
+                        ? 'border-[#859681] bg-[#859681]/10 text-[#4D5D4A] shadow-md shadow-[#859681]/5'
+                        : 'border-[#EADDC9] text-[#3C3530]/80 hover:border-[#859681]/50'
                     }`}
                   >
                     <span className="text-2xl mt-0.5">🏡</span>
                     <div>
-                      <div className="font-extrabold text-sm text-slate-200">Skala Kecil / Rumahan</div>
-                      <div className="text-[10px] text-slate-400 mt-1">Kapasitas minimal, cocok untuk peternak mandiri pemula.</div>
+                      <div className="font-extrabold text-sm text-[#3C3530]">Skala Kecil / Rumahan</div>
+                      <div className="text-[10px] text-[#3C3530]/70 mt-1">Kapasitas minimal, cocok untuk peternak mandiri pemula.</div>
                     </div>
                   </button>
 
                   {/* Skala Besar */}
                   <button
                     onClick={() => setScale('besar')}
-                    className={`w-full flex items-start gap-4 bg-slate-900/40 border-2 p-4 rounded-xl text-left transition-all duration-300 ${
+                    className={`w-full flex items-start gap-4 bg-[#FCFAF6] border-2 p-4 rounded-xl text-left transition-all duration-300 ${
                       scale === 'besar'
-                        ? 'border-teal-500 bg-teal-950/20 text-teal-400 shadow-md shadow-teal-500/5'
-                        : 'border-slate-850 text-slate-300 hover:border-slate-800'
+                        ? 'border-[#859681] bg-[#859681]/10 text-[#4D5D4A] shadow-md shadow-[#859681]/5'
+                        : 'border-[#EADDC9] text-[#3C3530]/80 hover:border-[#859681]/50'
                     }`}
                   >
                     <span className="text-2xl mt-0.5">🏢</span>
                     <div>
-                      <div className="font-extrabold text-sm text-slate-200 font-bold flex items-center gap-2">
+                      <div className="font-extrabold text-sm text-[#3C3530] font-bold flex items-center gap-2">
                         <span>Skala Besar / Komersil</span>
                         {profile?.organization?.plan === 'FREE' && (
-                          <span className="text-[8px] bg-amber-500/10 text-amber-400 px-1.5 py-0.5 rounded border border-amber-500/20 uppercase tracking-wider font-mono">PRO</span>
+                          <span className="text-[8px] bg-[#A76A57]/10 text-[#A76A57] px-1.5 py-0.5 rounded border border-[#A76A57]/20 uppercase tracking-wider font-mono">PRO</span>
                         )}
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-1">Kapasitas industri modern, FCR/ADG presisi.</div>
+                      <div className="text-[10px] text-[#3C3530]/70 mt-1">Kapasitas industri modern, FCR/ADG presisi.</div>
                     </div>
                   </button>
 
                   {/* FREE Plan Warning Alert */}
                   {scale === 'besar' && profile?.organization?.plan === 'FREE' && (
-                    <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-300 text-[11px] leading-relaxed flex items-start gap-2.5 animate-fadeIn">
+                    <div className="p-4 bg-[#A76A57]/10 border border-[#A76A57]/20 rounded-2xl text-[#A76A57] text-[11px] leading-relaxed flex items-start gap-2.5 animate-fadeIn">
                       <span className="text-base">⭐</span>
                       <div>
                         <strong>Skala Besar Hanya Tersedia di Radeya Pro!</strong>
-                        <p className="text-slate-400 mt-0.5">Silakan pilih skala kecil terlebih dahulu atau hubungi pemilik organisasi Anda untuk melakukan upgrade plan langganan Radeya Anda.</p>
+                        <p className="text-[#3C3530]/80 mt-0.5">Silakan pilih skala kecil terlebih dahulu atau hubungi pemilik organisasi Anda untuk melakukan upgrade plan langganan Radeya Anda.</p>
                       </div>
                     </div>
                   )}
@@ -631,34 +631,34 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
       {step === 3 && (
         <div className="space-y-6 animate-fadeIn">
           <div>
-            <h2 className="text-xl font-bold text-slate-100">Setup Modal Awal</h2>
-            <p className="text-xs text-slate-400 mt-1">Berapa biaya investasi awal untuk memulai siklus ini? Ini akan dicatat sebagai basis pengeluaran HPP.</p>
+            <h2 className="text-xl font-bold text-[#3C3530]">Setup Modal Awal</h2>
+            <p className="text-xs text-[#3C3530]/70 mt-1">Berapa biaya investasi awal untuk memulai siklus ini? Ini akan dicatat sebagai basis pengeluaran HPP.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             
             {/* Input Form Fields based on Mode */}
-            <div className="space-y-5 bg-slate-900/20 border border-slate-850/60 p-6 rounded-2xl">
+            <div className="space-y-5 bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-2xl">
               
               {/* Poultry Broiler/Peck Mode fields */}
               {mode === 'broiler' && (
                 <>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah DOC / Bibit (Ekor)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah DOC / Bibit (Ekor)</label>
                     <input 
                       type="number" 
                       value={capitalDoc} 
                       onChange={(e) => setCapitalDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga beli per DOC / Bibit (Rp)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga beli per DOC / Bibit (Rp)</label>
                     <input 
                       type="number" 
                       value={capitalHargaDoc} 
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                 </>
@@ -668,42 +668,42 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
               {mode === 'bebek_pedaging' && (
                 <>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah DOD / Bibit Bebek (Ekor)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah DOD / Bibit Bebek (Ekor)</label>
                     <input 
                       type="number" 
                       value={capitalDoc} 
                       onChange={(e) => setCapitalDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga beli per DOD / Bibit (Rp)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga beli per DOD / Bibit (Rp)</label>
                     <input 
                       type="number" 
                       value={capitalHargaDoc} 
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Strain Bebek</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Strain Bebek</label>
                     <select
                       value={strainBebek}
                       onChange={(e) => setStrainBebek(e.target.value)}
-                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer"
                     >
                       {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
-                        <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                        <option key={st} value={st} className="bg-[#FCFAF6] text-[#3C3530]">{st}</option>
                       ))}
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Umur Bibit saat Masuk (Hari)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Umur Bibit saat Masuk (Hari)</label>
                     <input 
                       type="number" 
                       value={umurBibitBebek} 
                       onChange={(e) => setUmurBibitBebek(e.target.value)}
-                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 </>
@@ -713,21 +713,21 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
               {mode === 'petelur' && (
                 <>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Pullet / Indukan (Ekor)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Pullet / Indukan (Ekor)</label>
                     <input 
                       type="number" 
                       value={capitalDoc} 
                       onChange={(e) => setCapitalDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga per Pullet (Rp)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga per Pullet (Rp)</label>
                     <input 
                       type="number" 
                       value={capitalHargaDoc} 
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                 </>
@@ -737,42 +737,42 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
               {mode === 'bebek_petelur' && (
                 <>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Bayah / Bebek Petelur (Ekor)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Bayah / Bebek Petelur (Ekor)</label>
                     <input 
                       type="number" 
                       value={capitalDoc} 
                       onChange={(e) => setCapitalDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                     <input 
                       type="number" 
                       value={capitalHargaDoc} 
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-555 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Strain Bebek</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Strain Bebek</label>
                     <select
                       value={strainBebek}
                       onChange={(e) => setStrainBebek(e.target.value)}
-                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer"
                     >
                       {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
-                        <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                        <option key={st} value={st} className="bg-[#FCFAF6] text-[#3C3530]">{st}</option>
                       ))}
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Umur Bayah saat Masuk (Hari)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Umur Bayah saat Masuk (Hari)</label>
                     <input 
                       type="number" 
                       value={umurBibitBebek} 
                       onChange={(e) => setUmurBibitBebek(e.target.value)}
-                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 </>
@@ -783,121 +783,121 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jenis Ikan</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jenis Ikan</label>
                       <select
                         value={jenisIkan}
                         onChange={(e) => setJenisIkan(e.target.value)}
-                        className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer"
                       >
                         {['lele', 'nila', 'gurame', 'mas', 'patin', 'lainnya'].map((ik) => (
-                          <option key={ik} value={ik} className="bg-slate-900 text-slate-100">{ik.toUpperCase()}</option>
+                          <option key={ik} value={ik} className="bg-[#FCFAF6] text-[#3C3530]">{ik.toUpperCase()}</option>
                         ))}
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Sistem Budidaya</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Sistem Budidaya</label>
                       <select
                         value={sistemKolam}
                         onChange={(e) => setSistemKolam(e.target.value)}
-                        className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer"
                       >
                         {['konvensional', 'bioflok', 'RAS'].map((sys) => (
-                          <option key={sys} value={sys} className="bg-slate-900 text-slate-100">{sys.toUpperCase()}</option>
+                          <option key={sys} value={sys} className="bg-[#FCFAF6] text-[#3C3530]">{sys.toUpperCase()}</option>
                         ))}
                       </select>
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Tipe Wadah/Kolam</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Tipe Wadah/Kolam</label>
                     <select
                       value={tipeKolam}
                       onChange={(e) => setTipeKolam(e.target.value)}
-                      className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer"
                     >
                       {['tanah', 'terpal', 'beton', 'bioflok', 'RAS', 'keramba', 'air_deras'].map((t) => (
-                        <option key={t} value={t} className="bg-slate-900 text-slate-100">{t.toUpperCase()}</option>
+                        <option key={t} value={t} className="bg-[#FCFAF6] text-[#3C3530]">{t.toUpperCase()}</option>
                       ))}
                     </select>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-slate-400 block uppercase tracking-wider">Panjang (m)</label>
+                      <label className="text-[9px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Panjang (m)</label>
                       <input 
                         type="number" 
                         value={panjangKolam} 
                         onChange={(e) => setPanjangKolam(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-slate-400 block uppercase tracking-wider">Lebar (m)</label>
+                      <label className="text-[9px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Lebar (m)</label>
                       <input 
                         type="number" 
                         value={lebarKolam} 
                         onChange={(e) => setLebarKolam(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[9px] font-black text-slate-400 block uppercase tracking-wider">Tinggi Air (m)</label>
+                      <label className="text-[9px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Tinggi Air (m)</label>
                       <input 
                         type="number" 
                         value={tinggiAirKolam} 
                         onChange={(e) => setTinggiAirKolam(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                   </div>
-                  <div className="p-3 bg-teal-500/5 rounded-xl border border-teal-500/10 text-[10px] text-teal-400 font-bold flex justify-between font-mono">
+                  <div className="p-3 bg-[#859681]/5 rounded-xl border border-[#859681]/20 text-[10px] text-[#4D5D4A] font-bold flex justify-between font-mono">
                     <span>Volume Kolam Terhitung:</span>
                     <span>{((parseFloat(panjangKolam) || 0) * (parseFloat(lebarKolam) || 0) * (parseFloat(tinggiAirKolam) || 0)).toFixed(2)} m³</span>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Tebar Benih (Ekor)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Tebar Benih (Ekor)</label>
                     <input 
                       type="number" 
                       value={capitalDoc} 
                       onChange={(e) => setCapitalDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Bobot Awal (gram/ekor)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Bobot Awal (gram/ekor)</label>
                       <input 
                         type="number" 
                         value={bobotAwalIkan} 
                         onChange={(e) => setBobotAwalIkan(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga per Benih (Rp)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga per Benih (Rp)</label>
                       <input 
                         type="number" 
                         value={capitalHargaDoc} 
                         onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Persiapan Air (Rp)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Biaya Persiapan Air (Rp)</label>
                       <input 
                         type="number" 
                         value={biayaPersiapanAir} 
                         onChange={(e) => setBiayaPersiapanAir(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Aerasi / Pompa (Rp)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Biaya Aerasi / Pompa (Rp)</label>
                       <input 
                         type="number" 
                         value={biayaAerasiPompa} 
                         onChange={(e) => setBiayaAerasiPompa(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                   </div>
@@ -908,21 +908,21 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
               {mode === 'susu' && (
                 <>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Sapi/Kambing Perah (Ekor)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Sapi/Kambing Perah (Ekor)</label>
                     <input 
                       type="number" 
                       value={capitalDoc} 
                       onChange={(e) => setCapitalDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga Pembelian per Ekor (Rp)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga Pembelian per Ekor (Rp)</label>
                     <input 
                       type="number" 
                       value={capitalHargaDoc} 
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                 </>
@@ -932,31 +932,31 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
               {mode === 'penggemukan' && (
                 <>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Sapi / Kambing Bakalan (Ekor)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Sapi / Kambing Bakalan (Ekor)</label>
                     <input 
                       type="number" 
                       value={capitalDoc} 
                       onChange={(e) => setCapitalDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Bobot Awal Rata-rata (kg)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Bobot Awal Rata-rata (kg)</label>
                       <input 
                         type="number" 
                         value={capitalWeight} 
                         onChange={(e) => setCapitalWeight(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga per kg Hidup (Rp)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga per kg Hidup (Rp)</label>
                       <input 
                         type="number" 
                         value={capitalHargaKg} 
                         onChange={(e) => setCapitalHargaKg(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                   </div>
@@ -968,39 +968,39 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Induk Betina (Ekor)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Induk Betina (Ekor)</label>
                       <input 
                         type="number" 
                         value={capitalBetina} 
                         onChange={(e) => setCapitalBetina(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Jumlah Pejantan (Ekor)</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Pejantan (Ekor)</label>
                       <input 
                         type="number" 
                         value={capitalJantan} 
                         onChange={(e) => setCapitalJantan(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                       />
                     </div>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Harga Rata-rata per Ekor (Rp)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Harga Rata-rata per Ekor (Rp)</label>
                     <input 
                       type="number" 
                       value={capitalHargaDoc} 
                       onChange={(e) => setCapitalHargaDoc(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                 </>
               )}
 
               {/* Unified Cage Construction Setup Section */}
-              <div className="mt-6 border-t border-slate-800 pt-6 space-y-4">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">🏢 Investasi Kandang & Aset (CapEx)</span>
+              <div className="mt-6 border-t border-[#EADDC9] pt-6 space-y-4">
+                <span className="text-[10px] font-black text-[#3C3530]/60 uppercase tracking-widest block">🏢 Investasi Kandang & Aset (CapEx)</span>
                 
                 <div className="flex items-center gap-2 pb-2">
                   <input
@@ -1008,86 +1008,86 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
                     id="isDetailedCageInput"
                     checked={isDetailedCageInput}
                     onChange={(e) => setIsDetailedCageInput(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-800 text-teal-600 focus:ring-teal-500 bg-slate-950"
+                    className="w-4 h-4 rounded border-[#EADDC9] text-[#859681] focus:ring-[#859681] bg-[#FCFAF6]"
                   />
-                  <label htmlFor="isDetailedCageInput" className="text-xs font-bold text-slate-300 cursor-pointer">
+                  <label htmlFor="isDetailedCageInput" className="text-xs font-bold text-[#3C3530]/90 cursor-pointer">
                     Input Rincian Biaya Pembangunan Kandang Baru
                   </label>
                 </div>
 
                 {isDetailedCageInput ? (
-                  <div className="space-y-3.5 pl-2 border-l-2 border-teal-500/20 animate-fadeIn">
+                  <div className="space-y-3.5 pl-2 border-l-2 border-[#859681]/30 animate-fadeIn">
                     <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">1. Biaya Bahan & Material (Baja, Kayu, Semen, dll)</label>
+                      <label className="text-[9px] font-bold text-[#3C3530]/70 uppercase tracking-wider block">1. Biaya Bahan & Material (Baja, Kayu, Semen, dll)</label>
                       <input
                         type="number"
                         value={cageMaterialCost}
                         onChange={(e) => setCageMaterialCost(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2 text-xs text-slate-200 font-semibold"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2 text-xs text-[#3C3530] font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">2. Biaya Tenaga Kerja (Labor / Upah Tukang)</label>
+                      <label className="text-[9px] font-bold text-[#3C3530]/70 uppercase tracking-wider block">2. Biaya Tenaga Kerja (Labor / Upah Tukang)</label>
                       <input
                         type="number"
                         value={cageLaborCost}
                         onChange={(e) => setCageLaborCost(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2 text-xs text-slate-200 font-semibold"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2 text-xs text-[#3C3530] font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">3. Biaya Lain-lain Pembangunan</label>
+                      <label className="text-[9px] font-bold text-[#3C3530]/70 uppercase tracking-wider block">3. Biaya Lain-lain Pembangunan</label>
                       <input
                         type="number"
                         value={cageOtherCost}
                         onChange={(e) => setCageOtherCost(e.target.value)}
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2 text-xs text-slate-200 font-semibold"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2 text-xs text-[#3C3530] font-semibold"
                       />
                     </div>
-                    <div className="p-3 bg-teal-500/5 rounded-xl border border-teal-500/10 text-[10px] text-teal-400 font-bold flex justify-between font-mono">
+                    <div className="p-3 bg-[#859681]/5 rounded-xl border border-[#859681]/25 text-[10px] text-[#4D5D4A] font-bold flex justify-between font-mono">
                       <span>Total Biaya Konstruksi:</span>
                       <span>{formatRp(parseFloat(capitalKandang) || 0)}</span>
                     </div>
                   </div>
                 ) : (
                   <div className="space-y-1.5 animate-fadeIn">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Kandang / Infrastruktur Awal (Rp)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/60 block uppercase tracking-wider">Biaya Kandang / Infrastruktur Awal (Rp)</label>
                     <input
                       type="number"
                       value={capitalKandang}
                       onChange={(e) => setCapitalKandang(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                 )}
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Estimasi Masa Manfaat Kandang (Tahun)</label>
+                  <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Estimasi Masa Manfaat Kandang (Tahun)</label>
                   <select
                     value={cageUsefulLifeYears}
                     onChange={(e) => setCageUsefulLifeYears(e.target.value)}
-                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-250 font-semibold font-mono cursor-pointer"
+                    className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono cursor-pointer"
                   >
                     {[1, 2, 3, 4, 5, 8, 10, 15, 20].map((yr) => (
-                      <option key={yr} value={yr} className="bg-slate-900 text-slate-100">
+                      <option key={yr} value={yr} className="bg-[#FCFAF6] text-[#3C3530]">
                         {yr} Tahun ({yr * 12} Bulan) {yr === 4 ? ' - Standar Pajak Semi-Permanen' : yr === 5 ? ' - Rekomendasi' : ''}
                       </option>
                     ))}
                   </select>
-                  <span className="text-[9px] text-slate-500 block leading-relaxed">
+                  <span className="text-[9px] text-[#3C3530]/60 block leading-relaxed">
                     *Masa manfaat ini akan digunakan untuk menghitung penyusutan kandang per hari/siklus demi keakuratan EBITDA & Laba Bersih.
                   </span>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Perkiraan Siklus per Tahun</label>
+                  <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Perkiraan Siklus per Tahun</label>
                   <input
                     type="number"
                     value={siklusPerThn}
                     onChange={(e) => setSiklusPerThn(e.target.value)}
-                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                   />
-                  <span className="text-[9px] text-slate-500 block leading-relaxed">
+                  <span className="text-[9px] text-[#3C3530]/60 block leading-relaxed">
                     *Jumlah siklus pemeliharaan dalam setahun untuk menghitung penyusutan per siklus.
                   </span>
                 </div>
@@ -1096,14 +1096,14 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
 
             {/* Live Estimation Panel */}
             <div className="space-y-5">
-              <div className="bg-[#0b161a] border border-teal-500/10 p-6 rounded-2xl space-y-4">
-                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Rincian Anggaran Awal</span>
+              <div className="bg-[#EADDC9]/30 border border-[#EADDC9] p-6 rounded-2xl space-y-4">
+                <span className="text-[10px] font-black text-[#3C3530]/70 uppercase tracking-widest block">Rincian Anggaran Awal</span>
                 
-                <div className="space-y-3 text-xs font-semibold text-slate-300">
+                <div className="space-y-3 text-xs font-semibold text-[#3C3530]/90">
                   {/* Row 1: Stock Purchase */}
-                  <div className="flex justify-between items-center py-2 border-b border-slate-900/60">
+                  <div className="flex justify-between items-center py-2 border-b border-[#EADDC9]">
                     <span>💵 Pembelian Ternak/Bibit:</span>
-                    <span className="text-white font-mono">
+                    <span className="text-[#3C3530] font-mono">
                       {mode === 'penggemukan'
                         ? formatRp((parseFloat(capitalDoc) || 0) * (parseFloat(capitalWeight) || 0) * (parseFloat(capitalHargaKg) || 0))
                         : (mode === 'pembibitan_unggas' || mode === 'breeding_ruminansia')
@@ -1115,25 +1115,24 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
 
                   {/* Row 2: Infrastructure */}
                   {!(mode === 'pembibitan_unggas' || mode === 'breeding_ruminansia') && (
-                    <div className="flex justify-between items-center py-2 border-b border-slate-900/60">
+                    <div className="flex justify-between items-center py-2 border-b border-[#EADDC9]">
                       <span>🏗️ Persiapan Kandang/Kolam:</span>
-                      <span className="text-white font-mono">{formatRp(parseFloat(capitalKandang) || 0)}</span>
+                      <span className="text-[#3C3530] font-mono">{formatRp(parseFloat(capitalKandang) || 0)}</span>
                     </div>
                   )}
 
                   {/* Row 3: Totals */}
-                  <div className="flex justify-between items-center py-3 text-sm font-bold text-teal-400">
+                  <div className="flex justify-between items-center py-3 text-sm font-bold text-[#859681]">
                     <span>🔥 Total Modal Awal:</span>
-                    <span className="text-lg font-black text-teal-300 font-mono">{formatRp(initialCapitalTotal)}</span>
+                    <span className="text-lg font-black text-[#4D5D4A] font-mono">{formatRp(initialCapitalTotal)}</span>
                   </div>
                 </div>
 
-                <div className="p-3.5 bg-slate-950/60 rounded-xl text-[10px] leading-relaxed text-slate-400 border border-slate-900">
+                <div className="p-3.5 bg-[#FAF7F0] rounded-xl text-[10px] leading-relaxed text-[#3C3530]/80 border border-[#EADDC9]">
                   ⚡ <strong>Note:</strong> Nilai total modal awal ini akan dicatat secara otomatis dalam laporan siklus baru Anda dan tidak perlu diisi ulang di dalam menu lembar kerja dashboard.
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       )}
@@ -1142,55 +1141,55 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
       {step === 4 && (
         <div className="space-y-6 animate-fadeIn">
           <div>
-            <h2 className="text-xl font-bold text-slate-100">Review & Peluncuran</h2>
-            <p className="text-xs text-slate-400 mt-1">Tinjau kembali parameter konfigurasi Anda sebelum memulai pencatatan siklus.</p>
+            <h2 className="text-xl font-bold text-[#3C3530]">Review & Peluncuran</h2>
+            <p className="text-xs text-[#3C3530]/70 mt-1">Tinjau kembali parameter konfigurasi Anda sebelum memulai pencatatan siklus.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             
             {/* Checklist summary */}
-            <div className="bg-[#0b161a]/60 border border-slate-850 p-6 rounded-2xl space-y-4">
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block">Ringkasan Konfigurasi</span>
+            <div className="bg-[#EADDC9]/30 border border-[#EADDC9] p-6 rounded-2xl space-y-4">
+              <span className="text-[10px] font-black text-[#3C3530]/70 uppercase tracking-widest block">Ringkasan Konfigurasi</span>
               
-              <div className="space-y-3 text-xs font-semibold text-slate-300">
-                <div className="flex justify-between py-2 border-b border-slate-900">
-                  <span className="text-slate-400">🌾 Komoditas:</span>
+              <div className="space-y-3 text-xs font-semibold text-[#3C3530]/90">
+                <div className="flex justify-between py-2 border-b border-[#EADDC9]">
+                  <span className="text-[#3C3530]/70">🌾 Komoditas:</span>
                   <span className="font-extrabold">{ANIMAL_LABELS[animal] || animal}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-900">
-                  <span className="text-slate-400">🏷️ Kategori:</span>
-                  <span className="font-extrabold text-teal-400">{getCategoryName(animal)}</span>
+                <div className="flex justify-between py-2 border-b border-[#EADDC9]">
+                  <span className="text-[#3C3530]/70">🏷️ Kategori:</span>
+                  <span className="font-extrabold text-[#859681]">{getCategoryName(animal)}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-900">
-                  <span className="text-slate-400">📋 Nama Siklus:</span>
+                <div className="flex justify-between py-2 border-b border-[#EADDC9]">
+                  <span className="text-[#3C3530]/70">📋 Nama Siklus:</span>
                   <span className="font-extrabold">{name}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-900">
-                  <span className="text-slate-400">🏢 Skala Usaha:</span>
-                  <span className="font-extrabold font-mono text-teal-400 uppercase tracking-wider">{scale === 'besar' ? 'Besar / Komersil' : 'Kecil / Rumahan'}</span>
+                <div className="flex justify-between py-2 border-b border-[#EADDC9]">
+                  <span className="text-[#3C3530]/70">🏢 Skala Usaha:</span>
+                  <span className="font-extrabold font-mono text-[#859681] uppercase tracking-wider">{scale === 'besar' ? 'Besar / Komersil' : 'Kecil / Rumahan'}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-900">
-                  <span className="text-slate-400">📅 Tanggal Mulai:</span>
+                <div className="flex justify-between py-2 border-b border-[#EADDC9]">
+                  <span className="text-[#3C3530]/70">📅 Tanggal Mulai:</span>
                   <span className="font-extrabold font-mono">{startDate}</span>
                 </div>
-                <div className="flex justify-between py-2 border-b border-slate-900">
-                  <span className="text-slate-400">⏰ Jadwal Pakan:</span>
-                  <span className="font-extrabold font-mono text-slate-350">{jamPakanPagi} | {jamPakanSiang} | {jamPakanSore}</span>
+                <div className="flex justify-between py-2 border-b border-[#EADDC9]">
+                  <span className="text-[#3C3530]/70">⏰ Jadwal Pakan:</span>
+                  <span className="font-extrabold font-mono text-[#3C3530]">{jamPakanPagi} | {jamPakanSiang} | {jamPakanSore}</span>
                 </div>
                 <div className="flex justify-between py-2">
-                  <span className="text-slate-400">💸 Budget Modal Awal:</span>
-                  <span className="font-extrabold font-mono text-teal-300">{formatRp(initialCapitalTotal)}</span>
+                  <span className="text-[#3C3530]/70">💸 Budget Modal Awal:</span>
+                  <span className="font-extrabold font-mono text-[#4D5D4A]">{formatRp(initialCapitalTotal)}</span>
                 </div>
               </div>
             </div>
 
             {/* Profit calculator simulation */}
-            <div className="bg-gradient-to-tr from-teal-950/20 to-emerald-950/20 border border-teal-500/10 p-6 rounded-2xl space-y-4">
+            <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-2xl space-y-4">
               <div className="flex items-center gap-2">
                 <span className="text-xl">📈</span>
                 <div>
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Simulasi Estimasi Laba</span>
-                  <span className="text-xs text-slate-500">Berdasarkan FCR rata-rata nasional & harga jual pasar saat ini.</span>
+                  <span className="text-[10px] font-black text-[#3C3530]/70 uppercase tracking-widest block">Simulasi Estimasi Laba</span>
+                  <span className="text-xs text-[#3C3530]/60">Berdasarkan FCR rata-rata nasional & harga jual pasar saat ini.</span>
                 </div>
               </div>
 
@@ -1288,14 +1287,14 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
 
                 return (
                   <div className="space-y-4">
-                    <div className="flex justify-between items-end border-b border-teal-500/10 pb-3">
-                      <span className="text-xs text-slate-400 font-semibold">Proyeksi Laba Bersih:</span>
-                      <span className={`text-xl font-black font-mono ${projectedProfit >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    <div className="flex justify-between items-end border-b border-[#EADDC9] pb-3">
+                      <span className="text-xs text-[#3C3530]/70 font-semibold">Proyeksi Laba Bersih:</span>
+                      <span className={`text-xl font-black font-mono ${projectedProfit >= 0 ? 'text-[#859681]' : 'text-[#A76A57]'}`}>
                         {formatRp(projectedProfit)}
                       </span>
                     </div>
-                    <p className="text-[10px] leading-relaxed text-slate-400">{detailsText}</p>
-                    <div className="text-[9px] text-slate-550 leading-normal italic">
+                    <p className="text-[10px] leading-relaxed text-[#3C3530]/80">{detailsText}</p>
+                    <div className="text-[9px] text-[#3C3530]/60 leading-normal italic">
                       *Catatan: Hasil aktual dipengaruhi oleh rasio konversi pakan harian (FCR), tingkat kelangsungan hidup ternak (SR), dan fluktuasi harga pasar lokal.
                     </div>
                   </div>
@@ -1308,11 +1307,11 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
       )}
 
       {/* FOOTER ACTIONS */}
-      <div className="mt-10 border-t border-slate-900 pt-6 flex justify-between">
+      <div className="mt-10 border-t border-[#EADDC9] pt-6 flex justify-between">
         {step > 1 ? (
           <button
             onClick={handleBack}
-            className="px-6 py-3 bg-slate-950/60 hover:bg-slate-900 border border-slate-800 text-slate-300 text-xs font-bold rounded-xl transition-all"
+            className="px-6 py-3 bg-[#FAF7F0] hover:bg-[#EADDC9]/50 border border-[#EADDC9] text-[#3C3530]/85 text-xs font-bold rounded-xl transition-all"
             disabled={isSubmitting}
           >
             &larr; Kembali
@@ -1324,7 +1323,7 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
         {step < 4 ? (
           <button
             onClick={handleNext}
-            className="px-6 py-3 bg-gradient-to-r from-teal-650 to-emerald-650 hover:from-teal-600 hover:to-emerald-600 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-teal-950/20"
+            className="px-6 py-3 bg-[#859681] hover:bg-[#72836E] text-[#FCFAF6] text-xs font-bold rounded-xl transition-all shadow-sm"
           >
             Lanjutkan &rarr;
           </button>
@@ -1332,7 +1331,7 @@ export default function NewCycleWizard({ profile, onClose, onSubmit, isModal = f
           <button
             onClick={handleLaunch}
             disabled={isSubmitting}
-            className="px-8 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-500/10 disabled:opacity-50"
+            className="px-8 py-3.5 bg-[#859681] hover:bg-[#72836E] text-[#FCFAF6] text-xs font-black uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-50"
           >
             {isSubmitting ? (
               <>

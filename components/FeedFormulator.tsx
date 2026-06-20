@@ -272,26 +272,26 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
   };
 
   return (
-    <div className="space-y-6 text-slate-200">
+    <div className="space-y-6 text-[#3C3530]">
       {/* Title Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#0A1214] border border-teal-500/10 p-6 rounded-3xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#859681]/5 rounded-full blur-3xl" />
         <div className="relative z-10 space-y-1">
-          <h2 className="text-2xl font-black text-white flex items-center gap-2">🌾 Formulator Pakan Mandiri</h2>
-          <p className="text-xs text-slate-400 font-semibold">Racik pakan berkualitas dengan memanfaatkan bahan baku lokal untuk memotong biaya produksi pakan.</p>
+          <h2 className="text-2xl font-black text-[#3C3530] flex items-center gap-2">🌾 Formulator Pakan Mandiri</h2>
+          <p className="text-xs text-[#3C3530]/75 font-semibold">Racik pakan berkualitas dengan memanfaatkan bahan baku lokal untuk memotong biaya produksi pakan.</p>
         </div>
         
         {/* Toggle Mode Tab */}
-        <div className="flex bg-slate-950 p-1.5 rounded-2xl border border-slate-850 relative z-10 w-fit shrink-0">
+        <div className="flex bg-[#FAF7F0] p-1.5 rounded-2xl border border-[#EADDC9] relative z-10 w-fit shrink-0">
           <button
             onClick={() => setActiveTab('weighted')}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'weighted' ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'weighted' ? 'bg-[#859681] text-[#FCFAF6] shadow-sm' : 'text-[#3C3530]/60 hover:text-[#3C3530]'}`}
           >
             🌾 Ransum Komplet
           </button>
           <button
             onClick={() => setActiveTab('pearson')}
-            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'pearson' ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/10' : 'text-slate-400 hover:text-slate-200'}`}
+            className={`px-4 py-2 text-xs font-bold rounded-xl transition-all ${activeTab === 'pearson' ? 'bg-[#859681] text-[#FCFAF6] shadow-sm' : 'text-[#3C3530]/60 hover:text-[#3C3530]'}`}
           >
             🧮 Pearson Square
           </button>
@@ -305,47 +305,47 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
           {activeTab === 'weighted' ? (
             <>
               {/* Form Config */}
-              <div className="bg-[#0B1416]/90 border border-slate-850 p-6 rounded-3xl space-y-4">
-                <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block">⚙️ Pengaturan Formulasi</span>
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-4">
+                <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block">⚙️ Pengaturan Formulasi</span>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-450 block uppercase tracking-wider">Target Nutrisi Fase</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Target Nutrisi Fase</label>
                     <select
                       value={selectedTargetKey}
                       onChange={(e) => setSelectedTargetKey(e.target.value)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-200 cursor-pointer font-sans"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2.5 text-xs font-semibold text-[#3C3530] cursor-pointer font-sans"
                     >
                       {Object.entries(FEED_TARGETS).map(([key, val]) => (
-                        <option key={key} value={key} className="bg-slate-900 text-slate-100">{val.label} (PK: {val.pk}%, EM: {val.em})</option>
+                        <option key={key} value={key} className="bg-[#FCFAF6] text-[#3C3530]">{val.label} (PK: {val.pk}%, EM: {val.em})</option>
                       ))}
                     </select>
                   </div>
                   
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-450 block uppercase tracking-wider">Harga Pakan Pabrik (Rp/kg)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Harga Pakan Pabrik (Rp/kg)</label>
                     <input
                       type="number"
                       value={factoryPrice || ''}
                       onChange={(e) => setFactoryPrice(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3.5 py-2.5 text-xs font-semibold text-slate-200 font-mono"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3.5 py-2.5 text-xs font-semibold text-[#3C3530] font-mono"
                     />
                   </div>
 
                   {savedRecipes.length > 0 && (
                     <div className="space-y-1.5">
-                      <label className="text-[10px] font-black text-slate-450 block uppercase tracking-wider">Muat Resep Tersimpan</label>
+                      <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Muat Resep Tersimpan</label>
                       <select
                         onChange={(e) => {
                           const r = savedRecipes.find(item => item.id === e.target.value);
                           if (r) loadRecipe(r);
                         }}
                         defaultValue=""
-                        className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-200 cursor-pointer font-sans"
+                        className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2.5 text-xs font-semibold text-[#3C3530] cursor-pointer font-sans"
                       >
-                        <option value="" disabled className="bg-slate-900 text-slate-500">Pilih resep...</option>
+                        <option value="" disabled className="bg-[#FCFAF6] text-[#3C3530]/50">Pilih resep...</option>
                         {savedRecipes.map((r) => (
-                          <option key={r.id} value={r.id} className="bg-slate-900 text-slate-100">{r.nama} ({r.result.pk}% PK)</option>
+                          <option key={r.id} value={r.id} className="bg-[#FCFAF6] text-[#3C3530]">{r.nama} ({r.result.pk}% PK)</option>
                         ))}
                       </select>
                     </div>
@@ -354,12 +354,12 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
               </div>
 
               {/* Table of Ingredients */}
-              <div className="bg-[#0B1416]/90 border border-slate-850 p-6 rounded-3xl space-y-4">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block">🌱 Pilih Bahan Baku Lokal</span>
+                  <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block">🌱 Pilih Bahan Baku Lokal</span>
                   
                   {/* Category Filter Pills */}
-                  <div className="flex flex-wrap bg-slate-950 p-1 rounded-xl border border-slate-850/80 w-fit shrink-0">
+                  <div className="flex flex-wrap bg-[#FAF7F0] p-1 rounded-xl border border-[#EADDC9] w-fit shrink-0">
                     {[
                       { id: 'semua', label: 'Semua' },
                       { id: 'energi', label: 'Energi' },
@@ -370,7 +370,7 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
                       <button
                         key={cat.id}
                         onClick={() => setSelectedCategoryFilter(cat.id)}
-                        className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all uppercase ${selectedCategoryFilter === cat.id ? 'bg-slate-850 text-teal-400' : 'text-slate-500 hover:text-slate-350'}`}
+                        className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all uppercase ${selectedCategoryFilter === cat.id ? 'bg-[#859681] text-[#FCFAF6] shadow-sm' : 'text-[#3C3530]/60 hover:text-[#3C3530]'}`}
                       >
                         {cat.label}
                       </button>
@@ -379,10 +379,10 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
                 </div>
 
                 {/* Table Layout */}
-                <div className="overflow-x-auto rounded-2xl border border-slate-850/60 bg-slate-950/20">
+                <div className="overflow-x-auto rounded-2xl border border-[#EADDC9] bg-[#FCFAF6]">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-slate-950/60 text-slate-400 text-[10px] font-black uppercase tracking-wider border-b border-slate-850">
+                      <tr className="bg-[#F3EFE3] text-[#3C3530]/75 text-[10px] font-black uppercase tracking-wider border-b border-[#EADDC9]">
                         <th className="py-3 px-4 w-12 text-center">Aktif</th>
                         <th className="py-3 px-4">Bahan Pakan</th>
                         <th className="py-3 px-4 text-center">PK (%)</th>
@@ -392,35 +392,35 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
                         <th className="py-3 px-4 text-right w-24">Subtotal</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-850/60 text-xs font-semibold">
+                    <tbody className="divide-y divide-[#EADDC9] text-xs font-semibold">
                       {filteredIngredients.map(ing => {
                         const row = ingredientRows[ing.id] || { active: false, persen: 0, harga: 0 };
                         return (
-                          <tr key={ing.id} className={`hover:bg-slate-900/10 transition-colors ${row.active ? 'bg-teal-500/5' : 'opacity-70'}`}>
+                          <tr key={ing.id} className={`hover:bg-[#FAF7F0]/80 transition-colors ${row.active ? 'bg-[#859681]/5 text-[#3C3530]' : 'opacity-60 text-[#3C3530]/75'}`}>
                             <td className="py-3 px-4 text-center">
                               <input
                                 type="checkbox"
                                 checked={row.active}
                                 onChange={(e) => {
-                                  setIngredientRows(prev => ({
-                                    ...prev,
-                                    [ing.id]: { ...prev[ing.id], active: e.target.checked }
-                                  }));
+                                    setIngredientRows(prev => ({
+                                      ...prev,
+                                      [ing.id]: { ...prev[ing.id], active: e.target.checked }
+                                    }));
                                 }}
-                                className="w-4 h-4 rounded text-teal-600 focus:ring-teal-500 bg-slate-950 border-slate-800 cursor-pointer"
+                                className="w-4 h-4 rounded text-[#859681] focus:ring-[#859681] bg-[#FCFAF6] border-[#EADDC9] cursor-pointer"
                               />
                             </td>
                             <td className="py-3 px-4 space-y-1">
-                              <span className="text-white block font-bold">{ing.nama}</span>
-                              <span className="text-[10px] text-slate-450 block font-normal leading-relaxed">{ing.catatan}</span>
+                              <span className="text-[#3C3530] block font-bold">{ing.nama}</span>
+                              <span className="text-[10px] text-[#3C3530]/65 block font-normal leading-relaxed">{ing.catatan}</span>
                               {ing.maks !== null && (
-                                <span className="inline-block px-1.5 py-0.5 rounded bg-slate-850 text-slate-400 text-[9px] font-black font-mono">
+                                <span className="inline-block px-1.5 py-0.5 rounded bg-[#FAF7F0] text-[#3C3530]/60 text-[9px] font-black font-mono border border-[#EADDC9]">
                                   LIMIT: {ing.maks}%
                                 </span>
                               )}
                             </td>
-                            <td className="py-3 px-4 text-center font-mono text-slate-350">{ing.pk.toFixed(1)}%</td>
-                            <td className="py-3 px-4 text-center font-mono text-slate-350">{ing.em}</td>
+                            <td className="py-3 px-4 text-center font-mono text-[#3C3530]/85">{ing.pk.toFixed(1)}%</td>
+                            <td className="py-3 px-4 text-center font-mono text-[#3C3530]/85">{ing.em}</td>
                             <td className="py-3 px-4">
                               <input
                                 type="number"
@@ -435,7 +435,7 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
                                     [ing.id]: { ...prev[ing.id], persen: val }
                                   }));
                                 }}
-                                className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-2.5 py-1.5 text-center font-mono text-xs text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-2.5 py-1.5 text-center font-mono text-xs text-[#3C3530] disabled:opacity-40 disabled:cursor-not-allowed"
                               />
                             </td>
                             <td className="py-3 px-4">
@@ -451,10 +451,10 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
                                     [ing.id]: { ...prev[ing.id], harga: val }
                                   }));
                                 }}
-                                className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-2.5 py-1.5 text-right font-mono text-xs text-slate-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                                className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-2.5 py-1.5 text-right font-mono text-xs text-[#3C3530] disabled:opacity-40 disabled:cursor-not-allowed"
                               />
                             </td>
-                            <td className="py-3 px-4 text-right font-mono text-slate-350">
+                            <td className="py-3 px-4 text-right font-mono text-[#3C3530]/85">
                               {row.active ? formatRp(row.persen * row.harga / 100) : 'Rp0'}
                             </td>
                           </tr>
@@ -467,95 +467,95 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
             </>
           ) : (
             /* PEARSON SQUARE UI */
-            <div className="bg-[#0B1416]/90 border border-slate-850 p-6 rounded-3xl space-y-6">
-              <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block">🧮 Pearson Square Solver (2 Bahan)</span>
+            <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
+              <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block">🧮 Pearson Square Solver (2 Bahan)</span>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {/* Inputs */}
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-450 block uppercase tracking-wider">Bahan Pakan 1 (Protein Tinggi)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Bahan Pakan 1 (Protein Tinggi)</label>
                     <select
                       value={pearsonBahan1}
                       onChange={(e) => setPearsonBahan1(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer"
                     >
                       {FEED_INGREDIENTS.map(i => (
-                        <option key={i.id} value={i.id} className="bg-slate-900">{i.nama} (PK: {i.pk}%)</option>
+                        <option key={i.id} value={i.id} className="bg-[#FCFAF6] text-[#3C3530]">{i.nama} (PK: {i.pk}%)</option>
                       ))}
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-450 block uppercase tracking-wider">Bahan Pakan 2 (Protein Rendah)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Bahan Pakan 2 (Protein Rendah)</label>
                     <select
                       value={pearsonBahan2}
                       onChange={(e) => setPearsonBahan2(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer"
                     >
                       {FEED_INGREDIENTS.map(i => (
-                        <option key={i.id} value={i.id} className="bg-slate-900">{i.nama} (PK: {i.pk}%)</option>
+                        <option key={i.id} value={i.id} className="bg-[#FCFAF6] text-[#3C3530]">{i.nama} (PK: {i.pk}%)</option>
                       ))}
                     </select>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-450 block uppercase tracking-wider">Target PK Campuran (%)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Target PK Campuran (%)</label>
                     <input
                       type="number"
                       step="0.5"
                       value={pearsonTargetPk || ''}
                       onChange={(e) => setPearsonTargetPk(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 </div>
 
                 {/* Diagram visual */}
-                <div className="md:col-span-2 flex flex-col justify-center items-center bg-slate-950/40 p-6 rounded-2xl border border-slate-850/80 font-semibold">
+                <div className="md:col-span-2 flex flex-col justify-center items-center bg-[#FAF7F0] p-6 rounded-2xl border border-[#EADDC9] font-semibold">
                   {pearsonResult && pearsonResult.persen1 > 0 ? (
                     <div className="space-y-4 w-full">
                       <div className="flex justify-between items-center text-xs font-mono">
-                        <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center w-28">
-                          <span className="text-[9px] text-slate-500 block uppercase font-black">Bahan 1</span>
-                          <span className="text-slate-200 font-bold block truncate">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan1)?.nama}</span>
-                          <span className="text-teal-400 block font-bold text-xs">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan1)?.pk}% PK</span>
+                        <div className="p-3 bg-[#EADDC9] border border-[#859681] rounded-xl text-center w-28 text-[#3C3530]">
+                          <span className="text-[9px] text-[#3C3530]/60 block uppercase font-black">Bahan 1</span>
+                          <span className="text-[#3C3530] font-extrabold block truncate">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan1)?.nama}</span>
+                          <span className="text-[#859681] block font-bold text-xs">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan1)?.pk}% PK</span>
                         </div>
-                        <div className="text-slate-500 flex flex-col items-center">
+                        <div className="text-[#3C3530]/40 flex flex-col items-center">
                           <span>\</span>
                           <span>/</span>
                         </div>
-                        <div className="p-4 bg-teal-500/10 border border-teal-500/20 rounded-full w-14 h-14 flex items-center justify-center font-bold text-teal-400 text-sm">
+                        <div className="p-4 bg-[#859681]/15 border border-[#859681]/35 rounded-full w-14 h-14 flex items-center justify-center font-bold text-[#4D5D4A] text-sm">
                           {pearsonTargetPk}%
                         </div>
-                        <div className="text-slate-500 flex flex-col items-center">
+                        <div className="text-[#3C3530]/40 flex flex-col items-center">
                           <span>/</span>
                           <span>\</span>
                         </div>
-                        <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl text-center w-28">
-                          <span className="text-[9px] text-slate-500 block uppercase font-black">Bahan 2</span>
-                          <span className="text-slate-200 font-bold block truncate">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan2)?.nama}</span>
-                          <span className="text-teal-400 block font-bold text-xs">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan2)?.pk}% PK</span>
+                        <div className="p-3 bg-[#EADDC9] border border-[#859681] rounded-xl text-center w-28 text-[#3C3530]">
+                          <span className="text-[9px] text-[#3C3530]/60 block uppercase font-black">Bahan 2</span>
+                          <span className="text-[#3C3530] font-extrabold block truncate">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan2)?.nama}</span>
+                          <span className="text-[#859681] block font-bold text-xs">{FEED_INGREDIENTS.find(i => i.id === pearsonBahan2)?.pk}% PK</span>
                         </div>
                       </div>
 
-                      <div className="bg-teal-500/5 border border-teal-500/10 p-5 rounded-2xl text-xs space-y-3 font-semibold">
-                        <span className="text-[10px] font-black uppercase text-teal-400 tracking-wider block">📌 Hasil Formulasi Pearson</span>
-                        <div className="flex justify-between items-center py-1">
+                      <div className="bg-[#859681]/5 border border-[#859681]/20 p-5 rounded-2xl text-xs space-y-3 font-semibold">
+                        <span className="text-[10px] font-black uppercase text-[#859681] tracking-wider block">📌 Hasil Formulasi Pearson</span>
+                        <div className="flex justify-between items-center py-1 text-[#3C3530]">
                           <span>{FEED_INGREDIENTS.find(i => i.id === pearsonBahan1)?.nama}:</span>
-                          <span className="font-mono text-teal-400 text-sm font-black">{pearsonResult.persen1.toFixed(1)}%</span>
+                          <span className="font-mono text-[#4D5D4A] text-sm font-black">{pearsonResult.persen1.toFixed(1)}%</span>
                         </div>
-                        <div className="flex justify-between items-center py-1 border-t border-slate-900">
+                        <div className="flex justify-between items-center py-1 border-t border-[#EADDC9] text-[#3C3530]">
                           <span>{FEED_INGREDIENTS.find(i => i.id === pearsonBahan2)?.nama}:</span>
-                          <span className="font-mono text-teal-400 text-sm font-black">{pearsonResult.persen2.toFixed(1)}%</span>
+                          <span className="font-mono text-[#4D5D4A] text-sm font-black">{pearsonResult.persen2.toFixed(1)}%</span>
                         </div>
-                        <div className="pt-2 border-t border-slate-850 flex justify-between items-center font-bold">
+                        <div className="pt-2 border-t border-[#EADDC9] flex justify-between items-center font-bold text-[#3C3530]">
                           <span>PK Terhitung Akhir:</span>
-                          <span className="font-mono text-slate-250">{pearsonResult.pkHasil.toFixed(2)}%</span>
+                          <span className="font-mono text-[#3C3530]">{pearsonResult.pkHasil.toFixed(2)}%</span>
                         </div>
                       </div>
 
                       <button
                         onClick={applyPearsonToRecipe}
-                        className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-bold py-3 rounded-xl transition-all shadow-lg shadow-teal-500/15"
+                        className="w-full bg-[#859681] hover:bg-[#72836E] text-[#FCFAF6] text-xs font-bold py-3 rounded-xl transition-all shadow-sm"
                       >
                         ⚡ Terapkan Hasil Ke Racikan Utama
                       </button>
@@ -563,8 +563,8 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
                   ) : (
                     <div className="text-center p-8 space-y-2">
                       <span className="text-3xl">🧩</span>
-                      <p className="text-slate-400 text-xs">Formulasi tidak mungkin. Target PK harus berada di antara persentase PK Bahan 1 dan Bahan 2.</p>
-                      <p className="text-slate-650 text-[10px]">Contoh: Tepung Ikan (50%) dan Dedak (10%) untuk target 30%.</p>
+                      <p className="text-[#3C3530]/75 text-xs">Formulasi tidak mungkin. Target PK harus berada di antara persentase PK Bahan 1 dan Bahan 2.</p>
+                      <p className="text-[#3C3530]/50 text-[10px]">Contoh: Tepung Ikan (50%) dan Dedak (10%) untuk target 30%.</p>
                     </div>
                   )}
                 </div>
@@ -576,77 +576,77 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
         {/* RIGHT COLUMN: Live Dashboard Results (4 cols) */}
         <div className="lg:col-span-4 space-y-6">
           {/* Metrics Preview */}
-          <div className="bg-[#0B1416]/90 border border-slate-850 p-6 rounded-3xl space-y-6 relative overflow-hidden shadow-xl">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-teal-500/5 rounded-full blur-2xl" />
+          <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 relative overflow-hidden shadow-sm">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#859681]/5 rounded-full blur-2xl" />
             
             <div className="space-y-1.5 relative z-10">
-              <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block">📊 Ringkasan Nutrisi Racikan</span>
-              <h3 className="text-slate-450 text-xs font-bold">Hasil Live Kalkulasi</h3>
+              <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block">📊 Ringkasan Nutrisi Racikan</span>
+              <h3 className="text-[#3C3530]/70 text-xs font-bold">Hasil Live Kalkulasi</h3>
             </div>
 
             {/* Live PK Gauge */}
             <div className="space-y-4 relative z-10">
-              <div className="p-4 bg-slate-950/60 rounded-2xl border border-slate-850/80 space-y-2">
+              <div className="p-4 bg-[#FAF7F0] rounded-2xl border border-[#EADDC9] space-y-2">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Protein Kasar (PK)</span>
-                  <span className="text-slate-500 font-bold font-mono">Target: {target.pk}%</span>
+                  <span className="text-[#3C3530]/70 font-bold uppercase tracking-wider text-[10px]">Protein Kasar (PK)</span>
+                  <span className="text-[#3C3530]/50 font-bold font-mono">Target: {target.pk}%</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-3xl font-black font-mono ${calcResults.pk_ok ? 'text-teal-400' : 'text-rose-400'}`}>
+                  <span className={`text-3xl font-black font-mono ${calcResults.pk_ok ? 'text-[#859681]' : 'text-[#A76A57]'}`}>
                     {calcResults.pk.toFixed(2)}%
                   </span>
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase font-sans ${calcResults.pk_ok ? 'bg-teal-500/10 text-teal-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                  <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase font-sans ${calcResults.pk_ok ? 'bg-[#859681]/10 text-[#859681]' : 'bg-[#A76A57]/10 text-[#A76A57]'}`}>
                     {calcResults.pk_ok ? 'MEMENUHI' : 'KURANG'}
                   </span>
                 </div>
               </div>
 
               {/* Live EM Gauge */}
-              <div className="p-4 bg-slate-950/60 rounded-2xl border border-slate-850/80 space-y-2">
+              <div className="p-4 bg-[#FAF7F0] rounded-2xl border border-[#EADDC9] space-y-2">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-400 font-bold uppercase tracking-wider text-[10px]">Energi Metabolis (EM)</span>
-                  <span className="text-slate-500 font-bold font-mono">Target: {target.em}</span>
+                  <span className="text-[#3C3530]/70 font-bold uppercase tracking-wider text-[10px]">Energi Metabolis (EM)</span>
+                  <span className="text-[#3C3530]/50 font-bold font-mono">Target: {target.em}</span>
                 </div>
                 <div className="flex items-baseline gap-2">
-                  <span className={`text-3xl font-black font-mono ${calcResults.em_ok ? 'text-teal-400' : 'text-rose-400'}`}>
+                  <span className={`text-3xl font-black font-mono ${calcResults.em_ok ? 'text-[#859681]' : 'text-[#A76A57]'}`}>
                     {Math.round(calcResults.em)}
                   </span>
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase font-sans ${calcResults.em_ok ? 'bg-teal-500/10 text-teal-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                  <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase font-sans ${calcResults.em_ok ? 'bg-[#859681]/10 text-[#859681]' : 'bg-[#A76A57]/10 text-[#A76A57]'}`}>
                     {calcResults.em_ok ? 'MEMENUHI' : 'KURANG'}
                   </span>
                 </div>
               </div>
 
               {/* Other Nutrients */}
-              <div className="grid grid-cols-2 gap-3 text-xs bg-slate-950/40 p-4.5 rounded-2xl border border-slate-850/60 font-mono">
+              <div className="grid grid-cols-2 gap-3 text-xs bg-[#FAF7F0] p-4.5 rounded-2xl border border-[#EADDC9] font-mono text-[#3C3530]">
                 <div className="space-y-0.5">
-                  <span className="text-slate-500 text-[9px] uppercase font-bold block font-sans">Lemak Kasar (LK)</span>
-                  <span className="text-slate-200 font-bold">{calcResults.lk.toFixed(2)}%</span>
+                  <span className="text-[#3C3530]/60 text-[9px] uppercase font-bold block font-sans">Lemak Kasar (LK)</span>
+                  <span className="text-[#3C3530] font-bold">{calcResults.lk.toFixed(2)}%</span>
                 </div>
                 <div className="space-y-0.5">
-                  <span className="text-slate-500 text-[9px] uppercase font-bold block font-sans">Serat Kasar (SK)</span>
-                  <span className="text-slate-200 font-bold">{calcResults.sk.toFixed(2)}%</span>
+                  <span className="text-[#3C3530]/60 text-[9px] uppercase font-bold block font-sans">Serat Kasar (SK)</span>
+                  <span className="text-[#3C3530] font-bold">{calcResults.sk.toFixed(2)}%</span>
                 </div>
-                <div className="space-y-0.5 pt-2 border-t border-slate-900">
-                  <span className="text-slate-500 text-[9px] uppercase font-bold block font-sans">Kalsium (Ca)</span>
-                  <span className="text-slate-200 font-bold">{calcResults.ca.toFixed(2)}%</span>
+                <div className="space-y-0.5 pt-2 border-t border-[#EADDC9]">
+                  <span className="text-[#3C3530]/60 text-[9px] uppercase font-bold block font-sans">Kalsium (Ca)</span>
+                  <span className="text-[#3C3530] font-bold">{calcResults.ca.toFixed(2)}%</span>
                 </div>
-                <div className="space-y-0.5 pt-2 border-t border-slate-900">
-                  <span className="text-slate-500 text-[9px] uppercase font-bold block font-sans">Fosfor (P)</span>
-                  <span className="text-slate-200 font-bold">{calcResults.p.toFixed(2)}%</span>
+                <div className="space-y-0.5 pt-2 border-t border-[#EADDC9]">
+                  <span className="text-[#3C3530]/60 text-[9px] uppercase font-bold block font-sans">Fosfor (P)</span>
+                  <span className="text-[#3C3530] font-bold">{calcResults.p.toFixed(2)}%</span>
                 </div>
               </div>
 
               {/* Total Porsi & Price Compare */}
-              <div className="p-4 bg-slate-950/60 rounded-2xl border border-slate-850/80 space-y-4">
+              <div className="p-4 bg-[#FAF7F0] rounded-2xl border border-[#EADDC9] space-y-4">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-slate-400 font-bold text-[10px] uppercase">Total Porsi Racikan</span>
-                  <span className={`font-mono font-black ${calcResults.total_ok ? 'text-teal-400' : 'text-rose-400'}`}>
+                  <span className="text-[#3C3530]/75 font-bold text-[10px] uppercase">Total Porsi Racikan</span>
+                  <span className={`font-mono font-black ${calcResults.total_ok ? 'text-[#859681]' : 'text-[#A76A57]'}`}>
                     {calcResults.total_persen.toFixed(1)}% / 100%
                   </span>
                 </div>
                 {!calcResults.total_ok && (
-                  <div className="text-[10px] text-rose-400 bg-rose-500/5 p-2.5 rounded-xl border border-rose-500/10 leading-normal font-sans">
+                  <div className="text-[10px] text-[#A76A57] bg-[#A76A57]/5 p-2.5 rounded-xl border border-[#A76A57]/15 leading-normal font-sans">
                     {calcResults.total_persen < 100 ? (
                       <span>⚠️ Kurang <strong>{(100 - calcResults.total_persen).toFixed(1)}%</strong> bahan lagi. Silakan tambah porsi bahan pakan.</span>
                     ) : (
@@ -656,22 +656,22 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
                 )}
 
                 {/* Price comparison */}
-                <div className="pt-3 border-t border-slate-900 space-y-2">
+                <div className="pt-3 border-t border-[#EADDC9] space-y-2">
                   <div className="flex justify-between text-xs py-0.5">
-                    <span className="text-slate-500">Biaya Racikan/kg:</span>
-                    <span className="font-mono text-white font-bold">{formatRp(calcResults.biaya_per_kg)}</span>
+                    <span className="text-[#3C3530]/60">Biaya Racikan/kg:</span>
+                    <span className="font-mono text-[#3C3530] font-bold">{formatRp(calcResults.biaya_per_kg)}</span>
                   </div>
                   <div className="flex justify-between text-xs py-0.5">
-                    <span className="text-slate-500">Harga Pakan Pabrik:</span>
-                    <span className="font-mono text-slate-400">{formatRp(factoryPrice)}</span>
+                    <span className="text-[#3C3530]/60">Harga Pakan Pabrik:</span>
+                    <span className="font-mono text-[#3C3530]/70">{formatRp(factoryPrice)}</span>
                   </div>
                   {factoryPrice > calcResults.biaya_per_kg && (
-                    <div className="p-3 bg-emerald-500/5 rounded-xl border border-emerald-500/10 text-xs text-emerald-400 font-bold flex flex-col items-center text-center font-sans mt-2">
+                    <div className="p-3 bg-[#859681]/5 rounded-xl border border-[#859681]/20 text-xs text-[#4D5D4A] font-bold flex flex-col items-center text-center font-sans mt-2">
                       <span className="text-[9px] uppercase tracking-wider opacity-80">Estimasi Penghematan</span>
-                      <span className="text-lg font-black font-mono">
+                      <span className="text-lg font-black font-mono text-[#4D5D4A]">
                         {((factoryPrice - calcResults.biaya_per_kg) / factoryPrice * 100).toFixed(0)}% lebih hemat
                       </span>
-                      <span className="text-[9px] opacity-75 font-normal">Menghemat {formatRp(factoryPrice - calcResults.biaya_per_kg)} / kg pakan</span>
+                      <span className="text-[9px] opacity-75 font-normal text-[#3C3530]/80">Menghemat {formatRp(factoryPrice - calcResults.biaya_per_kg)} / kg pakan</span>
                     </div>
                   )}
                 </div>
@@ -679,7 +679,7 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
 
               {/* Safety warning triggers */}
               {safetyWarnings.length > 0 && (
-                <div className="space-y-2 bg-rose-500/5 border border-rose-500/10 p-4 rounded-2xl text-[10px] text-rose-400 leading-relaxed">
+                <div className="space-y-2 bg-[#A76A57]/5 border border-[#A76A57]/15 p-4 rounded-2xl text-[10px] text-[#A76A57] leading-relaxed">
                   {safetyWarnings.map((w, index) => (
                     <div key={index}>{w}</div>
                   ))}
@@ -690,19 +690,19 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
               {calcResults.total_ok && (
                 <div className="pt-3 space-y-3">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Nama Resep Pakan</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/70 block uppercase tracking-wider">Nama Resep Pakan</label>
                     <input
                       type="text"
                       value={recipeName}
                       onChange={(e) => setRecipeName(e.target.value)}
                       placeholder="Masukkan nama resep..."
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <button
                     onClick={handleSave}
                     disabled={isSaving}
-                    className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-bold py-3 rounded-xl transition-all shadow-lg shadow-teal-500/15 disabled:opacity-50"
+                    className="w-full bg-[#859681] hover:bg-[#72836E] text-[#FCFAF6] text-xs font-bold py-3 rounded-xl transition-all shadow-sm disabled:opacity-50"
                   >
                     {isSaving ? 'Menyimpan...' : '💾 Simpan Resep Pakan'}
                   </button>
@@ -713,57 +713,57 @@ export default function FeedFormulator({ activeCycle, onSaveRecipe, savedRecipes
 
           {/* Mixing instructions card */}
           {activeRows.length > 0 && (
-            <div className="bg-[#0B1416]/90 border border-slate-850 p-6 rounded-3xl space-y-4">
-              <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block">⚙️ Petunjuk Pengolahan</span>
+            <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-4">
+              <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block">⚙️ Petunjuk Pengolahan</span>
               
               <div className="space-y-3.5 text-xs">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-slate-450 block uppercase tracking-wider">Pilih Bentuk Akhir Pakan</label>
+                  <label className="text-[10px] font-black text-[#3C3530]/75 block uppercase tracking-wider">Pilih Bentuk Akhir Pakan</label>
                   <select
                     value={feedForm}
                     onChange={(e) => setFeedForm(e.target.value as any)}
-                    className="w-full bg-slate-950 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2 text-xs text-slate-200 font-semibold cursor-pointer"
+                    className="w-full bg-[#FCFAF6] border border-[#EADDC9] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-3 py-2 text-xs text-[#3C3530] font-semibold cursor-pointer"
                   >
-                    <option value="mash" className="bg-slate-900">Mash (Tepung / Ransum Giling)</option>
-                    <option value="crumble" className="bg-slate-900">Crumble (Remahan / Pecahan Pellet)</option>
-                    <option value="pellet_tenggelam" className="bg-slate-900">Pellet Tenggelam</option>
-                    <option value="pellet_apung" className="bg-slate-900">Pellet Apung</option>
+                    <option value="mash" className="bg-[#FCFAF6] text-[#3C3530]">Mash (Tepung / Ransum Giling)</option>
+                    <option value="crumble" className="bg-[#FCFAF6] text-[#3C3530]">Crumble (Remahan / Pecahan Pellet)</option>
+                    <option value="pellet_tenggelam" className="bg-[#FCFAF6] text-[#3C3530]">Pellet Tenggelam</option>
+                    <option value="pellet_apung" className="bg-[#FCFAF6] text-[#3C3530]">Pellet Apung</option>
                   </select>
                 </div>
 
                 {/* Mixing steps */}
-                <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850/80 space-y-3 leading-relaxed">
+                <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-3 leading-relaxed text-[#3C3530]">
                   <div>
-                    <span className="text-[9px] text-slate-500 block uppercase font-black">Urutan Pencampuran (Kecil ke Besar)</span>
-                    <ol className="list-decimal pl-4 mt-1.5 space-y-1 text-slate-350 text-[11px] font-mono">
+                    <span className="text-[9px] text-[#3C3530]/60 block uppercase font-black">Urutan Pencampuran (Kecil ke Besar)</span>
+                    <ol className="list-decimal pl-4 mt-1.5 space-y-1 text-[#3C3530]/85 text-[11px] font-mono">
                       {mixingOrder.map((ing, idx) => (
                         <li key={idx} className="truncate">
-                          {ing.nama} <span className="text-teal-400">({ing.persen.toFixed(1)}%)</span>
+                          {ing.nama} <span className="text-[#859681]">({ing.persen.toFixed(1)}%)</span>
                         </li>
                       ))}
                     </ol>
-                    <span className="text-[9px] text-slate-500 mt-2 block italic font-sans leading-normal">*Campurkan bahan bervolume mikro (premix/aditif) dengan sedikit dedak dahulu baru satukan dengan bahan makro.</span>
+                    <span className="text-[9px] text-[#3C3530]/50 mt-2 block italic font-sans leading-normal">*Campurkan bahan bervolume mikro (premix/aditif) dengan sedikit dedak dahulu baru satukan dengan bahan makro.</span>
                   </div>
 
-                  <div className="border-t border-slate-900 pt-3">
-                    <span className="text-[9px] text-slate-500 block uppercase font-black">Proses Pembuatan ({feedForm.toUpperCase()})</span>
-                    <p className="text-[11px] text-slate-350 mt-1 font-sans leading-normal">{getFormDesc(feedForm).proses}</p>
+                  <div className="border-t border-[#EADDC9] pt-3">
+                    <span className="text-[9px] text-[#3C3530]/60 block uppercase font-black">Proses Pembuatan ({feedForm.toUpperCase()})</span>
+                    <p className="text-[11px] text-[#3C3530]/85 mt-1 font-sans leading-normal">{getFormDesc(feedForm).proses}</p>
                   </div>
 
-                  <div className="border-t border-slate-900 pt-3 grid grid-cols-2 gap-4 text-[10px]">
+                  <div className="border-t border-[#EADDC9] pt-3 grid grid-cols-2 gap-4 text-[10px]">
                     <div>
-                      <span className="text-slate-500 block uppercase font-black text-[9px]">Mesin / Alat</span>
-                      <span className="text-slate-250 mt-0.5 block font-bold leading-normal">{getFormDesc(feedForm).alat}</span>
+                      <span className="text-[#3C3530]/60 block uppercase font-black text-[9px]">Mesin / Alat</span>
+                      <span className="text-[#3C3530]/85 mt-0.5 block font-bold leading-normal">{getFormDesc(feedForm).alat}</span>
                     </div>
                     <div>
-                      <span className="text-slate-500 block uppercase font-black text-[9px]">Cocok Untuk</span>
-                      <span className="text-slate-250 mt-0.5 block font-bold leading-normal">{getFormDesc(feedForm).cocok}</span>
+                      <span className="text-[#3C3530]/60 block uppercase font-black text-[9px]">Cocok Untuk</span>
+                      <span className="text-[#3C3530]/85 mt-0.5 block font-bold leading-normal">{getFormDesc(feedForm).cocok}</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Storage advice */}
-                <div className="p-3 bg-yellow-500/5 rounded-xl border border-yellow-500/10 text-[10px] text-yellow-400/90 leading-relaxed font-sans font-semibold">
+                <div className="p-3 bg-[#A76A57]/5 rounded-xl border border-[#A76A57]/15 text-[10px] text-[#A76A57] leading-relaxed font-sans font-semibold">
                   <div>💡 <strong>Catatan Penyimpanan:</strong> Pastikan kadar air bahan pakan &lt; 12% dan disimpan di tempat beralas palet (kering & sirkulasi baik) maksimal 1 bulan. Dedak padi rawan tengik jika disimpan &gt; 3-4 minggu.</div>
                 </div>
               </div>

@@ -27,6 +27,11 @@ interface Cycle {
     kelahiran?: any[];
     harian?: any[];
     checkedTasks?: string[]; // Menyimpan daftar task harian yang sudah dicentang
+    resep_pakan?: any[];
+    sampling?: any[];
+    kualitas_air?: any[];
+    pemijahan?: any[];
+    perkawinan?: any[];
   };
   createdAt: string;
 }
@@ -68,63 +73,64 @@ const SCALE_LABELS: Record<string, string> = {
 // --- SVGs Icons Pack for Professional SaaS UI ---
 const Icons = {
   dashboard: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c-4 3-5 8-2 13 2 3 5 5 5 5s3-2 5-5c3-5 2-10-2-13m-6 20V12m0 0c-1-1-3-1.5-4-1m4 1c1-1 3-1.5 4-1m-4 5c-1-1-2.5-1.5-3.5-1m3.5 1c1-1 2.5-1.5 3.5-1" />
     </svg>
   ),
   modalAwal: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 20v-8m0 0c0-3-1.5-6-4.5-7m4.5 7c0-3 1.5-6 4.5-7m-4.5 7c0-2-2-4-5-3.5m5 3.5c0-2 2-4 5-3.5M6 20h12" />
     </svg>
   ),
   biaya: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m0-18c-1 1-2.5 2-3 3.5m3-3.5c1 1 2.5 2 3 3.5M12 8c-1.5 1-3 2.5-3.5 4.5m3.5-4.5c1.5 1 3 2.5 3.5 4.5M12 13c-1.5 1-3.5 3-4 5m4-5c1.5 1 3.5 3 4 5" />
     </svg>
   ),
   panen: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 10h16m-2 0l-1.5 9A2 2 0 0114.5 21h-5a2 2 0 01-2-1.8L6 10m12 0C18 6.5 15.3 4 12 4S6 6.5 6 10m3 0v11m6-11v11m-9-6h12m-12 5h12" />
     </svg>
   ),
   simulasi: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v17m0-17H6m6 0h6M6 7l-2 5h4l-2-5zm12 0l-2 5h4l-2-5zm-6 13h-4m4 0h4m-4-10h.01" />
     </svg>
   ),
   plus: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 5v14m7-7H5" />
     </svg>
   ),
   trash: (className = "w-4 h-4") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
     </svg>
   ),
   export: (className = "w-4 h-4") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
     </svg>
   ),
   calendar: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
     </svg>
   ),
   aiVet: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 21c-5-4.5-8-7.5-8-10.5 0-3 2.5-5.5 5.5-5.5 1.5 0 3 1 3.5 2.5.5-1.5 2-2.5 3.5-2.5 3 0 5.5 2.5 5.5 5.5 0 3-3 6-8 10.5z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 7c-1.5 2-3 2.5-3 4.5s1.5 3 3 5c1.5-2 3-3 3-5s-1.5-2.5-3-4.5z" />
     </svg>
   ),
   team: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
     </svg>
   ),
   ventilasi: (className = "w-5 h-5") => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.59 4.59A2 2 0 1111 8H2m10.59 11.41A2 2 0 1014 16H2m15.73-8.27A2.5 2.5 0 1119.5 12H2" />
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0M12 2v10m0 0l7.07 7.07M12 12l-7.07 7.07M12 12H2m10 0h10m-10 0L4.93 4.93m7.07 7.07l7.07-7.07" />
     </svg>
   )
 };
@@ -275,43 +281,43 @@ const getCalendarTasks = (animal: string, scale: string, startDate: Date) => {
 };
 
 const checkWaterParam = (paramName: string, val: number) => {
-  if (val === undefined || isNaN(val)) return { status: '-', color: 'text-slate-500 bg-slate-900 border-slate-800' };
+  if (val === undefined || isNaN(val)) return { status: '-', color: 'text-[#3C3530]/60 bg-[#FCFAF6] border-[#EADDC9]' };
   
   switch (paramName) {
     case 'suhu':
-      if (val < 24 || val > 32) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
-      if (val < 26 || val > 30) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val < 24 || val > 32) return { status: '🔴 Kritis', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20' };
+      if (val < 26 || val > 30) return { status: '🟡 Waspada', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     case 'ph':
-      if (val < 6.5 || val > 9.0) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
-      if (val < 7.0 || val > 8.5) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val < 6.5 || val > 9.0) return { status: '🔴 Kritis', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20' };
+      if (val < 7.0 || val > 8.5) return { status: '🟡 Waspada', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     case 'do':
-      if (val < 3.0) return { status: '🔴 Bahaya', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20 animate-pulse' };
-      if (val < 4.0) return { status: '🟡 Kurang', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val < 3.0) return { status: '🔴 Bahaya', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20 animate-pulse' };
+      if (val < 4.0) return { status: '🟡 Kurang', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     case 'amonia':
-      if (val > 0.1) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
-      if (val > 0.02) return { status: '🟡 Tinggi', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val > 0.1) return { status: '🔴 Kritis', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20' };
+      if (val > 0.02) return { status: '🟡 Tinggi', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     case 'nitrit':
-      if (val > 0.5) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
-      if (val > 0.1) return { status: '🟡 Tinggi', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val > 0.5) return { status: '🔴 Kritis', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20' };
+      if (val > 0.1) return { status: '🟡 Tinggi', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     case 'kecerahan':
-      if (val < 20 || val > 50) return { status: '🔴 Kritis', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
-      if (val < 30 || val > 40) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val < 20 || val > 50) return { status: '🔴 Kritis', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20' };
+      if (val < 30 || val > 40) return { status: '🟡 Waspada', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     case 'volume_flok':
-      if (val > 60) return { status: '🔴 Siphon!', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
-      if (val < 30 || val > 50) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val > 60) return { status: '🔴 Siphon!', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20' };
+      if (val < 30 || val > 50) return { status: '🟡 Waspada', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     case 'cn_ratio':
-      if (val < 10) return { status: '🔴 Molase!', color: 'text-rose-450 bg-rose-500/10 border-rose-500/20' };
-      if (val < 15 || val > 20) return { status: '🟡 Waspada', color: 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20' };
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      if (val < 10) return { status: '🔴 Molase!', color: 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20' };
+      if (val < 15 || val > 20) return { status: '🟡 Waspada', color: 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
     default:
-      return { status: '🟢 Aman', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' };
+      return { status: '🟢 Aman', color: 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20' };
   }
 };
 
@@ -1659,7 +1665,7 @@ export default function DashboardPage() {
 
     if (points.length < 2) {
       return (
-        <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl text-center py-12 text-slate-500 text-xs">
+        <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl text-center py-12 text-[#3C3530]/60 text-xs">
           📈 Grafik Tren Produksi akan muncul otomatis setelah Anda mencatat minimal 2 entri data harian.
         </div>
       );
@@ -1687,14 +1693,15 @@ export default function DashboardPage() {
       return acc + `${idx === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`;
     }, '');
 
+    const fillPathData = pathData + ` L ${getX(points.length - 1).toFixed(1)} ${(height - paddingBottom).toFixed(1)} L ${getX(0).toFixed(1)} ${(height - paddingBottom).toFixed(1)} Z`;
+
     // Path area for background gradient
-    const fillPathData = pathData + 
-      ` L ${getX(points.length - 1).toFixed(1)} ${(height - paddingBottom).toFixed(1)}` +
-      ` L ${getX(0).toFixed(1)} ${(height - paddingBottom).toFixed(1)} Z`;
+    const lineStrokeColor = '#859681'; // Sage Green
+    const gridLineColor = '#EADDC9'; // Oatmeal Beige
 
     return (
-      <div className="bg-slate-900/40 border border-teal-500/10 p-6 rounded-3xl shadow-xl">
-        <h4 className="text-sm font-bold text-slate-200 mb-4 flex items-center gap-2">
+      <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl shadow-sm">
+        <h4 className="text-sm font-bold text-[#3C3530] mb-4 flex items-center gap-2 font-sans">
           <span>📈</span> {title}
         </h4>
         
@@ -1702,46 +1709,46 @@ export default function DashboardPage() {
           <svg viewBox={`0 0 ${width} ${height}`} className="w-full min-w-[500px] h-auto overflow-visible">
             <defs>
               <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#0D9488" stopOpacity="0.4" />
-                <stop offset="100%" stopColor="#0D9488" stopOpacity="0.0" />
+                <stop offset="0%" stopColor={lineStrokeColor} stopOpacity="0.3" />
+                <stop offset="100%" stopColor={lineStrokeColor} stopOpacity="0.0" />
               </linearGradient>
             </defs>
-
+ 
             {/* Grid Lines */}
             {[0, 0.25, 0.5, 0.75, 1].map((p, i) => {
               const y = paddingTop + p * chartHeight;
               const val = maxVal - p * range;
               return (
                 <g key={i}>
-                  <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke="#1e293b" strokeDasharray="3 3" />
-                  <text x={paddingLeft - 10} y={y + 4} textAnchor="end" className="text-[10px] font-bold fill-slate-500 font-mono">
+                  <line x1={paddingLeft} y1={y} x2={width - paddingRight} y2={y} stroke={gridLineColor} strokeDasharray="3 3" />
+                  <text x={paddingLeft - 10} y={y + 4} textAnchor="end" className="text-[10px] font-bold fill-[#3C3530]/60 font-mono">
                     {val.toFixed(0)}{unit}
                   </text>
                 </g>
               );
             })}
-
+ 
             {/* Shaded Area */}
             <path d={fillPathData} fill="url(#chartGlow)" />
-
+ 
             {/* Value Line */}
-            <path d={pathData} fill="none" stroke="#0D9488" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-
+            <path d={pathData} fill="none" stroke={lineStrokeColor} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+ 
             {/* Nodes and X labels */}
             {points.map((p, idx) => {
               const x = getX(idx);
               const y = getY(p.value);
               return (
                 <g key={idx}>
-                  <circle cx={x} cy={y} r="4" className="fill-teal-400 stroke-slate-950 stroke-2" />
+                  <circle cx={x} cy={y} r="5" className="fill-[#859681] stroke-[#FCFAF6] stroke-2" />
                   {/* Tooltip text on top of dots if small array */}
                   {points.length <= 10 && (
-                    <text x={x} y={y - 8} textAnchor="middle" className="text-[9px] font-black fill-teal-300 font-mono">
+                    <text x={x} y={y - 8} textAnchor="middle" className="text-[10px] font-black fill-[#3C3530] font-serif">
                       {unit === '%' ? p.value.toFixed(1) + '%' : p.value}
                     </text>
                   )}
                   {/* Date/X Label */}
-                  <text x={x} y={height - 8} textAnchor="middle" className="text-[9px] font-bold fill-slate-550 font-mono">
+                  <text x={x} y={height - 8} textAnchor="middle" className="text-[9px] font-bold fill-[#3C3530]/80 font-mono">
                     {p.date}
                   </text>
                 </g>
@@ -1752,7 +1759,7 @@ export default function DashboardPage() {
       </div>
     );
   };
-
+ 
   // --- Circular Gauge for Survival Rate ---
   const renderSVGGauge = (srPct: number, mati: number, total: number) => {
     const size = 150;
@@ -1761,26 +1768,27 @@ export default function DashboardPage() {
     const circ = 2 * Math.PI * r;
     const fillValue = (srPct / 100) * circ;
     
-    let colorClass = 'stroke-teal-500';
-    if (srPct < 90) colorClass = 'stroke-amber-500';
-    if (srPct < 80) colorClass = 'stroke-rose-500';
-
+    let strokeColor = '#859681'; // Sage Green default
+    if (srPct < 90) strokeColor = '#EADDC9'; // Oatmeal Beige warning
+    if (srPct < 80) strokeColor = '#A76A57'; // Terracotta alert
+ 
     return (
-      <div className="bg-slate-900/40 border border-teal-500/10 p-6 rounded-3xl shadow-xl flex flex-col items-center text-center justify-center">
-        <h4 className="text-sm font-bold text-slate-200 mb-4 self-start flex items-center gap-2">
+      <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl shadow-sm flex flex-col items-center text-center justify-center">
+        <h4 className="text-sm font-bold text-[#3C3530] mb-4 self-start flex items-center gap-2 font-sans">
           <span>🩺</span> Tingkat Kelangsungan Hidup (SR)
         </h4>
-
+ 
         <div className="relative w-[150px] h-[150px] mb-3">
           <svg className="w-full h-full -rotate-90">
             {/* Background Track */}
-            <circle cx={size / 2} cy={size / 2} r={r} className="stroke-slate-800 fill-none" strokeWidth={strokeWidth} />
+            <circle cx={size / 2} cy={size / 2} r={r} className="stroke-[#EADDC9]/50 fill-none" strokeWidth={strokeWidth} />
             {/* Filled Progress arc */}
             <circle 
               cx={size / 2} 
               cy={size / 2} 
               r={r} 
-              className={`fill-none transition-all duration-1000 ${colorClass}`} 
+              className="fill-none transition-all duration-1000" 
+              stroke={strokeColor}
               strokeWidth={strokeWidth} 
               strokeDasharray={circ} 
               strokeDashoffset={circ - fillValue} 
@@ -1789,13 +1797,13 @@ export default function DashboardPage() {
           </svg>
           {/* Inner Text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-black text-white font-mono">{srPct.toFixed(1)}%</span>
-            <span className="text-[9px] text-slate-550 font-bold tracking-wider uppercase">Survival Rate</span>
+            <span className="text-2xl font-black text-[#3C3530] font-serif">{srPct.toFixed(1)}%</span>
+            <span className="text-[9px] text-[#3C3530]/60 font-bold tracking-wider uppercase font-sans">Survival Rate</span>
           </div>
         </div>
         
-        <p className="text-xs font-semibold text-slate-400">
-          Kematian: <strong className="text-rose-400 font-mono">{mati}</strong> / {total} ekor
+        <p className="text-xs font-semibold text-[#3C3530]/80 font-sans">
+          Kematian: <strong className="text-[#A76A57] font-mono">{mati}</strong> / {total} ekor
         </p>
       </div>
     );
@@ -1830,7 +1838,8 @@ export default function DashboardPage() {
       setFormFields({ tgl: todayStr, air: '', pakan_kg: '', mati: '0' });
     } else if (type === 'modal_sampling_ikan') {
       setModalTitle('🔬 Catat Sampling Pertumbuhan');
-      const estPop = qtyTebar - (data.sampling || []).reduce((s: number, sm: any) => s + (parseFloat(sm.jml_mati) || 0), 0);
+      const qtyTebar = parseFloat(cycle.data?.modal?.jml_tebar) || 0;
+      const estPop = qtyTebar - (cycle.data?.sampling || []).reduce((s: number, sm: any) => s + (parseFloat(sm.jml_mati) || 0), 0);
       setFormFields({ tgl: todayStr, jml_sampel: '50', bobot_total_g: '', jml_estimasi: estPop.toString(), jml_mati: '0', stdev_g: '0' });
     } else if (type === 'modal_air_ikan') {
       setModalTitle('💧 Monitor Kualitas Air');
@@ -2117,7 +2126,7 @@ export default function DashboardPage() {
       title: 'Ganti Ternak/Skala?',
       msg: 'Kamu akan kembali ke halaman awal. Semua data siklus saat ini akan tetap tersimpan aman di database cloud.',
       btnText: 'Ganti Ternak',
-      btnColor: 'bg-teal-600 hover:bg-teal-700',
+      btnColor: 'bg-[#859681] hover:bg-[#748570]',
       action: () => {
         setIsOnboarding(true);
         setObStep(1);
@@ -2278,21 +2287,21 @@ export default function DashboardPage() {
   // --- Render Onboarding & Loading Layouts ---
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#060D0F] flex flex-col items-center justify-center text-slate-100 p-4">
+      <div className="min-h-screen bg-[#FAF7F0] flex flex-col items-center justify-center text-[#3C3530] p-4 font-sans">
         <div className="relative w-16 h-16 mb-4">
-          <div className="absolute inset-0 rounded-full border-4 border-teal-500/20" />
-          <div className="absolute inset-0 rounded-full border-4 border-t-teal-400 animate-spin" />
+          <div className="absolute inset-0 rounded-full border-4 border-[#859681]/25" />
+          <div className="absolute inset-0 rounded-full border-4 border-t-[#859681] animate-spin" />
         </div>
-        <p className="text-sm font-semibold tracking-wide text-slate-400">{t.dashboard.connecting}</p>
+        <p className="text-sm font-semibold tracking-wide text-[#3C3530]/75">{t.dashboard.connecting}</p>
       </div>
     );
   }
 
   if (isOnboarding) {
     return (
-      <div className="min-h-screen bg-[#070E10] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto w-full bg-slate-900/40 backdrop-blur-xl border border-teal-500/10 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
+      <div className="min-h-screen bg-[#FAF7F0] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="max-w-4xl mx-auto w-full bg-[#FCFAF6] border border-[#EADDC9] p-8 rounded-3xl shadow-md relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#859681]/5 rounded-full blur-3xl" />
           <NewCycleWizard 
             profile={profile} 
             onSubmit={async (name, animal, scaleStr, modalData) => {
@@ -2306,18 +2315,18 @@ export default function DashboardPage() {
 
   const renderUpgradeGate = (targetPlan: 'PRO' | 'ENTERPRISE', featureTitle: string, featureDesc: string) => {
     return (
-      <div className="bg-slate-900/40 backdrop-blur-xl border border-teal-500/10 p-12 rounded-3xl text-center max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-fadeIn my-12">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl" />
+      <div className="bg-[#FCFAF6] backdrop-blur-xl border border-[#859681]/10 p-12 rounded-3xl text-center max-w-2xl mx-auto shadow-2xl relative overflow-hidden animate-fadeIn my-12">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#859681]/5 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl" />
         
-        <div className="w-20 h-20 bg-teal-500/10 border border-teal-500/20 rounded-full flex items-center justify-center mx-auto mb-6 text-teal-400">
+        <div className="w-20 h-20 bg-[#859681]/15 border border-[#859681]/20 rounded-full flex items-center justify-center mx-auto mb-6 text-[#859681]">
           <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
         </div>
         
-        <h2 className="text-3xl font-black text-slate-100 mb-4">{featureTitle}</h2>
-        <p className="text-sm text-slate-400 mb-8 max-w-md mx-auto leading-relaxed">{featureDesc}</p>
+        <h2 className="text-3xl font-black text-[#3C3530] mb-4">{featureTitle}</h2>
+        <p className="text-sm text-[#3C3530]/80 mb-8 max-w-md mx-auto leading-relaxed">{featureDesc}</p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <button
@@ -2335,7 +2344,7 @@ export default function DashboardPage() {
   if (!activeCycle) return null;
 
   const tabs = getTabsForMode(activeCycle.mode);
-  const stats = calculateStats;
+  const stats = calculateStats as any;
 
   // Get Calendar list based on active conditions
   const startDayTime = activeCycle.data?.modal?.tgl_doc || activeCycle.data?.modal?.tgl_pullet || activeCycle.data?.modal?.tgl_beli || activeCycle.data?.modal?.tgl_indukan || activeCycle.data?.modal?.tgl_tebar || activeCycle.data?.modal?.tgl_mulai || activeCycle.createdAt;
@@ -2353,182 +2362,112 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070E10] text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen bg-[#FAF7F0] text-[#3C3530] flex font-sans">
       
-      {/* Top Navigation */}
-      <header className="border-b border-slate-900/60 bg-slate-950/70 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-emerald-500 flex items-center justify-center font-black text-xl text-slate-950 shadow-lg shadow-teal-500/20">
-              R
-            </div>
-            <div>
-              <span className="font-extrabold tracking-tight bg-gradient-to-r from-teal-400 via-teal-200 to-emerald-400 bg-clip-text text-transparent text-lg">
-                RADEYA
-              </span>
-              <span className="text-[10px] block text-slate-500 -mt-1 font-bold uppercase tracking-wider">Smart Farm Planner</span>
-            </div>
+      {/* Left Sidebar */}
+      <aside className="w-64 bg-[#F3EFE3] border-r border-[#EADDC9] flex flex-col shrink-0 min-h-screen sticky top-0 z-40">
+        {/* Logo Section */}
+        <div className="p-6 flex items-center gap-3">
+          <span className="text-2xl">🐔</span>
+          <div>
+            <span className="text-lg font-black font-serif tracking-tight text-[#3C3530] block">
+              {farmName || 'Legok Farm'}
+            </span>
+            <span className="text-[9px] block text-[#3C3530]/50 uppercase tracking-widest font-bold font-sans">LokaTernak Hub</span>
+          </div>
+        </div>
+
+        {/* Sidebar Navigation */}
+        <nav className="flex-1 px-4 py-4 space-y-1.5">
+          {tabs.map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  if (tab.id === 'ai_vet') {
+                    openChatTab();
+                  } else {
+                    setActiveTab(tab.id);
+                  }
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold transition-all duration-200 ${
+                  isActive
+                    ? 'bg-[#859681] text-[#FCFAF6] shadow-sm'
+                    : 'text-[#3C3530]/85 hover:bg-[#FAF7F0]/60 hover:text-[#3C3530]'
+                }`}
+              >
+                <span className={`shrink-0 ${isActive ? 'text-[#FCFAF6]' : 'text-[#3C3530]/70'}`}>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-[#EADDC9] space-y-2.5">
+          <button
+            onClick={handleResetSetupPrompt}
+            className="w-full px-3 py-2 bg-[#FCFAF6] hover:bg-[#FAF7F0] text-[#3C3530] text-xs font-bold rounded-xl border border-[#EADDC9] transition-all flex items-center justify-center gap-1.5"
+          >
+            Ganti Ternak
+          </button>
+          <button
+            onClick={handleSignOut}
+            className="w-full px-3 py-2 bg-[#A76A57]/10 hover:bg-[#A76A57]/20 text-[#A76A57] text-xs font-bold rounded-xl border border-[#A76A57]/20 transition-all flex items-center justify-center"
+          >
+            {t.common.logout}
+          </button>
+          <div className="flex justify-between items-center text-[10px] text-[#3C3530]/50 px-1 pt-1 font-mono">
+            <LanguageSwitcher />
+            <span>v0.1.0</span>
+          </div>
+        </div>
+      </aside>
+
+      {/* Right Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        
+        {/* Top Header / Cycle Selector Bar */}
+        <header className="bg-[#FAF7F0] border-b border-[#EADDC9]/60 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h2 className="text-lg font-black text-[#3C3530] tracking-tight flex items-center gap-2">
+              <span>{ANIMAL_LABELS[activeCycle.animal]?.split(' ')[0]}</span>
+              {ANIMAL_LABELS[activeCycle.animal]?.split(' ').slice(1).join(' ') || activeCycle.animal}
+            </h2>
+            <span className="text-[10px] px-2.5 py-1 bg-[#EADDC9] text-[#3C3530] rounded-lg font-bold border border-[#EADDC9]/50 uppercase tracking-wider">
+              {SCALE_LABELS[intToScale(activeCycle.scale)] || intToScale(activeCycle.scale)}
+            </span>
+            <span className="text-[10px] px-2.5 py-1 bg-[#FCFAF6] text-[#3C3530]/80 rounded-lg font-bold border border-[#EADDC9] uppercase tracking-wider">
+              🏷️ {ANIMAL_CATEGORIES[activeCycle.animal] || 'Lainnya'}
+            </span>
+            <span className="text-[10px] px-2.5 py-1 bg-[#FCFAF6] text-[#3C3530]/80 rounded-lg font-bold border border-[#EADDC9] font-mono">
+              📅 Mulai: {parsedStartDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </span>
+            <span className="text-[10px] px-2.5 py-1 bg-[#859681]/15 text-[#4D5D4A] rounded-lg font-bold border border-[#859681]/25 font-mono">
+              ⏳ Umur: {Math.max(0, Math.floor((new Date().getTime() - parsedStartDate.getTime()) / (1000 * 60 * 60 * 24)))} Hari
+            </span>
           </div>
 
           <div className="flex items-center gap-4">
             {profile?.user?.role === 'OWNER' && (
               <button
                 onClick={() => setBillingModalOpen(true)}
-                className="px-3.5 py-2 bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 text-amber-300 text-xs font-bold rounded-xl border border-amber-500/30 transition-all flex items-center gap-1.5 shadow-md shadow-amber-950/20"
+                className="px-3 py-1.5 bg-[#FAF7F0] text-[#3C3530] text-xs font-bold rounded-xl border border-[#EADDC9] transition-all flex items-center gap-1.5 shadow-sm"
               >
                 Plan: {profile?.organization?.plan || 'FREE'} ⭐
               </button>
             )}
-            {/* Notification Bell Icon & Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 bg-slate-900/60 hover:bg-slate-800 text-slate-300 hover:text-white text-xs font-bold rounded-xl border border-slate-800 transition-all flex items-center justify-center relative w-9 h-9"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-                {notifications.length > 0 && (
-                  <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                )}
-              </button>
 
-              {showNotifications && (
-                <div className="absolute right-0 mt-3 w-80 bg-slate-950 border border-slate-850 rounded-2xl shadow-2xl p-4 z-50 space-y-4 animate-fadeIn">
-                  <div className="flex justify-between items-center pb-2 border-b border-slate-900">
-                    <span className="text-xs font-black text-slate-200">🔔 Pusat Notifikasi</span>
-                    <button 
-                      onClick={() => setShowNotifications(false)}
-                      className="text-[10px] text-slate-500 hover:text-slate-300 font-bold"
-                    >
-                      Tutup
-                    </button>
-                  </div>
-
-                  {/* Browser Permission Prompt */}
-                  {notificationPermission !== 'granted' && (
-                    <div className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl space-y-2">
-                      <span className="text-[10px] text-teal-300 font-bold block leading-tight">Aktifkan Notifikasi Desktop/HP</span>
-                      <p className="text-[9px] text-slate-400 leading-normal">Terima pengingat pakan secara otomatis tanpa perlu membuka aplikasi.</p>
-                      <button
-                        onClick={requestNotificationPermission}
-                        className="w-full py-1.5 bg-teal-650 hover:bg-teal-600 text-white font-bold rounded-lg text-[9px] uppercase tracking-wider transition-all"
-                      >
-                        Izinkan Notifikasi
-                      </button>
-                    </div>
-                  )}
-
-                  {/* Simulation Widgets */}
-                  <div className="p-3 bg-slate-900/40 border border-slate-850 rounded-xl space-y-2">
-                    <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">Simulator Pengujian</span>
-                    <div className="grid grid-cols-2 gap-2">
-                      <button
-                        onClick={simulateFeedingNotification}
-                        className="py-1.5 bg-slate-800 hover:bg-slate-750 text-slate-200 font-extrabold rounded-lg text-[9px] transition-all"
-                      >
-                        ⏰ Tes Pakan
-                      </button>
-                      <button
-                        onClick={simulateSaleNotification}
-                        className="py-1.5 bg-slate-800 hover:bg-slate-750 text-slate-200 font-extrabold rounded-lg text-[9px] transition-all"
-                      >
-                        📈 Tes Penjualan
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Notification List */}
-                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
-                    {notifications.length === 0 ? (
-                      <div className="text-center py-6 text-[10px] text-slate-500 font-bold">
-                        Tidak ada notifikasi aktif saat ini.
-                      </div>
-                    ) : (
-                      notifications.map((noti) => (
-                        <div 
-                          key={noti.id} 
-                          className={`p-3 rounded-xl border flex items-start gap-2.5 transition-all text-left ${
-                            noti.type === 'sale' 
-                              ? 'bg-amber-500/10 border-amber-500/20' 
-                              : noti.type === 'feeding' 
-                              ? 'bg-teal-500/5 border-teal-500/10'
-                              : 'bg-slate-900/60 border-slate-850'
-                          }`}
-                        >
-                          <span className="text-sm mt-0.5 shrink-0">
-                            {noti.type === 'sale' ? '⏳' : noti.type === 'feeding' ? '🥣' : 'ℹ️'}
-                          </span>
-                          <div className="space-y-0.5">
-                            <span className="text-[10px] font-black text-slate-200 block">{noti.title}</span>
-                            <p className="text-[9px] text-slate-400 leading-normal font-medium">{noti.desc}</p>
-                            <span className="text-[8px] font-mono text-slate-500 block pt-1">{noti.time}</span>
-                          </div>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <button
-              onClick={handleResetSetupPrompt}
-              className="px-3.5 py-2 bg-slate-900/60 hover:bg-slate-800 text-slate-300 text-xs font-bold rounded-xl border border-slate-800 transition-all flex items-center gap-1.5"
-            >
-              Ganti Ternak
-            </button>
-            <button
-              onClick={handleSignOut}
-              className="px-3.5 py-2 bg-rose-950/20 hover:bg-rose-900/30 text-rose-400 text-xs font-bold rounded-xl border border-rose-900/30 transition-all"
-            >
-              {t.common.logout}
-            </button>
-            <LanguageSwitcher />
-            <span className="text-[10px] text-slate-600 font-mono">v0.1.0</span>
-          </div>
-        </div>
-      </header>
-
-      {/* Cycle Selector Bar */}
-      <section className="bg-slate-950/30 border-b border-slate-900/40 py-6 px-4 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative">
-          <div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <h2 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-                <span>{ANIMAL_LABELS[activeCycle.animal]?.split(' ')[0]}</span>
-                {ANIMAL_LABELS[activeCycle.animal]?.split(' ').slice(1).join(' ') || activeCycle.animal}
-              </h2>
-              <span className="text-[10px] px-2.5 py-1 bg-teal-950/70 text-teal-400 rounded-lg font-bold border border-teal-500/20 uppercase tracking-wider">
-                {SCALE_LABELS[intToScale(activeCycle.scale)] || intToScale(activeCycle.scale)}
-              </span>
-
-              {/* Kategori Badge */}
-              <span className="text-[10px] px-2.5 py-1 bg-slate-900 text-slate-300 rounded-lg font-bold border border-slate-800 uppercase tracking-wider">
-                🏷️ {ANIMAL_CATEGORIES[activeCycle.animal] || 'Lainnya'}
-              </span>
-
-              {/* Tanggal Mulai Badge */}
-              <span className="text-[10px] px-2.5 py-1 bg-slate-900 text-slate-300 rounded-lg font-bold border border-slate-800 font-mono">
-                📅 Mulai: {parsedStartDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
-              </span>
-
-              {/* Umur Siklus Badge */}
-              <span className="text-[10px] px-2.5 py-1 bg-teal-500/10 text-teal-400 rounded-lg font-bold border border-teal-500/20 font-mono">
-                ⏳ Umur: {Math.max(0, Math.floor((new Date().getTime() - parsedStartDate.getTime()) / (1000 * 60 * 60 * 24)))} Hari
-              </span>
-            </div>
-            
-            <div className="flex items-center gap-2.5 mt-3">
-              <span className="text-xs text-slate-450 font-bold">Pilih Siklus:</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-[#3C3530]/75 font-bold">Pilih Siklus:</span>
               <select
                 value={activeCycleIndex}
                 onChange={(e) => {
                   setActiveCycleIndex(parseInt(e.target.value));
                   setActiveTab('dashboard');
                 }}
-                className="bg-slate-900/80 text-slate-200 border border-slate-800 rounded-xl px-3 py-1.5 text-xs font-bold outline-none cursor-pointer focus:ring-2 focus:ring-teal-500 transition-all"
+                className="bg-[#FCFAF6] text-[#3C3530] border border-[#EADDC9] rounded-xl px-3 py-1.5 text-xs font-bold outline-none cursor-pointer focus:ring-2 focus:ring-[#859681] transition-all"
               >
                 {cycles.map((c, i) => (
                   <option key={c.id} value={i} className="text-slate-800">
@@ -2538,45 +2477,105 @@ export default function DashboardPage() {
               </select>
               <button
                 onClick={handleAddNewCyclePrompt}
-                className="px-3 py-1.5 bg-teal-650 hover:bg-teal-600 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-teal-950/20"
+                className="px-3 py-1.5 bg-[#859681] hover:bg-[#748570] text-[#FCFAF6] text-xs font-bold rounded-xl transition-all shadow-sm"
               >
                 + Baru
               </button>
             </div>
-          </div>
+            
+            {/* Notification Bell Icon */}
+            <div className="relative">
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="p-2 bg-[#FCFAF6] hover:bg-[#FAF7F0] text-[#3C3530]/75 hover:text-[#3C3530] text-xs font-bold rounded-xl border border-[#EADDC9] transition-all flex items-center justify-center relative w-9 h-9"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {notifications.length > 0 && (
+                  <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-[#A76A57] animate-pulse" />
+                )}
+              </button>
 
-          <div className="flex items-center gap-3 bg-slate-900/60 border border-slate-850 p-3 rounded-2xl self-start sm:self-center">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-xs text-slate-400 font-bold">Usaha: <strong className="text-teal-400">{farmName}</strong></span>
-          </div>
-        </div>
-      </section>
+              {showNotifications && (
+                <div className="absolute right-0 mt-3 w-80 bg-[#FCFAF6] border border-[#EADDC9] rounded-2xl shadow-xl p-4 z-50 space-y-4 animate-fadeIn">
+                  <div className="flex justify-between items-center pb-2 border-b border-[#EADDC9]/60">
+                    <span className="text-xs font-black text-[#3C3530]">🔔 Pusat Notifikasi</span>
+                    <button 
+                      onClick={() => setShowNotifications(false)}
+                      className="text-[10px] text-[#3C3530]/60 hover:text-[#3C3530] font-bold"
+                    >
+                      Tutup
+                    </button>
+                  </div>
 
-      {/* Tab Switcher */}
-      <div className="bg-slate-950/40 border-b border-slate-900/50 sticky top-16 z-30 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex gap-2 overflow-x-auto py-3 px-4 no-scrollbar">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => {
-                if (tab.id === 'ai_vet') {
-                  openChatTab();
-                } else {
-                  setActiveTab(tab.id);
-                }
-              }}
-              className={`flex-shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-extrabold transition-all duration-200 border ${
-                activeTab === tab.id
-                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg shadow-teal-950/30 border-teal-500/20 scale-[1.02]'
-                  : 'bg-slate-900/40 text-slate-400 border-slate-900/50 hover:bg-slate-900/80 hover:text-slate-200'
-              }`}
-            >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+                  {notificationPermission !== 'granted' && (
+                    <div className="p-3 bg-[#859681]/10 border border-[#859681]/20 rounded-xl space-y-2">
+                      <span className="text-[10px] text-[#4D5D4A] font-bold block leading-tight">Aktifkan Notifikasi Desktop/HP</span>
+                      <p className="text-[9px] text-[#3C3530]/70 leading-normal">Terima pengingat pakan secara otomatis tanpa perlu membuka aplikasi.</p>
+                      <button
+                        onClick={requestNotificationPermission}
+                        className="w-full py-1.5 bg-[#859681] hover:bg-[#748570] text-[#FCFAF6] font-bold rounded-lg text-[9px] uppercase tracking-wider transition-all"
+                      >
+                        Izinkan Notifikasi
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Simulator Pengujian */}
+                  <div className="p-3 bg-[#F3EFE3] border border-[#EADDC9]/80 rounded-xl space-y-2">
+                    <span className="text-[9px] text-[#3C3530]/65 font-bold uppercase tracking-wider block">Simulator Pengujian</span>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        onClick={simulateFeedingNotification}
+                        className="py-1.5 bg-[#FCFAF6] hover:bg-[#FAF7F0] text-[#3C3530] font-extrabold rounded-lg text-[9px] transition-all border border-[#EADDC9]"
+                      >
+                        ⏰ Tes Pakan
+                      </button>
+                      <button
+                        onClick={simulateSaleNotification}
+                        className="py-1.5 bg-[#FCFAF6] hover:bg-[#FAF7F0] text-[#3C3530] font-extrabold rounded-lg text-[9px] transition-all border border-[#EADDC9]"
+                      >
+                        📈 Tes Penjualan
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Notification List */}
+                  <div className="max-h-48 overflow-y-auto space-y-3 pr-1 scrollbar-thin">
+                    {notifications.length === 0 ? (
+                      <div className="text-center py-6 text-[10px] text-[#3C3530]/60 font-bold">
+                        Tidak ada notifikasi aktif saat ini.
+                      </div>
+                    ) : (
+                      notifications.map((noti) => (
+                        <div 
+                          key={noti.id} 
+                          className={`p-3 rounded-xl border flex items-start gap-2.5 transition-all text-left ${
+                            noti.type === 'sale' 
+                              ? 'bg-[#A76A57]/10 border-[#A76A57]/20 text-[#A76A57]' 
+                              : noti.type === 'feeding' 
+                              ? 'bg-[#859681]/10 border-[#859681]/25 text-[#4D5D4A]'
+                              : 'bg-[#FCFAF6] border-[#EADDC9] text-[#3C3530]'
+                          }`}
+                        >
+                          <span className="text-sm mt-0.5 shrink-0">
+                            {noti.type === 'sale' ? '⏳' : noti.type === 'feeding' ? '🥣' : 'ℹ️'}
+                          </span>
+                          <div className="space-y-0.5">
+                            <span className="text-[10px] font-black block">{noti.title}</span>
+                            <p className="text-[9px] opacity-80 leading-normal font-medium">{noti.desc}</p>
+                            <span className="text-[8px] font-mono opacity-50 block pt-1">{noti.time}</span>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
 
       {/* Main Tab Contents */}
       <main className="max-w-7xl mx-auto w-full px-4 py-8 flex-1 pb-28">
@@ -2586,56 +2585,56 @@ export default function DashboardPage() {
           <div className="space-y-8 animate-fadeIn">
             
             {/* Laba Bersih Card (Dual: Akuntansi vs Cashflow) */}
-            <div className="bg-[#0B1519] border border-teal-500/10 p-8 rounded-3xl relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl" />
-              <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/5 rounded-full blur-3xl" />
+            <div className="bg-[#859681] text-[#FCFAF6] p-8 rounded-3xl relative overflow-hidden shadow-md">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-white/5 rounded-full blur-3xl" />
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 divide-y md:divide-y-0 md:divide-x divide-slate-800/80">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10 divide-y md:divide-y-0 md:divide-x divide-[#FCFAF6]/20">
                 <div className="space-y-3">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">📊 Laba Akuntansi (Accounting Profit)</span>
-                  <h3 className={`text-4xl font-black font-mono tracking-tight ${stats.laba >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#FCFAF6]/75 block">📊 Laba Akuntansi (Accounting Profit)</span>
+                  <h3 className="text-4xl font-serif tracking-tight text-[#FCFAF6]">
                     {formatRp(stats.laba)}
                   </h3>
-                  <div className="text-[10px] text-slate-450 font-semibold space-y-1 font-mono">
+                  <div className="text-[10px] text-[#FCFAF6]/90 font-semibold space-y-1">
                     <div className="flex justify-between">
                       <span>Total Modal (Akurat):</span>
                       <span>{formatRp(stats.totalModalAkurat)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Penyusutan Kandang:</span>
-                      <span className="text-slate-500">-{formatRp(stats.depresiasi)}</span>
+                      <span className="text-[#FCFAF6]/70">-{formatRp(stats.depresiasi)}</span>
                     </div>
                   </div>
                 </div>
                 
                 <div className="pt-6 md:pt-0 md:pl-8 space-y-3">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">💵 Laba Cashflow (Aliran Kas)</span>
-                  <h3 className={`text-4xl font-black font-mono tracking-tight ${stats.labaCash >= 0 ? 'text-teal-400' : 'text-rose-400'}`}>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#FCFAF6]/75 block">💵 Laba Cashflow (Aliran Kas)</span>
+                  <h3 className="text-4xl font-serif tracking-tight text-[#FCFAF6]">
                     {formatRp(stats.labaCash)}
                   </h3>
-                  <div className="text-[10px] text-slate-450 font-semibold space-y-1 font-mono">
+                  <div className="text-[10px] text-[#FCFAF6]/90 font-semibold space-y-1">
                     <div className="flex justify-between">
                       <span>Total Pengeluaran Kas:</span>
                       <span>{formatRp(stats.totalModalCash)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>EBITDA Operasional:</span>
-                      <span className="text-teal-400/90">{formatRp(stats.ebitda)}</span>
+                      <span className="text-[#FCFAF6] font-bold">{formatRp(stats.ebitda)}</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-900/60 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-semibold text-slate-400 relative z-10">
+              <div className="mt-6 pt-4 border-t border-[#FCFAF6]/15 flex flex-col md:flex-row md:items-center justify-between gap-4 text-xs font-semibold text-[#FCFAF6]/80 relative z-10">
                 <div className="flex items-center gap-2">
                   <span className="flex h-2.5 w-2.5 relative">
-                    <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${stats.laba >= 0 ? 'bg-emerald-400' : 'bg-rose-400'}`}></span>
-                    <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${stats.laba >= 0 ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 bg-[#FCFAF6]"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#FCFAF6]"></span>
                   </span>
-                  <span>{stats.laba >= 0 ? 'Kinerja keuangan profitabel secara akuntansi.' : 'Kinerja keuangan mengalami defisit.'}</span>
+                  <span>{stats.laba >= 0 ? '🐓 Selamat! Kinerja keuangan profitabel secara akuntansi.' : '⚠️ Kinerja keuangan mengalami defisit.'}</span>
                 </div>
                 {stats.depresiasi > 0 && (
-                  <span className="text-[10px] text-slate-500 font-mono">
+                  <span className="text-[10px] text-[#FCFAF6]/60 font-mono">
                     *Penyusutan dihitung per siklus (umur kandang {activeCycle.data?.modal?.kandang_manfaat_tahun || '10'} thn)
                   </span>
                 )}
@@ -2646,26 +2645,26 @@ export default function DashboardPage() {
             {activeCycle.mode === 'broiler' && (
               <div className="space-y-3">
                 {stats.totalKgPanen === 0 && stats.prediksiPanen && (
-                  <div className="bg-teal-500/10 border border-teal-500/20 text-teal-400 p-4 rounded-2xl flex items-center justify-between font-semibold text-xs animate-fadeIn">
+                  <div className="bg-[#859681]/15 border border-[#859681]/20 text-[#859681] p-4 rounded-2xl flex items-center justify-between font-semibold text-xs animate-fadeIn">
                     <div className="flex items-center gap-2">
                       <span>🗓️</span>
                       <span>
                         Estimasi Panen Siklus ini: <strong className="text-white">{new Date(stats.prediksiPanen).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong> (Pada umur hari ke-35)
                       </span>
                     </div>
-                    <span className="text-[10px] bg-teal-500/25 px-2.5 py-0.5 rounded-lg text-white font-mono uppercase tracking-wider font-bold">Broiler</span>
+                    <span className="text-[10px] bg-[#859681]/25 px-2.5 py-0.5 rounded-lg text-white font-mono uppercase tracking-wider font-bold">Broiler</span>
                   </div>
                 )}
 
                 {stats.alertLitterKuning && (
-                  <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
+                  <div className="bg-[#EADDC9]/35 border border-[#EADDC9]/50 text-[#3C3530]/90 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
                     <span>🟡</span>
                     <span><strong>Peringatan Litter (Sekam):</strong> Litter sudah memasuki siklus ke-<strong>{activeCycle.data?.modal?.siklus_litter_ke}</strong>. Pertimbangkan untuk mengganti litter sekam sepenuhnya untuk menjaga kualitas udara dan mencegah penyebaran bakteri jahat.</span>
                   </div>
                 )}
 
                 {stats.alertDowntimeMerah && (
-                  <div className="bg-rose-500/10 border border-rose-500/20 text-rose-450 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs">
+                  <div className="bg-[#A76A57]/15 border border-[#A76A57]/20 text-[#A76A57] p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs">
                     <span>🔴</span>
                     <span><strong>Kritis (Down-time Kandang):</strong> Waktu kosong kandang (downtime) hanya <strong>{activeCycle.data?.modal?.down_time_hari} hari</strong> (Target standar industri: minimal 14 hari). Risiko tinggi penularan penyakit sisa siklus sebelumnya!</span>
                   </div>
@@ -2675,99 +2674,99 @@ export default function DashboardPage() {
 
             {/* HDP Drop Alert for Layer */}
             {(activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && stats.alertDrop && (
-              <div className="bg-rose-500/10 border border-rose-500/20 text-rose-450 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
+              <div className="bg-[#A76A57]/15 border border-[#A76A57]/20 text-[#A76A57] p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
                 <span>⚠️</span>
-                <span><strong>Peringatan Produksi Telur Drop:</strong> Produksi (HDP) menurun tajam sebesar <strong className="text-rose-400">{(stats.dropPct || 0).toFixed(1)}%</strong> dibanding minggu lalu! Segera evaluasi kecukupan pakan, air minum, atau tanda-tanda penyakit pada ayam.</span>
+                <span><strong>Peringatan Produksi Telur Drop:</strong> Produksi telur menurun dibanding rata-rata sebelumnya!</span>
               </div>
             )}
 
             {/* Visual Charts Layout (Responsive Grid) */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              
+
               {/* Stat Cards */}
               <div className="md:col-span-2 grid grid-cols-2 gap-4">
-                <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl hover:border-slate-800 transition-colors">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Modal (Akurat vs Cash)</span>
-                  <span className="text-xl font-extrabold text-rose-400 mt-2 block font-mono">{formatRp(stats.totalModalAkurat)}</span>
-                  <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold font-mono">Cashflow: {formatRp(stats.totalModalCash)}</span>
+                <div className="bg-[#EADDC9] p-5 rounded-2xl transition-colors">
+                  <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Total Modal (Akurat vs Cash)</span>
+                  <span className="text-xl font-serif font-extrabold text-[#A76A57] mt-2 block">{formatRp(stats.totalModalAkurat)}</span>
+                  <span className="text-[10px] text-[#3C3530]/60 block mt-1.5 font-semibold font-mono">Cashflow: {formatRp(stats.totalModalCash)}</span>
                 </div>
-                <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl hover:border-slate-800 transition-colors">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Pendapatan</span>
-                  <span className="text-xl font-extrabold text-emerald-400 mt-2 block font-mono">{formatRp(stats.totalPendapatan)}</span>
+                <div className="bg-[#EADDC9] p-5 rounded-2xl transition-colors">
+                  <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Total Pendapatan</span>
+                  <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{formatRp(stats.totalPendapatan)}</span>
                 </div>
 
                 {/* Dynamic Stats Based on Mode */}
                 {activeCycle.mode === 'broiler' && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / kg (Akurat vs Cash)</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppAkurat)}</span>
-                      <span className="text-[10px] text-slate-400 block mt-1.5 font-medium font-mono flex justify-between">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">HPP / kg (Akurat vs Cash)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{formatRp(stats.hppAkurat)}</span>
+                      <span className="text-[10px] text-[#3C3530]/70 block mt-1.5 font-medium font-mono flex justify-between">
                         <span>HPP Cashflow:</span>
                         <span>{formatRp(stats.hpp)}</span>
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Pakan (Target)</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">FCR Pakan (Target)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">
                         {(stats.fcr || 0).toFixed(2)}{' '}
-                        <span className="text-xs text-slate-500 font-semibold font-sans">
+                        <span className="text-xs text-[#3C3530]/60 font-semibold font-sans">
                           ({stats.fcrTarget.min}-{stats.fcrTarget.max})
                         </span>
                       </span>
-                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                      <span className="text-[10px] block mt-1.5 font-semibold font-sans">
                         {stats.fcr >= stats.fcrTarget.min && stats.fcr <= stats.fcrTarget.max ? (
-                          <span className="text-emerald-400">Target Tercapai</span>
+                          <span className="text-[#4D5D4A]">Target Tercapai</span>
                         ) : stats.fcr < stats.fcrTarget.min && stats.fcr > 0 ? (
-                          <span className="text-teal-400">Sangat Efisien</span>
+                          <span className="text-[#4D5D4A] font-bold">Sangat Efisien</span>
                         ) : stats.fcr === 0 ? (
-                          <span className="text-slate-550">Belum Ada Data</span>
+                          <span className="text-[#3C3530]/40">Belum Ada Data</span>
                         ) : (
-                          <span className="text-rose-400">Tidak Efisien</span>
+                          <span className="text-[#A76A57]">Tidak Efisien</span>
                         )}
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">ADG (Rata-rata Gain)</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
-                        {(stats.adg || 0).toFixed(1)} <span className="text-xs text-slate-500">g/hari</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">ADG (Rata-rata Gain)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">
+                        {(stats.adg || 0).toFixed(1)} <span className="text-xs text-[#3C3530]/60 font-sans">g/hari</span>
                       </span>
-                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                      <span className="text-[10px] block mt-1.5 font-semibold font-sans">
                         {stats.adg >= 50 && stats.adg <= 60 ? (
-                          <span className="text-emerald-400">Target Ideal (50-60g)</span>
+                          <span className="text-[#4D5D4A]">Target Ideal (50-60g)</span>
                         ) : stats.adg > 60 ? (
-                          <span className="text-teal-400">Sangat Cepat</span>
+                          <span className="text-[#4D5D4A] font-bold">Sangat Cepat</span>
                         ) : stats.adg === 0 ? (
-                          <span className="text-slate-550">Belum Ada Data</span>
+                          <span className="text-[#3C3530]/40">Belum Ada Data</span>
                         ) : (
-                          <span className="text-yellow-400">Kurang Optimal (&lt;50g)</span>
+                          <span className="text-[#A76A57]">Kurang Optimal (&lt;50g)</span>
                         )}
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Berat Rata / Ekor</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">
-                        {(stats.bbRata || 0).toFixed(2)} <span className="text-xs text-slate-500">kg</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Berat Rata / Ekor</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">
+                        {(stats.bbRata || 0).toFixed(2)} <span className="text-xs text-[#3C3530]/60 font-sans">kg</span>
                       </span>
-                      <span className="text-[10px] text-slate-450 block mt-1.5 font-semibold">
+                      <span className="text-[10px] text-[#3C3530]/60 block mt-1.5 font-semibold font-sans">
                         Target panen: 1.4 - 2.0 kg
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold" title="European Poultry Efficiency Factor">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider flex items-center gap-1">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl font-semibold" title="European Poultry Efficiency Factor">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider flex items-center gap-1 font-sans">
                         EPEF (IP)
-                        <span className="cursor-help text-slate-450 bg-slate-800/80 px-1 rounded text-[8px]" title="European Poultry Efficiency Factor, setara Indeks Performa">?</span>
+                        <span className="cursor-help text-[#3C3530]/60 bg-[#FCFAF6]/70 px-1 rounded text-[8px]" title="European Poultry Efficiency Factor, setara Indeks Performa">?</span>
                       </span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">
                         {(stats.epef || 0).toFixed(0)}
                       </span>
-                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                      <span className="text-[10px] block mt-1.5 font-semibold font-sans">
                         {stats.epef >= 300 ? (
-                          <span className="text-emerald-400">Sangat Baik (&gt;300)</span>
+                          <span className="text-[#4D5D4A] font-bold">Sangat Baik (&gt;300)</span>
                         ) : stats.epef > 0 ? (
-                          <span className="text-yellow-400">Cukup (Target &gt;300)</span>
+                          <span className="text-[#A76A57]">Cukup (Target &gt;300)</span>
                         ) : (
-                          <span className="text-slate-550">Belum Ada Data</span>
+                          <span className="text-[#3C3530]/40">Belum Ada Data</span>
                         )}
                       </span>
                     </div>
@@ -2776,31 +2775,31 @@ export default function DashboardPage() {
 
                 {activeCycle.mode === 'bebek_pedaging' && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / kg (Akurat vs Cash)</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppAkurat)}</span>
-                      <span className="text-[10px] text-slate-400 block mt-1.5 font-medium font-mono flex justify-between">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">HPP / kg (Akurat vs Cash)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{formatRp(stats.hppAkurat)}</span>
+                      <span className="text-[10px] text-[#3C3530]/70 block mt-1.5 font-medium font-mono flex justify-between">
                         <span>HPP Cashflow:</span>
                         <span>{formatRp(stats.hpp)}</span>
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Pakan (Target)</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">FCR Pakan (Target)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">
                         {(stats.fcr || 0).toFixed(2)}{' '}
-                        <span className="text-xs text-slate-500 font-semibold font-sans">
+                        <span className="text-xs text-[#3C3530]/60 font-semibold font-sans">
                           ({stats.fcrTarget.min}-{stats.fcrTarget.max})
                         </span>
                       </span>
-                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                      <span className="text-[10px] block mt-1.5 font-semibold font-sans">
                         {stats.fcr >= stats.fcrTarget.min && stats.fcr <= stats.fcrTarget.max ? (
-                          <span className="text-emerald-400">Target Tercapai</span>
+                          <span className="text-[#4D5D4A]">Target Tercapai</span>
                         ) : stats.fcr < stats.fcrTarget.min && stats.fcr > 0 ? (
-                          <span className="text-teal-400">Sangat Efisien</span>
+                          <span className="text-[#4D5D4A] font-bold">Sangat Efisien</span>
                         ) : stats.fcr === 0 ? (
-                          <span className="text-slate-550">Belum Ada Data</span>
+                          <span className="text-[#3C3530]/40">Belum Ada Data</span>
                         ) : (
-                          <span className="text-rose-400">Tidak Efisien</span>
+                          <span className="text-[#A76A57]">Tidak Efisien</span>
                         )}
                       </span>
                     </div>
@@ -2809,46 +2808,46 @@ export default function DashboardPage() {
 
                 {(activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">
                         {activeCycle.mode === 'bebek_petelur' ? 'Duck Day %' : 'Hen Day %'}
                       </span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.henDay || 0).toFixed(1)}%</span>
-                      <span className="text-[10px] text-slate-550 block mt-1.5 font-semibold">
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{(stats.henDay || 0).toFixed(1)}%</span>
+                      <span className="text-[10px] text-[#3C3530]/60 block mt-1.5 font-semibold font-sans">
                         Kualitas produksi telur harian
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Butir (Akurat vs Cash)</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppButirAkurat)}</span>
-                      <span className="text-[10px] text-slate-450 block mt-1.5 font-medium font-mono flex justify-between">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">HPP / Butir (Akurat vs Cash)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{formatRp(stats.hppButirAkurat)}</span>
+                      <span className="text-[10px] text-[#3C3530]/70 block mt-1.5 font-medium font-mono flex justify-between">
                         <span>HPP Cashflow:</span>
                         <span>{formatRp(stats.hppButir)}</span>
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl font-semibold">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Berat Rata Telur</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
-                        {(stats.beratRataTelur || 0).toFixed(1)} <span className="text-xs text-slate-500">g</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl font-semibold">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Berat Rata Telur</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">
+                        {(stats.beratRataTelur || 0).toFixed(1)} <span className="text-xs text-[#3C3530]/60 font-sans">g</span>
                       </span>
-                      <span className="text-[10px] block mt-1.5 font-semibold font-mono">
+                      <span className="text-[10px] block mt-1.5 font-semibold font-sans">
                         {stats.beratRataTelur >= 60 && stats.beratRataTelur <= 65 ? (
-                          <span className="text-emerald-400">Target Ideal (60-65g)</span>
+                          <span className="text-[#4D5D4A]">Target Ideal (60-65g)</span>
                         ) : stats.beratRataTelur > 0 && stats.beratRataTelur < 60 ? (
-                          <span className="text-yellow-400">Ukuran Kecil (&lt;60g)</span>
+                          <span className="text-[#A76A57]">Ukuran Kecil (&lt;60g)</span>
                         ) : stats.beratRataTelur > 65 ? (
-                          <span className="text-teal-400">Ukuran Jumbo (&gt;65g)</span>
+                          <span className="text-[#4D5D4A] font-bold">Ukuran Jumbo (&gt;65g)</span>
                         ) : (
-                          <span className="text-slate-550">Belum Ada Data</span>
+                          <span className="text-[#3C3530]/40">Belum Ada Data</span>
                         )}
                       </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Biaya Pakan / Butir</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Biaya Pakan / Butir</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">
                         {formatRp(stats.biayaPakanPerButir)}
                       </span>
-                      <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold">
+                      <span className="text-[10px] text-[#3C3530]/60 block mt-1.5 font-semibold font-sans">
                         Efisiensi konversi pakan harian
                       </span>
                     </div>
@@ -2857,45 +2856,45 @@ export default function DashboardPage() {
 
                 {activeCycle.mode === 'pembibitan_unggas' && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Daya Tetas</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.dayaTetas || 0).toFixed(1)}%</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Daya Tetas</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{(stats.dayaTetas || 0).toFixed(1)}%</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Populasi Aktif</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.populasi} ekor</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Populasi Aktif</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{stats.populasi} ekor</span>
                     </div>
                   </>
                 )}
 
                 {activeCycle.mode === 'penggemukan' && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">ADG (g/hari)</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.adg || 0).toFixed(0)} g</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">ADG (g/hari)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{(stats.adg || 0).toFixed(0)} g</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Lama Penggemukan</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.lamaHari} Hari</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Lama Penggemukan</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{stats.lamaHari} Hari</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Kebutuhan BK / Hari</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{(stats.BK_kebutuhan || 0).toFixed(1)} <span className="text-xs text-slate-500">kg/hari</span></span>
-                      <span className="text-[10px] text-slate-550 block mt-1.5 font-semibold">*3.5% dari Bobot Awal</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Kebutuhan BK / Hari</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{(stats.BK_kebutuhan || 0).toFixed(1)} <span className="text-xs text-[#3C3530]/60 font-sans">kg/hari</span></span>
+                      <span className="text-[10px] text-[#3C3530]/60 block mt-1.5 font-semibold font-sans">*3.5% dari Bobot Awal</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">IOFC (Income over Feed Cost)</span>
-                      <span className="text-xl font-extrabold text-emerald-400 mt-2 block font-mono">{formatRp(stats.iofc)}</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">IOFC (Income over Feed Cost)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{formatRp(stats.iofc)}</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Margin per Ekor</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{formatRp(stats.marginPerEkor)}</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Margin per Ekor</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{formatRp(stats.marginPerEkor)}</span>
                     </div>
                     {stats.totalKgPanen === 0 && (
-                      <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                        <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Prediksi BB Panen</span>
-                        <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{(stats.prediksiPanen_BB || 0).toFixed(1)} kg</span>
-                        <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold">Target: {activeCycle.data?.modal?.hari_target_panen || 120} hari</span>
+                      <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                        <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Prediksi BB Panen</span>
+                        <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{(stats.prediksiPanen_BB || 0).toFixed(1)} kg</span>
+                        <span className="text-[10px] text-[#3C3530]/60 block mt-1.5 font-semibold font-sans">Target: {activeCycle.data?.modal?.hari_target_panen || 120} hari</span>
                       </div>
                     )}
                   </>
@@ -2903,63 +2902,66 @@ export default function DashboardPage() {
 
                 {activeCycle.mode === 'susu' && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Produksi Rata-rata</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.produksiRata || 0).toFixed(1)} L/hari</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Produksi Rata-rata</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{(stats.produksiRata || 0).toFixed(1)} L/hari</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">HPP / Liter (Akurat vs Cash)</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppLiterAkurat)}</span>
-                      <span className="text-[10px] text-slate-450 block mt-1.5 font-semibold font-mono">Cashflow HPP: {formatRp(stats.hppLiter)}</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">HPP / Liter (Akurat vs Cash)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{formatRp(stats.hppLiterAkurat)}</span>
+                      <span className="text-[10px] text-[#3C3530]/70 block mt-1.5 font-semibold font-mono">Cashflow HPP: {formatRp(stats.hppLiter)}</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCM 4% (Fat Corrected)</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{stats.FCM !== null ? stats.FCM.toFixed(1) + ' L' : 'N/A'}</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">FCM 4% (Fat Corrected)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{stats.FCM !== null ? stats.FCM.toFixed(1) + ' L' : 'N/A'}</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Biaya Pakan / Liter</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.biayaPakanPerLiter)}</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Biaya Pakan / Liter</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{formatRp(stats.biayaPakanPerLiter)}</span>
                     </div>
                   </>
                 )}
 
                 {activeCycle.mode === 'breeding_ruminansia' && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Populasi Total</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{stats.populasiTotal} ekor</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Populasi Total</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{stats.populasiTotal} ekor</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Total Kelahiran</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.totalLahir} ekor</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Total Kelahiran</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{stats.totalLahir} ekor</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Conception Rate (CR)</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">{(stats.conceptionRate || 0).toFixed(1)}%</span>
-                      <span className="text-[10px] text-slate-550 block mt-1.5 font-semibold">Target: &gt;80%</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Conception Rate (CR)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">{(stats.conceptionRate || 0).toFixed(1)}%</span>
+                      <span className="text-[10px] text-[#3C3530]/50 block mt-1.5 font-semibold font-sans">Target: &gt;80%</span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Calving Interval</span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{stats.calvingInterval > 0 ? stats.calvingInterval + ' Hari' : '-'}</span>
-                      <span className="text-[10px] text-slate-500 block mt-1.5 font-semibold">Target: &lt;365 Hari</span>
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Calving Interval</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{stats.calvingInterval > 0 ? stats.calvingInterval + ' Hari' : '-'}</span>
+                      <span className="text-[10px] text-[#3C3530]/60 block mt-1.5 font-semibold font-sans">Target: &lt;365 Hari</span>
                     </div>
                   </>
                 )}
 
                 {(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
                   <>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">
                         {activeCycle.mode === 'ikan_pembesaran' ? 'HPP / kg (Akurat vs Cash)' : 'HPP / Ekor (Akurat vs Cash)'}
                       </span>
-                      <span className="text-xl font-extrabold text-slate-200 mt-2 block font-mono">{formatRp(stats.hppAkurat)}</span>
-                      <span className="text-[10px] text-slate-450 block mt-1.5 font-semibold font-mono">Cashflow HPP: {formatRp(stats.hpp)}</span>
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530] mt-2 block">{formatRp(stats.hppAkurat)}</span>
+                      <span className="text-[10px] text-[#3C3530]/70 block mt-1.5 font-medium font-mono flex justify-between">
+                        <span>HPP Cashflow:</span>
+                        <span>{formatRp(stats.hpp)}</span>
+                      </span>
                     </div>
-                    <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">FCR Ikan (Target)</span>
-                      <span className="text-xl font-extrabold text-teal-400 mt-2 block font-mono">
+                    <div className="bg-[#EADDC9] p-5 rounded-2xl">
+                      <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">FCR Ikan (Target)</span>
+                      <span className="text-xl font-serif font-extrabold text-[#4D5D4A] mt-2 block">
                         {(stats.fcr || 0).toFixed(2)}{' '}
-                        <span className="text-xs text-slate-500 font-semibold font-sans">
+                        <span className="text-xs text-[#3C3530]/60 font-semibold font-sans">
                           ({stats.fcrTarget.min}-{stats.fcrTarget.max})
                         </span>
                       </span>
@@ -2969,17 +2971,17 @@ export default function DashboardPage() {
 
                 {/* Water tracker card for duck modes */}
                 {stats.isBebek && (
-                  <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl col-span-2 font-semibold">
-                    <span className="text-[10px] font-bold text-slate-550 uppercase block tracking-wider">Pelacakan Konsumsi Air (Aktual vs Estimasi)</span>
+                  <div className="bg-[#FCFAF6] border border-[#EADDC9] p-5 rounded-2xl col-span-2 font-semibold">
+                    <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider font-sans">Pelacakan Konsumsi Air (Aktual vs Estimasi)</span>
                     <div className="flex items-baseline gap-2 mt-2">
-                      <span className="text-xl font-extrabold text-slate-200 font-mono">
+                      <span className="text-xl font-serif font-extrabold text-[#3C3530]">
                         {stats.airAktual || 0} L / {Math.round(stats.airEstimasi || 0)} L
                       </span>
-                      <span className={`px-2.5 py-0.5 rounded text-[9px] font-black uppercase ${stats.waterAlert ? 'bg-rose-500/10 text-rose-455 border border-rose-500/20 animate-pulse' : 'bg-emerald-500/10 text-emerald-450'}`}>
+                      <span className={`px-2.5 py-0.5 rounded text-[9px] font-black uppercase ${stats.waterAlert ? 'bg-[#A76A57]/15 text-[#A76A57] border border-[#A76A57]/20 animate-pulse' : 'bg-[#859681]/15 text-[#4D5D4A]'}`}>
                         {stats.waterAlert ? '🚨 DROP >30%' : '✅ NORMAL'}
                       </span>
                     </div>
-                    <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal">
+                    <span className="text-[10px] text-[#3C3530]/60 mt-1.5 block leading-normal font-sans">
                       *Estimasi pakan bebek dikali {activeCycle.mode === 'bebek_petelur' ? '2.2' : '2.0'}. Jika konsumsi drop, segera cek kesehatan bebek!
                     </span>
                   </div>
@@ -2987,15 +2989,15 @@ export default function DashboardPage() {
 
                 {/* Lighting Program Card for Broiler/Layer */}
                 {(activeCycle.mode === 'broiler' || activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && (
-                  <div className="bg-slate-900/40 border border-slate-850 p-5 rounded-2xl col-span-2 font-semibold">
-                    <span className="text-[10px] font-bold text-slate-550 uppercase block tracking-wider flex items-center gap-1.5">
+                  <div className="bg-[#FCFAF6] border border-[#EADDC9] p-5 rounded-2xl col-span-2 font-semibold">
+                    <span className="text-[10px] font-bold text-[#3C3530]/70 uppercase block tracking-wider flex items-center gap-1.5 font-sans">
                       💡 Program Pencahayaan Otomatis (Lighting Program)
                     </span>
-                    <div className="mt-2 text-sm font-bold text-slate-200">
+                    <div className="mt-2 text-sm font-bold text-[#3C3530]">
                       Program Aktif (Umur {stats.umur} Hari):{' '}
-                      <span className="text-teal-400">{stats.lightingProgram}</span>
+                      <span className="text-[#4D5D4A]">{stats.lightingProgram}</span>
                     </div>
-                    <span className="text-[10px] text-slate-500 mt-1.5 block leading-normal">
+                    <span className="text-[10px] text-[#3C3530]/60 mt-1.5 block leading-normal font-sans">
                       *Manajemen cahaya optimal membantu menyeimbangkan asupan pakan harian dan waktu istirahat organ pencernaan.
                     </span>
                   </div>
@@ -3014,19 +3016,19 @@ export default function DashboardPage() {
 
             {/* Extra Assets Card for Ruminansia Breeding */}
             {activeCycle.mode === 'breeding_ruminansia' && (
-              <div className="bg-slate-900/40 border border-slate-850 p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <span className="text-xs font-bold text-slate-450 uppercase tracking-wider block">Estimasi Nilai Aset Peternakan</span>
+                  <span className="text-xs font-bold text-[#3C3530]/75 uppercase tracking-wider block">Estimasi Nilai Aset Peternakan</span>
                   <span className="text-2xl font-black text-white mt-1 block font-mono">{formatRp(stats.nilaiAset)}</span>
-                  <span className="text-[10px] text-slate-500 block mt-1">*Formula: Populasi × Taksiran Berat (30kg) × Harga Pasar</span>
+                  <span className="text-[10px] text-[#3C3530]/60 block mt-1">*Formula: Populasi × Taksiran Berat (30kg) × Harga Pasar</span>
                 </div>
                 <div className="flex gap-4">
-                  <div className="bg-slate-950/80 px-4 py-3 rounded-2xl border border-slate-850">
-                    <span className="text-[9px] text-slate-500 block font-bold">BETINA</span>
+                  <div className="bg-[#FAF7F0] px-4 py-3 rounded-2xl border border-[#EADDC9]">
+                    <span className="text-[9px] text-[#3C3530]/60 block font-bold">BETINA</span>
                     <span className="text-sm font-black text-pink-400 font-mono">{stats.populasiBetina} ekor</span>
                   </div>
-                  <div className="bg-slate-950/80 px-4 py-3 rounded-2xl border border-slate-850">
-                    <span className="text-[9px] text-slate-500 block font-bold">JANTAN</span>
+                  <div className="bg-[#FAF7F0] px-4 py-3 rounded-2xl border border-[#EADDC9]">
+                    <span className="text-[9px] text-[#3C3530]/60 block font-bold">JANTAN</span>
                     <span className="text-sm font-black text-blue-400 font-mono">{stats.populasiJantan} ekor</span>
                   </div>
                 </div>
@@ -3035,8 +3037,8 @@ export default function DashboardPage() {
 
             {/* Budget Breakdown */}
             {stats.breakdown && (
-              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl">
-                <h3 className="font-bold text-slate-200 mb-5 text-sm flex items-center gap-2">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl">
+                <h3 className="font-bold text-[#3C3530] mb-5 text-sm flex items-center gap-2">
                   <span>📊</span> Rincian Anggaran & Pengeluaran
                 </h3>
                 <div className="space-y-4">
@@ -3045,12 +3047,12 @@ export default function DashboardPage() {
                     return (
                       <div key={i} className="space-y-1">
                         <div className="flex justify-between text-xs font-bold">
-                          <span className="text-slate-450">{item.label}</span>
-                          <span className="text-slate-200 font-mono">
-                            {formatRp(item.val)} <span className="text-slate-500 font-medium">({pct.toFixed(0)}%)</span>
+                          <span className="text-[#3C3530]/75">{item.label}</span>
+                          <span className="text-[#3C3530] font-mono">
+                            {formatRp(item.val)} <span className="text-[#3C3530]/60 font-medium">({pct.toFixed(0)}%)</span>
                           </span>
                         </div>
-                        <div className="w-full bg-slate-950 h-2.5 rounded-full overflow-hidden border border-slate-900">
+                        <div className="w-full bg-[#FAF7F0] h-2.5 rounded-full overflow-hidden border border-[#EADDC9]">
                           <div className="bg-gradient-to-r from-teal-500 to-emerald-500 h-full rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
                         </div>
                       </div>
@@ -3061,78 +3063,78 @@ export default function DashboardPage() {
             )}
 
             {/* EBITDA & Depreciation Analysis Card */}
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
-              <h3 className="font-bold text-slate-200 text-sm flex items-center gap-2">
+            <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
+              <h3 className="font-bold text-[#3C3530] text-sm flex items-center gap-2">
                 <span>📊</span> Analisis EBITDA & Penyusutan Kandang (CapEx)
               </h3>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-850/80">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">EBITDA</span>
-                  <span className="text-xl font-extrabold text-teal-400 mt-1.5 block font-mono">{formatRp(stats.ebitda)}</span>
-                  <span className="text-[9px] text-slate-500 mt-1 block leading-normal">Laba operasional sebelum bunga, pajak, dan penyusutan.</span>
+                <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
+                  <span className="text-[10px] font-bold text-[#3C3530]/60 uppercase block tracking-wider">EBITDA</span>
+                  <span className="text-xl font-extrabold text-[#859681] mt-1.5 block font-mono">{formatRp(stats.ebitda)}</span>
+                  <span className="text-[9px] text-[#3C3530]/60 mt-1 block leading-normal">Laba operasional sebelum bunga, pajak, dan penyusutan.</span>
                 </div>
-                <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-850/80">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Penyusutan Kandang (Siklus)</span>
-                  <span className="text-xl font-extrabold text-rose-400 mt-1.5 block font-mono">{formatRp(stats.depresiasi)}</span>
-                  <span className="text-[9px] text-slate-500 mt-1 block leading-normal">
+                <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
+                  <span className="text-[10px] font-bold text-[#3C3530]/60 uppercase block tracking-wider">Penyusutan Kandang (Siklus)</span>
+                  <span className="text-xl font-extrabold text-[#A76A57] mt-1.5 block font-mono">{formatRp(stats.depresiasi)}</span>
+                  <span className="text-[9px] text-[#3C3530]/60 mt-1 block leading-normal">
                     Penyusutan kandang selama {stats.umur || 0} hari (dari masa manfaat {activeCycle.data?.modal?.kandang_manfaat_tahun || 5} tahun).
                   </span>
                 </div>
-                <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-850/80">
-                  <span className="text-[10px] font-bold text-slate-500 uppercase block tracking-wider">Laba Bersih (Net Profit)</span>
-                  <span className="text-xl font-extrabold text-emerald-400 mt-1.5 block font-mono">{formatRp(stats.laba)}</span>
-                  <span className="text-[9px] text-slate-500 mt-1 block leading-normal">Laba bersih setelah dikurangi akumulasi penyusutan kandang.</span>
+                <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
+                  <span className="text-[10px] font-bold text-[#3C3530]/60 uppercase block tracking-wider">Laba Bersih (Net Profit)</span>
+                  <span className="text-xl font-extrabold text-[#4D5D4A] mt-1.5 block font-mono">{formatRp(stats.laba)}</span>
+                  <span className="text-[9px] text-[#3C3530]/60 mt-1 block leading-normal">Laba bersih setelah dikurangi akumulasi penyusutan kandang.</span>
                 </div>
               </div>
 
               {/* Indikator Kelayakan Finansial Lanjutan */}
-              <div className="border-t border-slate-850/60 pt-5 space-y-3">
-                <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block font-sans">
+              <div className="border-t border-[#EADDC9] pt-5 space-y-3">
+                <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block font-sans">
                   📈 Indikator Kelayakan Finansial Lanjutan
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-semibold">
-                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                  <div className="bg-[#FAF7F0] p-3.5 rounded-xl border border-[#EADDC9] flex flex-col justify-between">
                     <div>
-                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">% Pakan dari Modal</span>
-                      <span className="text-slate-200 font-mono mt-1.5 block font-bold text-sm">
+                      <span className="text-[#3C3530]/65 block text-[9px] uppercase tracking-wider">% Pakan dari Modal</span>
+                      <span className="text-[#3C3530] font-mono mt-1.5 block font-bold text-sm">
                         {stats.pakanPct?.toFixed(1) || '0.0'}%
                       </span>
                     </div>
-                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                    <span className="text-[8.5px] text-[#3C3530]/60 mt-1 block leading-tight font-normal">
                       Porsi biaya pakan terhadap total modal operasional.
                     </span>
                   </div>
-                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                  <div className="bg-[#FAF7F0] p-3.5 rounded-xl border border-[#EADDC9] flex flex-col justify-between">
                     <div>
-                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">% TK dari Modal</span>
-                      <span className="text-slate-200 font-mono mt-1.5 block font-bold text-sm">
+                      <span className="text-[#3C3530]/65 block text-[9px] uppercase tracking-wider">% TK dari Modal</span>
+                      <span className="text-[#3C3530] font-mono mt-1.5 block font-bold text-sm">
                         {stats.tkPct?.toFixed(1) || '0.0'}%
                       </span>
                     </div>
-                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                    <span className="text-[8.5px] text-[#3C3530]/60 mt-1 block leading-tight font-normal">
                       Porsi biaya tenaga kerja terhadap total modal operasional.
                     </span>
                   </div>
-                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                  <div className="bg-[#FAF7F0] p-3.5 rounded-xl border border-[#EADDC9] flex flex-col justify-between">
                     <div>
-                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">IOFC (Income Over Feed Cost)</span>
-                      <span className="text-emerald-450 font-mono mt-1.5 block font-bold text-sm">
+                      <span className="text-[#3C3530]/65 block text-[9px] uppercase tracking-wider">IOFC (Income Over Feed Cost)</span>
+                      <span className="text-[#859681] font-mono mt-1.5 block font-bold text-sm">
                         {formatRp(stats.iofc)}
                       </span>
                     </div>
-                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                    <span className="text-[8.5px] text-[#3C3530]/60 mt-1 block leading-tight font-normal">
                       Pendapatan kotor dikurangi total pengeluaran biaya pakan.
                     </span>
                   </div>
-                  <div className="bg-slate-950/40 p-3.5 rounded-xl border border-slate-850/60 flex flex-col justify-between">
+                  <div className="bg-[#FAF7F0] p-3.5 rounded-xl border border-[#EADDC9] flex flex-col justify-between">
                     <div>
-                      <span className="text-slate-555 block text-[9px] uppercase tracking-wider">BEP Harga Jual</span>
-                      <span className="text-teal-400 font-mono mt-1.5 block font-bold text-sm">
+                      <span className="text-[#3C3530]/65 block text-[9px] uppercase tracking-wider">BEP Harga Jual</span>
+                      <span className="text-[#859681] font-mono mt-1.5 block font-bold text-sm">
                         {formatRp(stats.bepHarga)}
                       </span>
                     </div>
-                    <span className="text-[8.5px] text-slate-500 mt-1 block leading-tight font-normal">
+                    <span className="text-[8.5px] text-[#3C3530]/60 mt-1 block leading-tight font-normal">
                       Titik impas harga jual minimum per kg/butir/liter/ekor.
                     </span>
                   </div>
@@ -3141,32 +3143,32 @@ export default function DashboardPage() {
 
               {/* Rincian Pembangunan Kandang jika menggunakan rincian manual */}
               {activeCycle.data?.modal?.kandang_detail_aktif === 'true' && (
-                <div className="p-5 bg-slate-950/40 rounded-2xl border border-slate-850 space-y-3">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
+                <div className="p-5 bg-[#FAF7F0] rounded-2xl border border-[#EADDC9] space-y-3">
+                  <span className="text-[10px] font-black text-[#3C3530]/80 uppercase tracking-wider block">
                     🏗️ Rincian Pembangunan Kandang Baru (Investasi Awal)
                   </span>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-semibold">
                     <div>
-                      <span className="text-slate-500 block text-[9px] uppercase">Bahan & Material</span>
-                      <span className="text-slate-200 font-mono mt-0.5 block">
+                      <span className="text-[#3C3530]/60 block text-[9px] uppercase">Bahan & Material</span>
+                      <span className="text-[#3C3530] font-mono mt-0.5 block">
                         {formatRp(parseFloat(activeCycle.data?.modal?.kandang_material) || 0)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-550 block text-[9px] uppercase">Tenaga Kerja / Tukang</span>
-                      <span className="text-slate-200 font-mono mt-0.5 block">
+                      <span className="text-[#3C3530]/65 block text-[9px] uppercase">Tenaga Kerja / Tukang</span>
+                      <span className="text-[#3C3530] font-mono mt-0.5 block">
                         {formatRp(parseFloat(activeCycle.data?.modal?.kandang_pekerja) || 0)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-550 block text-[9px] uppercase">Biaya Lain-lain</span>
-                      <span className="text-slate-200 font-mono mt-0.5 block">
+                      <span className="text-[#3C3530]/65 block text-[9px] uppercase">Biaya Lain-lain</span>
+                      <span className="text-[#3C3530] font-mono mt-0.5 block">
                         {formatRp(parseFloat(activeCycle.data?.modal?.kandang_lain) || 0)}
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-550 block text-[9px] uppercase">Total Biaya Kandang</span>
-                      <span className="text-teal-400 font-mono mt-0.5 block font-bold">
+                      <span className="text-[#3C3530]/65 block text-[9px] uppercase">Total Biaya Kandang</span>
+                      <span className="text-[#859681] font-mono mt-0.5 block font-bold">
                         {formatRp(parseFloat(activeCycle.data?.modal?.kandang_total) || 0)}
                       </span>
                     </div>
@@ -3179,17 +3181,17 @@ export default function DashboardPage() {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 onClick={handleCSVExport}
-                className="flex-1 py-3.5 px-4 bg-slate-900/70 hover:bg-slate-800 text-slate-200 border border-slate-850 hover:border-slate-700 font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm"
+                className="flex-1 py-3.5 px-4 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#3C3530] border border-[#EADDC9] hover:border-[#859681] font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm"
               >
-                {Icons.export("w-4 h-4 text-teal-400")}
+                {Icons.export("w-4 h-4 text-[#859681]")}
                 Ekspor Laporan (CSV)
               </button>
               {profile?.user?.role === 'OWNER' && (
                 <button
                   onClick={handleConfirmDeleteCycle}
-                  className="flex-1 py-3.5 px-4 bg-rose-950/20 hover:bg-rose-900/30 text-rose-400 border border-rose-900/20 font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2"
+                  className="flex-1 py-3.5 px-4 bg-[#A76A57]/15 hover:bg-[#A76A57]/35 text-[#A76A57] border border-[#A76A57]/20 font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2"
                 >
-                  {Icons.trash("w-4 h-4 text-rose-400")}
+                  {Icons.trash("w-4 h-4 text-[#A76A57]")}
                   Hapus Siklus Ini
                 </button>
               )}
@@ -3199,15 +3201,15 @@ export default function DashboardPage() {
 
         {/* --- TAB: MODAL AWAL FORM --- */}
         {activeTab === 'modal_awal' && (
-          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+          <div className="max-w-xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-[#3C3530] flex items-center gap-2">
               <span>ðŸ“‹</span> Data Modal Awal Siklus
             </h3>
 
             {activeCycle.mode === 'broiler' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk DOC</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Masuk DOC</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_doc || ''}
@@ -3215,11 +3217,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-255 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah DOC (Ekor)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah DOC (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 1000"
@@ -3228,11 +3230,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 8000"
@@ -3241,12 +3243,12 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Siklus Litter (Sekam) Ke</label>
+                    <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Siklus Litter (Sekam) Ke</label>
                     <input
                       type="number"
                       placeholder="Contoh: 1"
@@ -3255,11 +3257,11 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), siklus_litter_ke: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Down-time Kandang (Hari)</label>
+                    <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Down-time Kandang (Hari)</label>
                     <input
                       type="number"
                       placeholder="Contoh: 14"
@@ -3268,7 +3270,7 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), down_time_hari: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                     />
                   </div>
                 </div>
@@ -3278,7 +3280,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'bebek_pedaging' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk DOD</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Masuk DOD</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_doc || ''}
@@ -3286,11 +3288,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah DOD (Ekor)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah DOD (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 500"
@@ -3299,11 +3301,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 10000"
@@ -3312,26 +3314,26 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_doc: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Strain Bebek</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Strain Bebek</label>
                   <select
                     value={activeCycle.data?.modal?.strain_bebek || 'Serati'}
                     onChange={(e) => {
                       const modal = { ...(activeCycle.data?.modal || {}), strain_bebek: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-250 font-semibold cursor-pointer"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-xs text-[#3C3530] font-semibold cursor-pointer"
                   >
                     {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
-                      <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                      <option key={st} value={st} className="bg-[#FCFAF6] text-[#3C3530]">{st}</option>
                     ))}
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Umur Bibit saat Masuk (Hari)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Umur Bibit saat Masuk (Hari)</label>
                   <input
                     type="number"
                     value={activeCycle.data?.modal?.umur_bibit || '1'}
@@ -3339,7 +3341,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), umur_bibit: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
               </div>
@@ -3348,7 +3350,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'bebek_petelur' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk Bayah</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Masuk Bayah</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_pullet || ''}
@@ -3356,11 +3358,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_pullet: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Bebek Petelur (Ekor)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Bebek Petelur (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 500"
@@ -3369,11 +3371,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 12000"
@@ -3382,26 +3384,26 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Strain Bebek</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Strain Bebek</label>
                   <select
                     value={activeCycle.data?.modal?.strain_bebek || 'Mojosari'}
                     onChange={(e) => {
                       const modal = { ...(activeCycle.data?.modal || {}), strain_bebek: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-250 font-semibold cursor-pointer"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-xs text-[#3C3530] font-semibold cursor-pointer"
                   >
                     {['Serati', 'Raja', 'Ratu', 'Mojosari', 'Alabio', 'Tegal', 'Lainnya'].map((st) => (
-                      <option key={st} value={st} className="bg-slate-900 text-slate-100">{st}</option>
+                      <option key={st} value={st} className="bg-[#FCFAF6] text-[#3C3530]">{st}</option>
                     ))}
                   </select>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Umur Bayah saat Masuk (Hari)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Umur Bayah saat Masuk (Hari)</label>
                   <input
                     type="number"
                     value={activeCycle.data?.modal?.umur_bibit || '150'}
@@ -3409,7 +3411,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), umur_bibit: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
               </div>
@@ -3418,7 +3420,7 @@ export default function DashboardPage() {
             {(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Tebar Benih</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Tebar Benih</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_tebar || ''}
@@ -3426,59 +3428,59 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_tebar: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Jenis Ikan</label>
+                    <label className="text-xs font-bold text-[#3C3530]/65 block uppercase tracking-wider">Jenis Ikan</label>
                     <select
                       value={activeCycle.data?.modal?.jenis_ikan || 'lele'}
                       onChange={(e) => {
                         const modal = { ...(activeCycle.data?.modal || {}), jenis_ikan: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-200 font-semibold cursor-pointer"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-xs text-[#3C3530] font-semibold cursor-pointer"
                     >
                       {['lele', 'nila', 'gurame', 'mas', 'patin', 'lainnya'].map((ik) => (
-                        <option key={ik} value={ik} className="bg-slate-900 text-slate-100">{ik.toUpperCase()}</option>
+                        <option key={ik} value={ik} className="bg-[#FCFAF6] text-[#3C3530]">{ik.toUpperCase()}</option>
                       ))}
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Sistem Kolam</label>
+                    <label className="text-xs font-bold text-[#3C3530]/65 block uppercase tracking-wider">Sistem Kolam</label>
                     <select
                       value={activeCycle.data?.modal?.sistem_kolam || 'bioflok'}
                       onChange={(e) => {
                         const modal = { ...(activeCycle.data?.modal || {}), sistem_kolam: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-200 font-semibold cursor-pointer"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-xs text-[#3C3530] font-semibold cursor-pointer"
                     >
                       {['konvensional', 'bioflok', 'RAS'].map((sys) => (
-                        <option key={sys} value={sys} className="bg-slate-900 text-slate-100">{sys.toUpperCase()}</option>
+                        <option key={sys} value={sys} className="bg-[#FCFAF6] text-[#3C3530]">{sys.toUpperCase()}</option>
                       ))}
                     </select>
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Tipe Wadah/Kolam</label>
+                  <label className="text-xs font-bold text-[#3C3530]/65 block uppercase tracking-wider">Tipe Wadah/Kolam</label>
                   <select
                     value={activeCycle.data?.modal?.tipe_kolam || 'terpal'}
                     onChange={(e) => {
                       const modal = { ...(activeCycle.data?.modal || {}), tipe_kolam: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-xs text-slate-200 font-semibold cursor-pointer"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-xs text-[#3C3530] font-semibold cursor-pointer"
                   >
                     {['tanah', 'terpal', 'beton', 'bioflok', 'RAS', 'keramba', 'air_deras'].map((t) => (
-                      <option key={t} value={t} className="bg-slate-900 text-slate-100">{t.toUpperCase()}</option>
+                      <option key={t} value={t} className="bg-[#FCFAF6] text-[#3C3530]">{t.toUpperCase()}</option>
                     ))}
                   </select>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-550 block uppercase">Panjang (m)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/65 block uppercase">Panjang (m)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.panjang_m || ''}
@@ -3486,11 +3488,11 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), panjang_m: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-550 block uppercase">Lebar (m)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/65 block uppercase">Lebar (m)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.lebar_m || ''}
@@ -3498,11 +3500,11 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), lebar_m: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-550 block uppercase">Tinggi Air (m)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/65 block uppercase">Tinggi Air (m)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.tinggi_air_m || ''}
@@ -3510,12 +3512,12 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), tinggi_air_m: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-955/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Tebar Benih (Ekor)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Tebar Benih (Ekor)</label>
                   <input
                     type="number"
                     value={activeCycle.data?.modal?.jml_tebar || ''}
@@ -3523,12 +3525,12 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_tebar: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-955/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Bobot Awal (g/ekor)</label>
+                    <label className="text-xs font-bold text-[#3C3530]/65 block uppercase tracking-wider">Bobot Awal (g/ekor)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.bobot_awal_g || ''}
@@ -3536,11 +3538,11 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), bobot_awal_g: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">Harga per Benih (Rp)</label>
+                    <label className="text-xs font-bold text-[#3C3530]/65 block uppercase tracking-wider">Harga per Benih (Rp)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.harga_benih || ''}
@@ -3548,13 +3550,13 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), harga_benih: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Persiapan Air (Rp)</label>
+                    <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Biaya Persiapan Air (Rp)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.biaya_persiapan_air || ''}
@@ -3562,11 +3564,11 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), biaya_persiapan_air: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Biaya Aerasi / Pompa (Rp)</label>
+                    <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Biaya Aerasi / Pompa (Rp)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.biaya_aerasi_pompa || ''}
@@ -3574,7 +3576,7 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), biaya_aerasi_pompa: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-955/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                     />
                   </div>
                 </div>
@@ -3584,7 +3586,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'petelur' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Masuk Pullet</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Masuk Pullet</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_pullet || ''}
@@ -3592,11 +3594,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_pullet: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-220 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ayam Pullet (Ekor)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Ayam Pullet (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 500"
@@ -3605,11 +3607,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 80000"
@@ -3618,7 +3620,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -3627,7 +3629,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'pembibitan_unggas' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Betina (Ekor)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Betina (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 50"
@@ -3636,11 +3638,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_betina: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Pejantan (Ekor)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Pejantan (Ekor)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 5"
@@ -3649,11 +3651,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_jantan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor Indukan (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor Indukan (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 150000"
@@ -3662,7 +3664,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_indukan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -3671,7 +3673,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'penggemukan' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Beli Bakalan</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Beli Bakalan</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_beli || ''}
@@ -3679,11 +3681,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_beli: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-220 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Ekor</label>
                   <input
                     type="number"
                     placeholder="Contoh: 10"
@@ -3692,11 +3694,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-550 block uppercase tracking-wider">BB Awal Rata2 (kg)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/65 block uppercase tracking-wider">BB Awal Rata2 (kg)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 150"
@@ -3705,11 +3707,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), bb_awal: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per kg (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per kg (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 55000"
@@ -3718,11 +3720,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_kg_bakalan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Target Hari Panen</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Target Hari Panen</label>
                   <input
                     type="number"
                     placeholder="Contoh: 120"
@@ -3731,7 +3733,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), hari_target_panen: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
               </div>
@@ -3740,7 +3742,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'susu' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Tanggal Beli Induk</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Beli Induk</label>
                   <input
                     type="date"
                     value={activeCycle.data?.modal?.tgl_beli || ''}
@@ -3748,11 +3750,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), tgl_beli: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-220 font-semibold transition-colors font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors font-mono"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor Indukan</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Ekor Indukan</label>
                   <input
                     type="number"
                     placeholder="Contoh: 5"
@@ -3761,11 +3763,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Induk (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Induk (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 15000000"
@@ -3774,7 +3776,7 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
               </div>
@@ -3783,7 +3785,7 @@ export default function DashboardPage() {
             {activeCycle.mode === 'breeding_ruminansia' && (
               <div className="space-y-4 font-semibold">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Induk Betina</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Induk Betina</label>
                   <input
                     type="number"
                     placeholder="Contoh: 10"
@@ -3792,11 +3794,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_betina: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Pejantan</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Pejantan</label>
                   <input
                     type="number"
                     placeholder="Contoh: 2"
@@ -3805,11 +3807,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), jml_jantan: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 3000000"
@@ -3818,11 +3820,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_ekor: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Harga Pasar / kg Hidup (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga Pasar / kg Hidup (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 60000"
@@ -3831,11 +3833,11 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), harga_pasar: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Taksiran Berat Anak (kg)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Taksiran Berat Anak (kg)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 30"
@@ -3844,15 +3846,15 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), bobot_taksiran: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
               </div>
             )}
 
             {/* Unified cage section in Modal Awal form */}
-            <div className="mt-4 pt-4 border-t border-slate-850 space-y-4">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">ðŸ¢ Investasi Kandang & Aset (CapEx)</span>
+            <div className="mt-4 pt-4 border-t border-[#EADDC9] space-y-4">
+              <span className="text-[10px] font-black text-[#3C3530]/80 uppercase tracking-widest block">ðŸ¢ Investasi Kandang & Aset (CapEx)</span>
               
               <div className="flex items-center gap-2">
                 <input
@@ -3867,17 +3869,17 @@ export default function DashboardPage() {
                     };
                     handleSaveCycleData({ ...activeCycle.data, modal });
                   }}
-                  className="w-4 h-4 rounded border-slate-800 text-teal-600 focus:ring-teal-500 bg-slate-950 cursor-pointer"
+                  className="w-4 h-4 rounded border-[#EADDC9] text-[#859681] focus:ring-[#859681]/30 bg-[#FAF7F0] cursor-pointer"
                 />
-                <label htmlFor="isDetailedCageInput_modal" className="text-xs font-bold text-slate-350 cursor-pointer">
+                <label htmlFor="isDetailedCageInput_modal" className="text-xs font-bold text-[#3C3530]/90 cursor-pointer">
                   Input Rincian Biaya Pembangunan Kandang Baru
                 </label>
               </div>
 
               {activeCycle.data?.modal?.kandang_detail_aktif === 'true' ? (
-                <div className="space-y-3.5 pl-2 border-l-2 border-teal-500/20">
+                <div className="space-y-3.5 pl-2 border-l-2 border-[#859681]/20">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">1. Biaya Bahan & Material</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 uppercase tracking-wider block">1. Biaya Bahan & Material</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.kandang_material || '0'}
@@ -3895,11 +3897,11 @@ export default function DashboardPage() {
                         };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">2. Biaya Tenaga Kerja (Labor)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 uppercase tracking-wider block">2. Biaya Tenaga Kerja (Labor)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.kandang_pekerja || '0'}
@@ -3917,11 +3919,11 @@ export default function DashboardPage() {
                         };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">3. Biaya Lain-lain</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 uppercase tracking-wider block">3. Biaya Lain-lain</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.kandang_lain || '0'}
@@ -3939,17 +3941,17 @@ export default function DashboardPage() {
                         };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                     />
                   </div>
-                  <div className="p-3 bg-teal-500/5 rounded-xl border border-teal-500/10 text-xs text-teal-400 font-bold flex justify-between font-mono">
+                  <div className="p-3 bg-[#859681]/5 rounded-xl border border-[#859681]/10 text-xs text-[#859681] font-bold flex justify-between font-mono">
                     <span>Total Biaya Kandang:</span>
                     <span>Rp {(parseFloat(activeCycle.data?.modal?.biaya_kandang) || 0).toLocaleString('id-ID')}</span>
                   </div>
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Investasi Kandang / Aset Awal (Rp)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Investasi Kandang / Aset Awal (Rp)</label>
                   <input
                     type="number"
                     placeholder="Contoh: 1500000"
@@ -3963,7 +3965,7 @@ export default function DashboardPage() {
                       };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-3 text-slate-200 font-semibold transition-colors"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-3 text-[#3C3530] font-semibold transition-colors"
                   />
                 </div>
               )}
@@ -3971,7 +3973,7 @@ export default function DashboardPage() {
               {!(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Panjang Kandang (Meter)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Panjang Kandang (Meter)</label>
                     <input
                       type="number"
                       placeholder="Contoh: 10"
@@ -3980,11 +3982,11 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), panjang_m: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Lebar Kandang (Meter)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Lebar Kandang (Meter)</label>
                     <input
                       type="number"
                       placeholder="Contoh: 8"
@@ -3993,24 +3995,24 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), lebar_m: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 </div>
               )}
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-555 block uppercase tracking-wider">Masa Manfaat Kandang (Tahun)</label>
+                <label className="text-[10px] font-black text-[#3C3530]/65 block uppercase tracking-wider">Masa Manfaat Kandang (Tahun)</label>
                 <select
                   value={activeCycle.data?.modal?.kandang_manfaat_tahun || '10'}
                   onChange={(e) => {
                     const modal = { ...(activeCycle.data?.modal || {}), kandang_manfaat_tahun: e.target.value };
                     handleSaveCycleData({ ...activeCycle.data, modal });
                   }}
-                  className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-250 font-semibold font-mono cursor-pointer"
+                  className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono cursor-pointer"
                 >
                   {[1, 2, 3, 4, 5, 8, 10, 15, 20].map((yr) => (
-                    <option key={yr} value={yr} className="bg-slate-900 text-slate-100">
+                    <option key={yr} value={yr} className="bg-[#FCFAF6] text-[#3C3530]">
                       {yr} Tahun ({yr * 12} Bulan)
                     </option>
                   ))}
@@ -4018,7 +4020,7 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-black text-slate-555 block uppercase tracking-wider">Perkiraan Siklus per Tahun</label>
+                <label className="text-[10px] font-black text-[#3C3530]/65 block uppercase tracking-wider">Perkiraan Siklus per Tahun</label>
                 <input
                   type="number"
                   value={activeCycle.data?.modal?.siklus_per_thn || '6'}
@@ -4026,14 +4028,14 @@ export default function DashboardPage() {
                     const modal = { ...(activeCycle.data?.modal || {}), siklus_per_thn: e.target.value };
                     handleSaveCycleData({ ...activeCycle.data, modal });
                   }}
-                  className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                  className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                 />
               </div>
             </div>
 
-            <div className="bg-[#0c1a1f] border border-teal-500/10 p-5 rounded-2xl text-xs font-semibold text-slate-400">
+            <div className="bg-[#0c1a1f] border border-[#859681]/10 p-5 rounded-2xl text-xs font-semibold text-[#3C3530]/80">
               <div className="text-[10px] font-bold block uppercase opacity-70 mb-2">Rincian Nilai Modal Awal:</div>
-              <div className="text-xl font-black text-teal-400 font-mono">
+              <div className="text-xl font-black text-[#859681] font-mono">
                 {formatRp(
                   activeCycle.mode === 'broiler' || activeCycle.mode === 'bebek_pedaging'
                     ? (parseFloat(activeCycle.data?.modal?.jml_doc) || 0) * (parseFloat(activeCycle.data?.modal?.harga_doc) || 0) + (parseFloat(activeCycle.data?.modal?.biaya_kandang) || 0)
@@ -4061,27 +4063,27 @@ export default function DashboardPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Pakan */}
-                <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-800 transition-colors">
+                <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl flex flex-col justify-between hover:border-[#EADDC9] transition-colors">
                   <div>
-                    <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
+                    <h4 className="font-bold text-[#3C3530] mb-4 flex items-center justify-between">
                       <span>🌾 Biaya Pakan</span>
-                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/45 text-teal-400 rounded-md font-mono">
+                      <span className="text-[10px] px-2 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono">
                         {((activeCycle.data?.biaya || []).filter((b: any) => b.type === 'pakan').length)} Catatan
                       </span>
                     </h4>
                     <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
                       {(activeCycle.data?.biaya || []).filter((b: any) => b.type === 'pakan').length === 0 ? (
-                        <div className="text-center py-10 text-xs text-slate-650 font-bold">Belum ada catatan pakan.</div>
+                        <div className="text-center py-10 text-xs text-[#3C3530]/50 font-bold">Belum ada catatan pakan.</div>
                       ) : (
                         (activeCycle.data?.biaya || []).filter((b: any) => b.type === 'pakan').map((b: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center bg-slate-950/50 p-3.5 rounded-xl border border-slate-850/80">
+                          <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-3.5 rounded-xl border border-[#EADDC9]">
                             <div>
-                              <div className="text-xs font-bold text-slate-350">{b.jenis || 'Pakan'}</div>
-                              <div className="text-[9px] text-slate-500 mt-0.5 font-bold font-mono">{b.sak} sak × {b.kg_sak}kg/sak · {b.tgl}</div>
+                              <div className="text-xs font-bold text-[#3C3530]/90">{b.jenis || 'Pakan'}</div>
+                              <div className="text-[9px] text-[#3C3530]/60 mt-0.5 font-bold font-mono">{b.sak} sak × {b.kg_sak}kg/sak · {b.tgl}</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-teal-450 font-mono">{formatRp(b.total)}</span>
-                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-bold p-1">✕</button>
+                              <span className="text-xs font-black text-[#859681] font-mono">{formatRp(b.total)}</span>
+                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-1">✕</button>
                             </div>
                           </div>
                         ))
@@ -4090,34 +4092,34 @@ export default function DashboardPage() {
                   </div>
                   <button
                     onClick={() => openModalForm('modal_pakan')}
-                    className="w-full mt-6 py-2.5 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
+                    className="w-full mt-6 py-2.5 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#859681] text-xs font-bold rounded-xl border border-[#EADDC9] transition-all"
                   >
                     + Tambah Pakan
                   </button>
                 </div>
 
                 {/* Obat */}
-                <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-800 transition-colors">
+                <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl flex flex-col justify-between hover:border-[#EADDC9] transition-colors">
                   <div>
-                    <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
+                    <h4 className="font-bold text-[#3C3530] mb-4 flex items-center justify-between">
                       <span>💊 Obat & Vaksin</span>
-                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/45 text-teal-400 rounded-md font-mono">
+                      <span className="text-[10px] px-2 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono">
                         {((activeCycle.data?.biaya || []).filter((b: any) => b.type === 'obat').length)} Catatan
                       </span>
                     </h4>
                     <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
                       {(activeCycle.data?.biaya || []).filter((b: any) => b.type === 'obat').length === 0 ? (
-                        <div className="text-center py-10 text-xs text-slate-650 font-bold">Belum ada catatan obat.</div>
+                        <div className="text-center py-10 text-xs text-[#3C3530]/50 font-bold">Belum ada catatan obat.</div>
                       ) : (
                         (activeCycle.data?.biaya || []).filter((b: any) => b.type === 'obat').map((b: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center bg-slate-950/50 p-3.5 rounded-xl border border-slate-850/80">
+                          <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-3.5 rounded-xl border border-[#EADDC9]">
                             <div>
-                              <div className="text-xs font-bold text-slate-350">{b.nama || 'Obat/Vaksin'}</div>
-                              <div className="text-[9px] text-slate-500 mt-0.5 font-bold font-mono">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
+                              <div className="text-xs font-bold text-[#3C3530]/90">{b.nama || 'Obat/Vaksin'}</div>
+                              <div className="text-[9px] text-[#3C3530]/60 mt-0.5 font-bold font-mono">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-teal-450 font-mono">{formatRp(b.total)}</span>
-                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-bold p-1">✕</button>
+                              <span className="text-xs font-black text-[#859681] font-mono">{formatRp(b.total)}</span>
+                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-1">✕</button>
                             </div>
                           </div>
                         ))
@@ -4126,34 +4128,34 @@ export default function DashboardPage() {
                   </div>
                   <button
                     onClick={() => openModalForm('modal_obat')}
-                    className="w-full mt-6 py-2.5 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
+                    className="w-full mt-6 py-2.5 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#859681] text-xs font-bold rounded-xl border border-[#EADDC9] transition-all"
                   >
                     + Tambah Obat
                   </button>
                 </div>
 
                 {/* Lain */}
-                <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl flex flex-col justify-between hover:border-slate-800 transition-colors">
+                <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl flex flex-col justify-between hover:border-[#EADDC9] transition-colors">
                   <div>
-                    <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
+                    <h4 className="font-bold text-[#3C3530] mb-4 flex items-center justify-between">
                       <span>📦 Biaya Lain</span>
-                      <span className="text-[10px] px-2 py-0.5 bg-teal-950/45 text-teal-400 rounded-md font-mono">
+                      <span className="text-[10px] px-2 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono">
                         {((activeCycle.data?.biaya || []).filter((b: any) => b.type === 'lain').length)} Catatan
                       </span>
                     </h4>
                     <div className="space-y-3 max-h-[300px] overflow-y-auto pr-1 scrollbar-thin">
                       {(activeCycle.data?.biaya || []).filter((b: any) => b.type === 'lain').length === 0 ? (
-                        <div className="text-center py-10 text-xs text-slate-650 font-bold">Belum ada catatan biaya lain.</div>
+                        <div className="text-center py-10 text-xs text-[#3C3530]/50 font-bold">Belum ada catatan biaya lain.</div>
                       ) : (
                         (activeCycle.data?.biaya || []).filter((b: any) => b.type === 'lain').map((b: any, i: number) => (
-                          <div key={i} className="flex justify-between items-center bg-slate-950/50 p-3.5 rounded-xl border border-slate-850/80">
+                          <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-3.5 rounded-xl border border-[#EADDC9]">
                             <div>
-                              <div className="text-xs font-bold text-slate-350">{b.nama || 'Biaya Lain'}</div>
-                              <div className="text-[9px] text-slate-500 mt-0.5 font-bold font-mono">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
+                              <div className="text-xs font-bold text-[#3C3530]/90">{b.nama || 'Biaya Lain'}</div>
+                              <div className="text-[9px] text-[#3C3530]/60 mt-0.5 font-bold font-mono">{b.keterangan || 'Tanpa Keterangan'} · {b.tgl}</div>
                             </div>
                             <div className="flex items-center gap-2">
-                              <span className="text-xs font-black text-teal-455 font-mono">{formatRp(b.total)}</span>
-                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-rose-500 hover:text-rose-400 font-bold p-1">✕</button>
+                              <span className="text-xs font-black text-[#859681] font-mono">{formatRp(b.total)}</span>
+                              <button onClick={() => handleDeleteListItem('biaya', (activeCycle.data?.biaya || []).indexOf(b))} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-1">✕</button>
                             </div>
                           </div>
                         ))
@@ -4162,7 +4164,7 @@ export default function DashboardPage() {
                   </div>
                   <button
                     onClick={() => openModalForm('modal_lain')}
-                    className="w-full mt-6 py-2.5 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
+                    className="w-full mt-6 py-2.5 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#859681] text-xs font-bold rounded-xl border border-[#EADDC9] transition-all"
                   >
                     + Tambah Biaya
                   </button>
@@ -4170,26 +4172,26 @@ export default function DashboardPage() {
 
               </div>
             ) : (
-              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl max-w-xl mx-auto">
-                <h4 className="font-bold text-slate-200 mb-4 flex items-center justify-between">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl max-w-xl mx-auto">
+                <h4 className="font-bold text-[#3C3530] mb-4 flex items-center justify-between">
                   <span>🌿 Biaya Operasional</span>
-                  <span className="text-[10px] px-2 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono">
+                  <span className="text-[10px] px-2 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono">
                     {(activeCycle.data?.biaya || []).length} Catatan
                   </span>
                 </h4>
                 <div className="space-y-3">
                   {(activeCycle.data?.biaya || []).length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-sm">Belum ada biaya operasional dicatat.</div>
+                    <div className="text-center py-10 text-[#3C3530]/60 text-sm">Belum ada biaya operasional dicatat.</div>
                   ) : (
                     (activeCycle.data?.biaya || []).map((b: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                      <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                         <div>
-                          <div className="text-xs font-bold text-slate-200 font-sans">{b.nama || b.type}</div>
-                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Jenis: <strong className="uppercase text-teal-450">{b.type}</strong> · Vol: {b.kg || 0} kg · {b.tgl}</div>
+                          <div className="text-xs font-bold text-[#3C3530] font-sans">{b.nama || b.type}</div>
+                          <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">Jenis: <strong className="uppercase text-[#859681]">{b.type}</strong> · Vol: {b.kg || 0} kg · {b.tgl}</div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-black text-teal-450">{formatRp(b.total)}</span>
-                          <button onClick={() => handleDeleteListItem('biaya', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                          <span className="text-xs font-black text-[#859681]">{formatRp(b.total)}</span>
+                          <button onClick={() => handleDeleteListItem('biaya', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                         </div>
                       </div>
                     ))
@@ -4197,7 +4199,7 @@ export default function DashboardPage() {
                 </div>
                 <button
                   onClick={() => openModalForm(activeCycle.mode === 'susu' ? 'modal_biaya_susu' : 'modal_biaya_ruminansia')}
-                  className="w-full mt-6 py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 text-xs font-bold rounded-xl border border-slate-800 transition-all"
+                  className="w-full mt-6 py-3 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#859681] text-xs font-bold rounded-xl border border-[#EADDC9] transition-all"
                 >
                   + Tambah Biaya Operasional
                 </button>
@@ -4205,14 +4207,14 @@ export default function DashboardPage() {
             )}
 
             {/* Kategori SDM & Utilitas */}
-            <div className="bg-slate-900/20 border border-slate-850 p-6 rounded-3xl mt-6">
-              <h4 className="font-bold text-slate-200 mb-4 flex items-center gap-2">
+            <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl mt-6">
+              <h4 className="font-bold text-[#3C3530] mb-4 flex items-center gap-2">
                 <span>⚡ SDM & Utilitas</span>
-                <span className="text-[10px] text-slate-550 font-normal font-sans">Biaya operasional siklus</span>
+                <span className="text-[10px] text-[#3C3530]/65 font-normal font-sans">Biaya operasional siklus</span>
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Tenaga Kerja (Rp/Hari)</label>
+                  <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Biaya Tenaga Kerja (Rp/Hari)</label>
                   <input
                     type="number"
                     value={activeCycle.data?.modal?.biaya_tk_harian || '0'}
@@ -4220,14 +4222,14 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), biaya_tk_harian: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                   />
                 </div>
                 
                 {/* Listrik Input */}
                 {!(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') ? (
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Listrik (Rp/Siklus)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Biaya Listrik (Rp/Siklus)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.biaya_listrik || '0'}
@@ -4235,12 +4237,12 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), biaya_listrik: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 ) : (
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Tarif Listrik (Rp/kWh)</label>
+                    <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Tarif Listrik (Rp/kWh)</label>
                     <input
                       type="number"
                       value={activeCycle.data?.modal?.aerasi_tarif || '1450'}
@@ -4248,14 +4250,14 @@ export default function DashboardPage() {
                         const modal = { ...(activeCycle.data?.modal || {}), aerasi_tarif: e.target.value };
                         handleSaveCycleData({ ...activeCycle.data, modal });
                       }}
-                      className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                     />
                   </div>
                 )}
 
                 {/* Air Input */}
                 <div className="space-y-1.5">
-                  <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Air (Rp/Siklus)</label>
+                  <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Biaya Air (Rp/Siklus)</label>
                   <input
                     type="number"
                     value={activeCycle.data?.modal?.biaya_air || '0'}
@@ -4263,21 +4265,21 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), biaya_air: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                   />
                 </div>
               </div>
 
               {/* Khusus Bioflok / RAS Ikan */}
               {(activeCycle.mode === 'ikan_pembesaran' || activeCycle.mode === 'ikan_pembibitan') && (
-                <div className="mt-4 pt-4 border-t border-slate-850/60 space-y-4">
-                  <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block">🔧 Input Tambahan Sistem {(activeCycle.data?.modal?.sistem_kolam || 'konvensional').toUpperCase()}</span>
+                <div className="mt-4 pt-4 border-t border-[#EADDC9] space-y-4">
+                  <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block">🔧 Input Tambahan Sistem {(activeCycle.data?.modal?.sistem_kolam || 'konvensional').toUpperCase()}</span>
                   
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {((activeCycle.data?.modal?.sistem_kolam === 'bioflok' || activeCycle.data?.modal?.sistem_kolam === 'RAS')) && (
                       <>
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Daya Kipas/Aerasi (Watt)</label>
+                          <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Daya Kipas/Aerasi (Watt)</label>
                           <input
                             type="number"
                             value={activeCycle.data?.modal?.aerasi_watt || '100'}
@@ -4285,11 +4287,11 @@ export default function DashboardPage() {
                               const modal = { ...(activeCycle.data?.modal || {}), aerasi_watt: e.target.value };
                               handleSaveCycleData({ ...activeCycle.data, modal });
                             }}
-                            className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                            className="w-full bg-[#FAF7F0]/80 border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Durasi Aerasi (Jam/Hari)</label>
+                          <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Durasi Aerasi (Jam/Hari)</label>
                           <input
                             type="number"
                             value={activeCycle.data?.modal?.aerasi_jam || '24'}
@@ -4297,10 +4299,10 @@ export default function DashboardPage() {
                               const modal = { ...(activeCycle.data?.modal || {}), aerasi_jam: e.target.value };
                               handleSaveCycleData({ ...activeCycle.data, modal });
                             }}
-                            className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold font-mono"
+                            className="w-full bg-[#FAF7F0]/80 border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold font-mono"
                           />
                         </div>
-                        <div className="p-3.5 bg-teal-500/5 rounded-xl border border-teal-500/10 text-[10px] text-teal-400 font-bold flex flex-col justify-center font-mono">
+                        <div className="p-3.5 bg-[#859681]/5 rounded-xl border border-[#859681]/10 text-[10px] text-[#859681] font-bold flex flex-col justify-center font-mono">
                           <div className="flex justify-between">
                             <span>Estimasi Listrik:</span>
                             <span>
@@ -4317,7 +4319,7 @@ export default function DashboardPage() {
 
                     {activeCycle.data?.modal?.sistem_kolam === 'bioflok' && (
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Molase & Probiotik Rutin (Rp)</label>
+                        <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Biaya Molase & Probiotik Rutin (Rp)</label>
                         <input
                           type="number"
                           value={activeCycle.data?.modal?.biaya_molase_probiotik || '0'}
@@ -4325,14 +4327,14 @@ export default function DashboardPage() {
                             const modal = { ...(activeCycle.data?.modal || {}), biaya_molase_probiotik: e.target.value };
                             handleSaveCycleData({ ...activeCycle.data, modal });
                           }}
-                          className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-250 font-semibold"
+                          className="w-full bg-[#FAF7F0]/80 border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                         />
                       </div>
                     )}
 
                     {activeCycle.data?.modal?.sistem_kolam === 'RAS' && (
                       <div className="space-y-1.5">
-                        <label className="text-[10px] font-black text-slate-400 block uppercase tracking-wider">Biaya Filter & Media Biofilter (Rp)</label>
+                        <label className="text-[10px] font-black text-[#3C3530]/80 block uppercase tracking-wider">Biaya Filter & Media Biofilter (Rp)</label>
                         <input
                           type="number"
                           value={activeCycle.data?.modal?.biaya_filter_media || '0'}
@@ -4340,7 +4342,7 @@ export default function DashboardPage() {
                             const modal = { ...(activeCycle.data?.modal || {}), biaya_filter_media: e.target.value };
                             handleSaveCycleData({ ...activeCycle.data, modal });
                           }}
-                          className="w-full bg-slate-955/80 border border-slate-800 focus:border-teal-555 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-250 font-semibold"
+                          className="w-full bg-[#FAF7F0]/80 border border-[#EADDC9] focus:border-teal-555 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold"
                         />
                       </div>
                     )}
@@ -4353,10 +4355,10 @@ export default function DashboardPage() {
 
         {/* --- TAB: PANEN / PRODUKSI --- */}
         {activeTab === 'panen' && (
-          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+          <div className="max-w-xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-[#3C3530] flex items-center justify-between font-sans">
               <span>{activeCycle.mode === 'susu' ? '🥛 Produksi Susu Harian' : activeCycle.mode === 'petelur' ? '🥚 Produksi Telur Harian' : '🎯 Data Panen/Jual'}</span>
-              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono font-bold">
                 {(activeCycle.mode === 'susu' || activeCycle.mode === 'petelur' ? (activeCycle.data?.harian || []).length : (activeCycle.data?.panen || []).length)} Catatan
               </span>
             </h3>
@@ -4365,24 +4367,24 @@ export default function DashboardPage() {
               {activeCycle.mode === 'broiler' && (
                 <>
                   {(activeCycle.data?.panen || []).length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data panen broiler dicatat.</div>
+                    <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada data panen broiler dicatat.</div>
                   ) : (
                     (activeCycle.data?.panen || []).map((p: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                      <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                         <div>
-                          <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} — {p.kg.toLocaleString('id-ID')} kg</div>
-                          <div className="text-[10px] text-slate-550 mt-1 font-bold">Harga: {formatRp(p.harga_kg)}/kg · Mati: {p.jml_mati || 0} ekor</div>
+                          <div className="text-xs font-bold text-[#3C3530] font-sans">{p.tgl} — {p.kg.toLocaleString('id-ID')} kg</div>
+                          <div className="text-[10px] text-[#3C3530]/65 mt-1 font-bold">Harga: {formatRp(p.harga_kg)}/kg · Mati: {p.jml_mati || 0} ekor</div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-black text-emerald-450">{formatRp(p.kg * p.harga_kg)}</span>
-                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                          <span className="text-xs font-black text-[#859681]">{formatRp(p.kg * p.harga_kg)}</span>
+                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                         </div>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_panen_broiler')}
-                    className="w-full mt-6 py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                    className="w-full mt-6 py-3 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
                   >
                     + Catat Panen Broiler
                   </button>
@@ -4392,21 +4394,21 @@ export default function DashboardPage() {
               {activeCycle.mode === 'petelur' && (
                 <>
                   {(activeCycle.data?.harian || []).length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data harian produksi telur.</div>
+                    <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada data harian produksi telur.</div>
                   ) : (
                     (activeCycle.data?.harian || []).map((h: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                      <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                         <div>
-                          <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
-                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Telur: {h.butir} butir · Berat: {h.kg || 0} kg · Retak: {h.retak || 0} butir</div>
+                          <div className="text-xs font-bold text-[#3C3530] font-sans">{h.tgl}</div>
+                          <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">Telur: {h.butir} butir · Berat: {h.kg || 0} kg · Retak: {h.retak || 0} butir</div>
                         </div>
-                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_harian_petelur')}
-                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                    className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
                   >
                     + Catat Produksi Harian
                   </button>
@@ -4416,21 +4418,21 @@ export default function DashboardPage() {
               {activeCycle.mode === 'pembibitan_unggas' && (
                 <>
                   {(activeCycle.data?.penetasan || []).length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data penetasan.</div>
+                    <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada data penetasan.</div>
                   ) : (
                     (activeCycle.data?.penetasan || []).map((p: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                      <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                         <div>
-                          <div className="text-xs font-bold text-slate-200 font-sans">Menetas: {p.tgl}</div>
-                          <div className="text-[10px] text-slate-550 mt-1 font-bold">Berhasil: <strong className="text-emerald-450">{p.berhasil} DOC</strong> · Gagal: {p.gagal} butir</div>
+                          <div className="text-xs font-bold text-[#3C3530] font-sans">Menetas: {p.tgl}</div>
+                          <div className="text-[10px] text-[#3C3530]/65 mt-1 font-bold">Berhasil: <strong className="text-[#859681]">{p.berhasil} DOC</strong> · Gagal: {p.gagal} butir</div>
                         </div>
-                        <button onClick={() => handleDeleteListItem('penetasan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                        <button onClick={() => handleDeleteListItem('penetasan', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_penetasan')}
-                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                    className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
                   >
                     + Catat Penetasan Telur
                   </button>
@@ -4440,24 +4442,24 @@ export default function DashboardPage() {
               {activeCycle.mode === 'penggemukan' && (
                 <>
                   {(activeCycle.data?.panen || []).length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada penjualan penggemukan.</div>
+                    <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada penjualan penggemukan.</div>
                   ) : (
                     (activeCycle.data?.panen || []).map((p: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                      <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                         <div>
-                          <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} — {p.jml_jual} Ekor</div>
-                          <div className="text-[10px] text-slate-500 mt-1 font-bold">BB Rata: {p.bb_akhir} kg · Harga: {formatRp(p.harga_kg)}/kg · Kematian: {p.jml_mati || 0}</div>
+                          <div className="text-xs font-bold text-[#3C3530] font-sans">{p.tgl} — {p.jml_jual} Ekor</div>
+                          <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">BB Rata: {p.bb_akhir} kg · Harga: {formatRp(p.harga_kg)}/kg · Kematian: {p.jml_mati || 0}</div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-black text-emerald-450">{formatRp(p.jml_jual * p.bb_akhir * p.harga_kg)}</span>
-                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                          <span className="text-xs font-black text-[#859681]">{formatRp(p.jml_jual * p.bb_akhir * p.harga_kg)}</span>
+                          <button onClick={() => handleDeleteListItem('panen', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                         </div>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_panen_penggemukan')}
-                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                    className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
                   >
                     + Catat Penjualan Penggemukan
                   </button>
@@ -4467,21 +4469,21 @@ export default function DashboardPage() {
               {activeCycle.mode === 'susu' && (
                 <>
                   {(activeCycle.data?.harian || []).length === 0 ? (
-                    <div className="text-center py-10 text-slate-500 text-xs">Belum ada data produksi susu.</div>
+                    <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada data produksi susu.</div>
                   ) : (
                     (activeCycle.data?.harian || []).map((h: any, i: number) => (
-                      <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                      <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                         <div>
-                          <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
-                          <div className="text-[10px] text-slate-500 mt-1 font-bold">Total Produksi Susu: <strong className="text-teal-400">{h.liter} L</strong></div>
+                          <div className="text-xs font-bold text-[#3C3530] font-sans">{h.tgl}</div>
+                          <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">Total Produksi Susu: <strong className="text-[#859681]">{h.liter} L</strong></div>
                         </div>
-                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                        <button onClick={() => handleDeleteListItem('harian', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                       </div>
                     ))
                   )}
                   <button
                     onClick={() => openModalForm('modal_harian_susu')}
-                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                    className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
                   >
                     + Catat Produksi Harian Susu
                   </button>
@@ -4492,7 +4494,7 @@ export default function DashboardPage() {
                 <>
                   <button
                     onClick={() => openModalForm('modal_harian_breeding')}
-                    className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                    className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
                   >
                     + Catat Kelahiran Baru
                   </button>
@@ -4504,29 +4506,29 @@ export default function DashboardPage() {
 
         {/* --- TAB: PENJUALAN --- */}
         {activeTab === 'penjualan' && (
-          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between">
+          <div className="max-w-xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-[#3C3530] flex items-center justify-between">
               <span>💰 Catat Penjualan Hasil Produksi</span>
-              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono font-bold">
                 {(activeCycle.data?.penjualan || []).length} Transaksi
               </span>
             </h3>
 
             <div className="space-y-3 font-mono">
               {(activeCycle.data?.penjualan || []).length === 0 ? (
-                <div className="text-center py-10 text-slate-500 text-xs font-sans">Belum ada transaksi penjualan dicatat.</div>
+                <div className="text-center py-10 text-[#3C3530]/60 text-xs font-sans">Belum ada transaksi penjualan dicatat.</div>
               ) : (
                 (activeCycle.data?.penjualan || []).map((p: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80">
+                  <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
                     <div>
-                      <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} {p.tipe || p.kategori ? `— ${p.tipe || p.kategori}` : ''}</div>
-                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                      <div className="text-xs font-bold text-[#3C3530] font-sans">{p.tgl} {p.tipe || p.kategori ? `— ${p.tipe || p.kategori}` : ''}</div>
+                      <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">
                         {p.kg ? `Vol: ${p.kg} kg · Harga: ${formatRp(p.harga_kg)}/kg` : p.liter ? `Vol: ${p.liter} L · Harga: ${formatRp(p.harga_liter)}/L` : `Qty: ${p.jml} ekor · Harga: ${formatRp(p.harga_ekor)}/ekor`}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-emerald-450">{formatRp(p.total)}</span>
-                      <button onClick={() => handleDeleteListItem('penjualan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                      <span className="text-xs font-black text-[#859681]">{formatRp(p.total)}</span>
+                      <button onClick={() => handleDeleteListItem('penjualan', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                     </div>
                   </div>
                 ))
@@ -4541,7 +4543,7 @@ export default function DashboardPage() {
                   ? 'modal_jual_doc'
                   : 'modal_jual_breeding'
               )}
-              className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+              className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
             >
               + Catat Penjualan Baru
             </button>
@@ -4560,11 +4562,11 @@ export default function DashboardPage() {
             <div className="max-w-2xl mx-auto space-y-8 animate-fadeIn">
               
               {/* Simulasi Harga */}
-              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
-                <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
+                <h3 className="text-lg font-bold text-[#3C3530] flex items-center gap-2">
                   <span>📈</span> Simulasi Laba Berdasarkan Harga Jual
                 </h3>
-                <p className="text-xs text-slate-400">Geser slider di bawah ini untuk melihat perkiraan laba jika terjadi perubahan harga pasar.</p>
+                <p className="text-xs text-[#3C3530]/80">Geser slider di bawah ini untuk melihat perkiraan laba jika terjadi perubahan harga pasar.</p>
                 
                 {(() => {
                   const currentHarga = simHarga || (activeCycle.mode === 'broiler' ? 22000 : activeCycle.mode === 'petelur' ? 28000 : activeCycle.mode === 'susu' ? 7000 : 55000);
@@ -4589,9 +4591,9 @@ export default function DashboardPage() {
 
                   return (
                     <div className="space-y-4">
-                      <div className="flex justify-between items-center text-xs font-bold text-slate-350">
+                      <div className="flex justify-between items-center text-xs font-bold text-[#3C3530]/90">
                         <span>Harga Simulasi:</span>
-                        <span className="text-teal-400 font-extrabold text-sm">Rp {currentHarga.toLocaleString('id-ID')} / {activeCycle.mode === 'susu' ? 'Liter' : activeCycle.mode === 'petelur' ? 'Kg' : 'Kg BB'}</span>
+                        <span className="text-[#859681] font-extrabold text-sm">Rp {currentHarga.toLocaleString('id-ID')} / {activeCycle.mode === 'susu' ? 'Liter' : activeCycle.mode === 'petelur' ? 'Kg' : 'Kg BB'}</span>
                       </div>
                       <input
                         type="range"
@@ -4600,18 +4602,18 @@ export default function DashboardPage() {
                         step={stepVal}
                         value={currentHarga}
                         onChange={(e) => setSimHarga(parseInt(e.target.value))}
-                        className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                        className="w-full h-1 bg-[#EADDC9] rounded-lg appearance-none cursor-pointer accent-[#859681]"
                       />
                       {/* BEP / HPP Info Reference */}
                       {stats && (
-                        <div className="bg-teal-955/20 border border-teal-500/10 p-4 rounded-2xl text-xs font-semibold text-slate-300 font-mono space-y-1.5 mt-2">
+                        <div className="bg-[#FAF7F0] border border-[#EADDC9] p-4 rounded-2xl text-xs font-semibold text-[#3C3530]/90 font-mono space-y-1.5 mt-2">
                           <div className="flex justify-between">
-                            <span className="text-slate-400">Harga Simulasi:</span>
-                            <span className="text-white font-bold">Rp {currentHarga.toLocaleString('id-ID')}</span>
+                            <span className="text-[#3C3530]/80">Harga Simulasi:</span>
+                            <span className="text-[#3C3530] font-bold">Rp {currentHarga.toLocaleString('id-ID')}</span>
                           </div>
-                          <div className="flex justify-between border-b border-slate-850/60 pb-1.5">
-                            <span className="text-slate-400">HPP / Titik BEP (Akurat):</span>
-                            <span className="text-teal-400 font-bold">Rp {Math.round(stats.bepHarga || stats.hppAkurat || 0).toLocaleString('id-ID')}</span>
+                          <div className="flex justify-between border-b border-[#EADDC9] pb-1.5">
+                            <span className="text-[#3C3530]/80">HPP / Titik BEP (Akurat):</span>
+                            <span className="text-[#859681] font-bold">Rp {Math.round(stats.bepHarga || stats.hppAkurat || 0).toLocaleString('id-ID')}</span>
                           </div>
                           {(() => {
                             const bepHarga = stats.bepHarga || stats.hppAkurat || 0;
@@ -4619,8 +4621,8 @@ export default function DashboardPage() {
                             const marginPct = bepHarga > 0 ? (margin / bepHarga) * 100 : 0;
                             return (
                               <div className="flex justify-between pt-0.5">
-                                <span className="text-slate-400">Estimasi Margin:</span>
-                                <span className={margin >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-455 font-bold'}>
+                                <span className="text-[#3C3530]/80">Estimasi Margin:</span>
+                                <span className={margin >= 0 ? 'text-[#4D5D4A] font-bold' : 'text-[#A76A57] font-bold'}>
                                   Rp {Math.round(margin).toLocaleString('id-ID')} ({marginPct.toFixed(1)}%)
                                 </span>
                               </div>
@@ -4629,13 +4631,13 @@ export default function DashboardPage() {
                         </div>
                       )}
                       <div className="grid grid-cols-2 gap-4 mt-6">
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
-                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Total Pendapatan (Simulasi)</span>
-                          <span className="text-sm font-black text-slate-200">Rp {totalPendapatan.toLocaleString('id-ID')}</span>
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
+                          <span className="text-[10px] font-bold text-[#3C3530]/60 uppercase tracking-wider block mb-1">Total Pendapatan (Simulasi)</span>
+                          <span className="text-sm font-black text-[#3C3530]">Rp {totalPendapatan.toLocaleString('id-ID')}</span>
                         </div>
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
-                          <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Laba Bersih (Simulasi)</span>
-                          <span className={`text-sm font-black ${labaSim >= 0 ? 'text-teal-450' : 'text-rose-500'}`}>Rp {labaSim.toLocaleString('id-ID')}</span>
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
+                          <span className="text-[10px] font-bold text-[#3C3530]/60 uppercase tracking-wider block mb-1">Laba Bersih (Simulasi)</span>
+                          <span className={`text-sm font-black ${labaSim >= 0 ? 'text-[#859681]' : 'text-[#A76A57]'}`}>Rp {labaSim.toLocaleString('id-ID')}</span>
                         </div>
                       </div>
                     </div>
@@ -4645,11 +4647,11 @@ export default function DashboardPage() {
 
               {/* Benchmark Standar Strain (Modul 09) */}
               {(activeCycle.mode === 'broiler' || activeCycle.mode === 'petelur' || activeCycle.mode === 'bebek_petelur') && stats && (
-                <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
-                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
+                  <h3 className="text-lg font-bold text-[#3C3530] flex items-center gap-2">
                     <span>📊</span> Perbandingan Standar Performa ({activeCycle.mode === 'broiler' ? 'Cobb 500' : 'Lohmann Brown'})
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-[#3C3530]/80">
                     Bandingkan pencapaian performa aktual peternakan Anda dengan standar genetik global pada umur saat ini (<strong className="text-white">{stats.umur} hari</strong>).
                   </p>
 
@@ -4657,59 +4659,59 @@ export default function DashboardPage() {
                     {activeCycle.mode === 'broiler' ? (
                       <>
                         {/* BB Rata */}
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-2">
                           <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400 font-bold">Bobot Badan (BB) Rata-rata</span>
-                            <span className="font-mono text-slate-350 text-[10px]">
+                            <span className="text-[#3C3530]/80 font-bold">Bobot Badan (BB) Rata-rata</span>
+                            <span className="font-mono text-[#3C3530]/90 text-[10px]">
                               Target Cobb: <strong className="text-white">{(stats.targetBB || 0).toFixed(3)} kg</strong>
                             </span>
                           </div>
-                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
-                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.bbRata || 0).toFixed(3)} kg</strong>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-[#EADDC9]/60">
+                            <strong className="text-2xl font-black font-mono text-[#3C3530]">{(stats.bbRata || 0).toFixed(3)} kg</strong>
                             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
-                              stats.gapBBPct >= -5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapBBPct >= -15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                              stats.gapBBPct >= -5 ? 'bg-[#859681]/15 text-[#4D5D4A] border-[#859681]/20' : stats.gapBBPct >= -15 ? 'bg-[#EADDC9]/35 text-[#3C3530]/90 border border-[#EADDC9]/50' : 'bg-[#A76A57]/15 text-[#A76A57] border border-[#A76A57]/20'
                             }`}>
                               {stats.gapBB >= 0 ? '+' : ''}{(stats.gapBB || 0).toFixed(3)} kg ({stats.gapBBPct >= 0 ? '+' : ''}{(stats.gapBBPct || 0).toFixed(1)}%)
                             </span>
                           </div>
-                          <span className="text-[9px] text-slate-500 block leading-relaxed font-semibold">
+                          <span className="text-[9px] text-[#3C3530]/60 block leading-relaxed font-semibold">
                             *Status: {stats.gapBBPct >= -5 ? '🟢 Optimal (Sesuai/Melebihi standar)' : stats.gapBBPct >= -15 ? '🟡 Deviasi Ringan (Cek kecukupan pakan & suhu)' : '🔴 Deviasi Kritis (Evaluasi gejala penyakit atau stres)'}
                           </span>
                         </div>
 
                         {/* FCR */}
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-2">
                           <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400 font-bold">Rasio Konversi Pakan (FCR)</span>
-                            <span className="font-mono text-slate-350 text-[10px]">
+                            <span className="text-[#3C3530]/80 font-bold">Rasio Konversi Pakan (FCR)</span>
+                            <span className="font-mono text-[#3C3530]/90 text-[10px]">
                               Target Cobb: <strong className="text-white">{(stats.targetFCR || 0).toFixed(2)}</strong>
                             </span>
                           </div>
-                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
-                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.fcr || 0).toFixed(2)}</strong>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-[#EADDC9]/60">
+                            <strong className="text-2xl font-black font-mono text-[#3C3530]">{(stats.fcr || 0).toFixed(2)}</strong>
                             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
-                              stats.gapFCRPct <= 5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapFCRPct <= 15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-455 border border-rose-500/20'
+                              stats.gapFCRPct <= 5 ? 'bg-[#859681]/15 text-[#4D5D4A] border-[#859681]/20' : stats.gapFCRPct <= 15 ? 'bg-[#EADDC9]/35 text-[#3C3530]/90 border border-[#EADDC9]/50' : 'bg-[#A76A57]/15 text-[#A76A57] border border-[#A76A57]/20'
                             }`}>
                               {stats.gapFCR >= 0 ? '+' : ''}{(stats.gapFCR || 0).toFixed(2)} ({stats.gapFCRPct >= 0 ? '+' : ''}{(stats.gapFCRPct || 0).toFixed(1)}%)
                             </span>
                           </div>
-                          <span className="text-[9px] text-slate-550 block leading-relaxed font-semibold">
+                          <span className="text-[9px] text-[#3C3530]/65 block leading-relaxed font-semibold">
                             *Catatan FCR: Semakin kecil angka FCR, semakin baik dan efisien penggunaan pakan.
                           </span>
                         </div>
 
                         {/* ADG */}
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-2">
                           <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400 font-bold">Average Daily Gain (ADG)</span>
-                            <span className="font-mono text-slate-355 text-[10px]">
+                            <span className="text-[#3C3530]/80 font-bold">Average Daily Gain (ADG)</span>
+                            <span className="font-mono text-[#3C3530]/80 text-[10px]">
                               Target Cobb: <strong className="text-white">{(stats.targetADG || 0).toFixed(0)} g/hari</strong>
                             </span>
                           </div>
-                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
-                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.adg || 0).toFixed(1)} g/hari</strong>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-[#EADDC9]/60">
+                            <strong className="text-2xl font-black font-mono text-[#3C3530]">{(stats.adg || 0).toFixed(1)} g/hari</strong>
                             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
-                              stats.gapADGPct >= -5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapADGPct >= -15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                              stats.gapADGPct >= -5 ? 'bg-[#859681]/15 text-[#4D5D4A] border-[#859681]/20' : stats.gapADGPct >= -15 ? 'bg-[#EADDC9]/35 text-[#3C3530]/90 border border-[#EADDC9]/50' : 'bg-[#A76A57]/15 text-[#A76A57] border border-[#A76A57]/20'
                             }`}>
                               {stats.gapADG >= 0 ? '+' : ''}{(stats.gapADG || 0).toFixed(1)} g ({stats.gapADGPct >= 0 ? '+' : ''}{(stats.gapADGPct || 0).toFixed(1)}%)
                             </span>
@@ -4719,17 +4721,17 @@ export default function DashboardPage() {
                     ) : (
                       <>
                         {/* HDP */}
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-2">
                           <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400 font-bold">{activeCycle.mode === 'bebek_petelur' ? 'Duck-Day' : 'Hen-Day'} Production (HDP)</span>
-                            <span className="font-mono text-slate-355 text-[10px]">
+                            <span className="text-[#3C3530]/80 font-bold">{activeCycle.mode === 'bebek_petelur' ? 'Duck-Day' : 'Hen-Day'} Production (HDP)</span>
+                            <span className="font-mono text-[#3C3530]/80 text-[10px]">
                               Target Lohmann: <strong className="text-white">{stats.targetHDP}%</strong>
                             </span>
                           </div>
-                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
-                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.henDay || 0).toFixed(1)}%</strong>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-[#EADDC9]/60">
+                            <strong className="text-2xl font-black font-mono text-[#3C3530]">{(stats.henDay || 0).toFixed(1)}%</strong>
                             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
-                              stats.gapHDP >= -5 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapHDP >= -15 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                              stats.gapHDP >= -5 ? 'bg-[#859681]/15 text-[#4D5D4A] border-[#859681]/20' : stats.gapHDP >= -15 ? 'bg-[#EADDC9]/35 text-[#3C3530]/90 border border-[#EADDC9]/50' : 'bg-[#A76A57]/15 text-[#A76A57] border border-[#A76A57]/20'
                             }`}>
                               {stats.gapHDP >= 0 ? '+' : ''}{(stats.gapHDP || 0).toFixed(1)}%
                             </span>
@@ -4737,17 +4739,17 @@ export default function DashboardPage() {
                         </div>
 
                         {/* FCR */}
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-2">
                           <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400 font-bold">FCR Telur</span>
-                            <span className="font-mono text-slate-355 text-[10px]">
+                            <span className="text-[#3C3530]/80 font-bold">FCR Telur</span>
+                            <span className="font-mono text-[#3C3530]/80 text-[10px]">
                               Target Lohmann: <strong className="text-white">{stats.targetFCRTelur}</strong>
                             </span>
                           </div>
-                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
-                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.fcrTelur || 0).toFixed(2)}</strong>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-[#EADDC9]/60">
+                            <strong className="text-2xl font-black font-mono text-[#3C3530]">{(stats.fcrTelur || 0).toFixed(2)}</strong>
                             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
-                              stats.gapFCRTelur <= 0.1 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapFCRTelur <= 0.3 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-455 border border-rose-500/20'
+                              stats.gapFCRTelur <= 0.1 ? 'bg-[#859681]/15 text-[#4D5D4A] border-[#859681]/20' : stats.gapFCRTelur <= 0.3 ? 'bg-[#EADDC9]/35 text-[#3C3530]/90 border border-[#EADDC9]/50' : 'bg-[#A76A57]/15 text-[#A76A57] border border-[#A76A57]/20'
                             }`}>
                               {stats.gapFCRTelur >= 0 ? '+' : ''}{(stats.gapFCRTelur || 0).toFixed(2)}
                             </span>
@@ -4755,17 +4757,17 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Berat Rata Telur */}
-                        <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-2">
+                        <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-2">
                           <div className="flex justify-between items-center text-xs">
-                            <span className="text-slate-400 font-bold">Berat Rata-rata Telur</span>
-                            <span className="font-mono text-slate-355 text-[10px]">
+                            <span className="text-[#3C3530]/80 font-bold">Berat Rata-rata Telur</span>
+                            <span className="font-mono text-[#3C3530]/80 text-[10px]">
                               Target Lohmann: <strong className="text-white">{stats.targetBeratTelur} g</strong>
                             </span>
                           </div>
-                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-slate-900/60">
-                            <strong className="text-2xl font-black font-mono text-slate-200">{(stats.beratRataTelur || 0).toFixed(1)} g</strong>
+                          <div className="flex justify-between items-baseline flex-wrap gap-2 pt-1 border-t border-[#EADDC9]/60">
+                            <strong className="text-2xl font-black font-mono text-[#3C3530]">{(stats.beratRataTelur || 0).toFixed(1)} g</strong>
                             <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-lg font-mono ${
-                              stats.gapBeratTelur >= -2 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : stats.gapBeratTelur >= -5 ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' : 'bg-rose-500/10 text-rose-450 border border-rose-500/20'
+                              stats.gapBeratTelur >= -2 ? 'bg-[#859681]/15 text-[#4D5D4A] border-[#859681]/20' : stats.gapBeratTelur >= -5 ? 'bg-[#EADDC9]/35 text-[#3C3530]/90 border border-[#EADDC9]/50' : 'bg-[#A76A57]/15 text-[#A76A57] border border-[#A76A57]/20'
                             }`}>
                               {stats.gapBeratTelur >= 0 ? '+' : ''}{(stats.gapBeratTelur || 0).toFixed(1)} g
                             </span>
@@ -4774,7 +4776,7 @@ export default function DashboardPage() {
                       </>
                     )}
                   </div>
-                  <span className="text-[9px] text-slate-500 block leading-relaxed font-semibold">
+                  <span className="text-[9px] text-[#3C3530]/60 block leading-relaxed font-semibold">
                     *Disclaimer: Standar rujukan performa didasarkan pada Cobb 500 Performance Guide & Lohmann Brown Layer Management Guide.
                   </span>
                 </div>
@@ -4782,11 +4784,11 @@ export default function DashboardPage() {
 
               {/* Kalkulator Kapasitas Kandang / Kolam (Modul 10) */}
               {stats && (
-                <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
-                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
+                  <h3 className="text-lg font-bold text-[#3C3530] flex items-center gap-2">
                     <span>🏠</span> Kalkulator Kapasitas Kandang & Kolam
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-[#3C3530]/80">
                     Analisis kepadatan populasi ternak aktual vs kapasitas ideal berdasarkan prinsip animal welfare standar industri.
                   </p>
 
@@ -4836,7 +4838,7 @@ export default function DashboardPage() {
                     }
 
                     let statusLabel = 'Optimal';
-                    let statusColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+                    let statusColor = 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20';
                     let statusIcon = '🟢';
                     
                     if (rasio <= 0.85) {
@@ -4845,15 +4847,15 @@ export default function DashboardPage() {
                       statusIcon = '🔵';
                     } else if (rasio <= 1.0) {
                       statusLabel = 'Optimal';
-                      statusColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+                      statusColor = 'text-[#4D5D4A] bg-[#859681]/15 border-emerald-500/20';
                       statusIcon = '🟢';
                     } else if (rasio <= 1.15) {
                       statusLabel = 'Sedikit Padat';
-                      statusColor = 'text-yellow-400 bg-yellow-500/10 border-yellow-500/20';
+                      statusColor = 'text-[#3C3530]/90 bg-[#EADDC9]/35 border-[#EADDC9]/50';
                       statusIcon = '🟡';
                     } else {
                       statusLabel = 'Over-stocked ⚠️';
-                      statusColor = 'text-rose-450 bg-rose-500/10 border-rose-500/20 animate-pulse';
+                      statusColor = 'text-[#A76A57] bg-[#A76A57]/15 border-[#A76A57]/20 animate-pulse';
                       statusIcon = '🔴';
                     }
 
@@ -4861,17 +4863,17 @@ export default function DashboardPage() {
                       <div className="space-y-4">
                         {/* Dimensi Alert if length/width is 0 */}
                         {(panjang <= 0 || lebar <= 0) && (
-                          <div className="bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 p-4 rounded-2xl text-xs font-semibold">
+                          <div className="bg-[#EADDC9]/35 border border-[#EADDC9]/50 text-[#3C3530]/90 p-4 rounded-2xl text-xs font-semibold">
                             ⚠️ <strong>Dimensi Belum Diisi:</strong> Panjang atau Lebar kandang masih bernilai 0. Silakan isi dimensi kandang Anda di tab <strong>Modal Awal</strong> agar kalkulator kapasitas dapat menghitung secara akurat.
                           </div>
                         )}
 
                         {/* Over-stocked warning */}
                         {!isBaterai && rasio > 1.15 && (
-                          <div className="bg-rose-500/15 border border-rose-500/30 text-rose-400 p-4 rounded-2xl text-xs font-semibold leading-relaxed space-y-1">
+                          <div className="bg-rose-500/15 border border-rose-500/30 text-[#A76A57] p-4 rounded-2xl text-xs font-semibold leading-relaxed space-y-1">
                             <span className="font-bold text-sm block">⚠️ Bahaya Kepadatan Tinggi (Over-stocked):</span>
                             <span>Kepadatan aktual kandang Anda melebihi batas toleransi ideal sebesar <strong className="text-white">{(rasio * 100 - 100).toFixed(0)}%</strong>. Kepadatan yang terlalu tinggi dapat memicu:</span>
-                            <ul className="list-disc pl-4 space-y-0.5 mt-1 text-slate-350">
+                            <ul className="list-disc pl-4 space-y-0.5 mt-1 text-[#3C3530]/90">
                               <li>Stress panas (heat stress) dan peningkatan kanibalisme.</li>
                               <li>Penurunan efisiensi penyerapan pakan (FCR membengkak).</li>
                               <li>Sirkulasi udara memburuk, amonia naik, dan mempermudah penularan penyakit.</li>
@@ -4882,35 +4884,35 @@ export default function DashboardPage() {
                         {/* Dropdown System Selector */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tipe Sistem Kepadatan</label>
+                            <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tipe Sistem Kepadatan</label>
                             <select
                               value={kKey}
                               onChange={(e) => setOverrideKepadatanKey(e.target.value)}
-                              className="w-full bg-slate-950/50 border border-slate-850 focus:border-teal-500 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-slate-200 font-semibold cursor-pointer font-sans"
+                              className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-4 py-2.5 text-xs text-[#3C3530] font-semibold cursor-pointer font-sans"
                             >
-                              <optgroup label="Unggas (Poultry)" className="bg-slate-900 text-slate-450 font-sans">
-                                <option value="broiler_komersil" className="text-slate-100 bg-slate-900">Broiler Skala Komersil</option>
-                                <option value="broiler_welfare" className="text-slate-100 bg-slate-900">Broiler Skala Welfare</option>
-                                <option value="petelur_lantai" className="text-slate-100 bg-slate-900">Ayam Petelur Lantai (Free-range/Postal)</option>
-                                <option value="petelur_baterai" className="text-slate-100 bg-slate-900">Ayam Petelur Baterai (Kandang Sekat)</option>
-                                <option value="bebek_pedaging" className="text-slate-100 bg-slate-900">Bebek Pedaging</option>
-                                <option value="bebek_petelur" className="text-slate-100 bg-slate-900">Bebek Petelur</option>
+                              <optgroup label="Unggas (Poultry)" className="bg-[#FCFAF6] text-[#3C3530]/75 font-sans">
+                                <option value="broiler_komersil" className="text-[#3C3530] bg-[#FCFAF6]">Broiler Skala Komersil</option>
+                                <option value="broiler_welfare" className="text-[#3C3530] bg-[#FCFAF6]">Broiler Skala Welfare</option>
+                                <option value="petelur_lantai" className="text-[#3C3530] bg-[#FCFAF6]">Ayam Petelur Lantai (Free-range/Postal)</option>
+                                <option value="petelur_baterai" className="text-[#3C3530] bg-[#FCFAF6]">Ayam Petelur Baterai (Kandang Sekat)</option>
+                                <option value="bebek_pedaging" className="text-[#3C3530] bg-[#FCFAF6]">Bebek Pedaging</option>
+                                <option value="bebek_petelur" className="text-[#3C3530] bg-[#FCFAF6]">Bebek Petelur</option>
                               </optgroup>
-                              <optgroup label="Ruminansia" className="bg-slate-900 text-slate-455 font-sans">
-                                <option value="kambing" className="text-slate-100 bg-slate-900">Kambing / Domba</option>
-                                <option value="sapi" className="text-slate-100 bg-slate-900">Sapi Potong / Perah</option>
+                              <optgroup label="Ruminansia" className="bg-[#FCFAF6] text-[#3C3530]/75 font-sans">
+                                <option value="kambing" className="text-[#3C3530] bg-[#FCFAF6]">Kambing / Domba</option>
+                                <option value="sapi" className="text-[#3C3530] bg-[#FCFAF6]">Sapi Potong / Perah</option>
                               </optgroup>
-                              <optgroup label="Perikanan" className="bg-slate-900 text-slate-455 font-sans">
-                                <option value="lele_konvensional" className="text-slate-100 bg-slate-900">Lele Konvensional</option>
-                                <option value="lele_bioflok" className="text-slate-100 bg-slate-900">Lele Bioflok</option>
-                                <option value="nila_konvensional" className="text-slate-100 bg-slate-900">Nila Konvensional</option>
-                                <option value="nila_bioflok" className="text-slate-100 bg-slate-900">Nila Bioflok</option>
+                              <optgroup label="Perikanan" className="bg-[#FCFAF6] text-[#3C3530]/75 font-sans">
+                                <option value="lele_konvensional" className="text-[#3C3530] bg-[#FCFAF6]">Lele Konvensional</option>
+                                <option value="lele_bioflok" className="text-[#3C3530] bg-[#FCFAF6]">Lele Bioflok</option>
+                                <option value="nila_konvensional" className="text-[#3C3530] bg-[#FCFAF6]">Nila Konvensional</option>
+                                <option value="nila_bioflok" className="text-[#3C3530] bg-[#FCFAF6]">Nila Bioflok</option>
                               </optgroup>
                             </select>
                           </div>
                           
                           <div className="space-y-1">
-                            <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Status Kepadatan Aktual</label>
+                            <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Status Kepadatan Aktual</label>
                             <div className={`w-full border rounded-xl px-4 py-2.5 text-xs font-black flex items-center justify-between font-sans ${statusColor}`}>
                               <span>Status: {statusLabel}</span>
                               <span className="text-sm">{statusIcon}</span>
@@ -4920,41 +4922,41 @@ export default function DashboardPage() {
 
                         {/* Specs Grid */}
                         <div className="grid grid-cols-3 gap-3">
-                          <div className="bg-slate-950/40 p-3.5 rounded-2xl border border-slate-850">
-                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Dimensi Luas</span>
-                            <span className="text-xs font-black text-slate-200 font-mono">{panjang.toFixed(1)}m × {lebar.toFixed(1)}m = <strong className="text-white">{luas_m2.toFixed(1)} m²</strong></span>
+                          <div className="bg-[#FAF7F0] p-3.5 rounded-2xl border border-[#EADDC9]">
+                            <span className="text-[9px] font-bold text-[#3C3530]/60 uppercase tracking-wider block mb-1">Dimensi Luas</span>
+                            <span className="text-xs font-black text-[#3C3530] font-mono">{panjang.toFixed(1)}m × {lebar.toFixed(1)}m = <strong className="text-white">{luas_m2.toFixed(1)} m²</strong></span>
                           </div>
-                          <div className="bg-slate-950/40 p-3.5 rounded-2xl border border-slate-850">
-                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Dimensi Volume</span>
-                            <span className="text-xs font-black text-slate-200 font-mono">{luas_m2.toFixed(1)}m² × {tinggiAir.toFixed(1)}m = <strong className="text-white">{volume_m3.toFixed(1)} m³</strong></span>
+                          <div className="bg-[#FAF7F0] p-3.5 rounded-2xl border border-[#EADDC9]">
+                            <span className="text-[9px] font-bold text-[#3C3530]/60 uppercase tracking-wider block mb-1">Dimensi Volume</span>
+                            <span className="text-xs font-black text-[#3C3530] font-mono">{luas_m2.toFixed(1)}m² × {tinggiAir.toFixed(1)}m = <strong className="text-white">{volume_m3.toFixed(1)} m³</strong></span>
                           </div>
-                          <div className="bg-slate-950/40 p-3.5 rounded-2xl border border-slate-850">
-                            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Populasi Saat Ini</span>
-                            <span className="text-xs font-black text-slate-200 font-mono"><strong className="text-white">{currentPop.toLocaleString('id-ID')}</strong> ekor</span>
+                          <div className="bg-[#FAF7F0] p-3.5 rounded-2xl border border-[#EADDC9]">
+                            <span className="text-[9px] font-bold text-[#3C3530]/60 uppercase tracking-wider block mb-1">Populasi Saat Ini</span>
+                            <span className="text-xs font-black text-[#3C3530] font-mono"><strong className="text-white">{currentPop.toLocaleString('id-ID')}</strong> ekor</span>
                           </div>
                         </div>
 
                         {/* Analysis Box */}
                         {!isBaterai && std ? (
-                          <div className="bg-[#0c1a1f] border border-teal-500/10 p-5 rounded-2xl text-xs space-y-2">
-                            <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block mb-2">📋 Hasil Analisis Kepadatan</span>
-                            <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60 font-sans">
+                          <div className="bg-[#0c1a1f] border border-[#859681]/10 p-5 rounded-2xl text-xs space-y-2">
+                            <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block mb-2">📋 Hasil Analisis Kepadatan</span>
+                            <div className="flex justify-between items-center text-[#3C3530]/90 font-semibold py-1 border-b border-[#EADDC9] font-sans">
                               <span>Kapasitas Ideal ({std.per_m3 !== undefined && std.per_m3 !== null ? `${std.per_m3} ekor/m³` : `${std.per_m2} ekor/m²`}):</span>
                               <span className="text-white font-extrabold font-mono text-sm">{kapasitasIdeal.toLocaleString('id-ID')} ekor</span>
                             </div>
-                            <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60 font-sans">
+                            <div className="flex justify-between items-center text-[#3C3530]/90 font-semibold py-1 border-b border-[#EADDC9] font-sans">
                               <span>Kapasitas Welfare ({std.welfare ? `${std.welfare} ekor/${std.satuan.includes('m³') ? 'm³' : 'm²'}` : 'N/A'}):</span>
-                              <span className="text-teal-400 font-extrabold font-mono text-sm">{kapasitasWelfare.toLocaleString('id-ID')} ekor</span>
+                              <span className="text-[#859681] font-extrabold font-mono text-sm">{kapasitasWelfare.toLocaleString('id-ID')} ekor</span>
                             </div>
-                            <div className="flex justify-between items-center text-slate-350 font-semibold py-1 font-sans">
+                            <div className="flex justify-between items-center text-[#3C3530]/90 font-semibold py-1 font-sans">
                               <span>Kepadatan Aktual Sekarang:</span>
-                              <span className={`font-extrabold font-mono text-sm ${rasio > 1.15 ? 'text-rose-400' : 'text-slate-200'}`}>
+                              <span className={`font-extrabold font-mono text-sm ${rasio > 1.15 ? 'text-[#A76A57]' : 'text-[#3C3530]'}`}>
                                 {densitasAktual.toFixed(2)} {std.satuan}
                               </span>
                             </div>
                           </div>
                         ) : (
-                          <div className="bg-slate-950/40 p-5 rounded-2xl border border-slate-850 text-xs text-slate-400 leading-relaxed font-semibold font-sans">
+                          <div className="bg-[#FAF7F0] p-5 rounded-2xl border border-[#EADDC9] text-xs text-[#3C3530]/80 leading-relaxed font-semibold font-sans">
                             ℹ️ <strong>Kepadatan Baterai (Sekat):</strong> Budidaya menggunakan kandang baterai (individual sekat) tidak dibatasi oleh dimensi meter persegi kandang global, melainkan ditentukan langsung oleh jumlah slot pintu kandang baterai fisik yang Anda pasang.
                           </div>
                         )}
@@ -4965,86 +4967,86 @@ export default function DashboardPage() {
               )}
 
               {/* Pearson Square Feed Formulation */}
-              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-[#3C3530] flex items-center gap-2">
                     <span>🌾</span> Formulasi Pakan Pearson Square
                   </h3>
-                  <span className="px-2.5 py-1 bg-emerald-950/70 text-emerald-450 text-[10px] rounded-lg font-bold border border-emerald-500/20 uppercase tracking-wider">
+                  <span className="px-2.5 py-1 bg-emerald-950/70 text-[#859681] text-[10px] rounded-lg font-bold border-[#859681]/20 uppercase tracking-wider">
                     Premium Feature
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-[#3C3530]/80">
                   Formulasikan pencampuran dua bahan baku pakan untuk mencapai target persentase protein kasar secara tepat.
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Target Protein (%)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Target Protein (%)</label>
                     <input
                       type="number"
                       value={pearsonTarget}
                       onChange={(e) => setPearsonTarget(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono text-sm"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Hasil Pakan (kg)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Hasil Pakan (kg)</label>
                     <input
                       type="number"
                       value={pearsonTotalKg}
                       onChange={(e) => setPearsonTotalKg(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono text-sm"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Bahan A */}
-                  <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-3">
-                    <h4 className="text-xs font-black text-teal-400 uppercase tracking-widest font-sans">Bahan Baku A (Protein Rendah)</h4>
+                  <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-3">
+                    <h4 className="text-xs font-black text-[#859681] uppercase tracking-widest font-sans">Bahan Baku A (Protein Rendah)</h4>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Nama Bahan A</label>
+                        <label className="text-[9px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Nama Bahan A</label>
                         <input
                           type="text"
                           value={pearsonIngA}
                           onChange={(e) => setPearsonIngA(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold"
+                          className="w-full bg-[#FCFAF6] border border-[#EADDC9] rounded-xl px-3 py-1.5 text-xs text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] font-semibold"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Kadar Protein (%)</label>
+                        <label className="text-[9px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Kadar Protein (%)</label>
                         <input
                           type="number"
                           value={pearsonProtA}
                           onChange={(e) => setPearsonProtA(parseFloat(e.target.value) || 0)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold font-mono"
+                          className="w-full bg-[#FCFAF6] border border-[#EADDC9] rounded-xl px-3 py-1.5 text-xs text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] font-semibold font-mono"
                         />
                       </div>
                     </div>
                   </div>
 
                   {/* Bahan B */}
-                  <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850 space-y-3">
-                    <h4 className="text-xs font-black text-emerald-450 uppercase tracking-widest font-sans">Bahan Baku B (Protein Tinggi)</h4>
+                  <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] space-y-3">
+                    <h4 className="text-xs font-black text-[#859681] uppercase tracking-widest font-sans">Bahan Baku B (Protein Tinggi)</h4>
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Nama Bahan B</label>
+                        <label className="text-[9px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Nama Bahan B</label>
                         <input
                           type="text"
                           value={pearsonIngB}
                           onChange={(e) => setPearsonIngB(e.target.value)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold"
+                          className="w-full bg-[#FCFAF6] border border-[#EADDC9] rounded-xl px-3 py-1.5 text-xs text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] font-semibold"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-500 block uppercase tracking-wider">Kadar Protein (%)</label>
+                        <label className="text-[9px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Kadar Protein (%)</label>
                         <input
                           type="number"
                           value={pearsonProtB}
                           onChange={(e) => setPearsonProtB(parseFloat(e.target.value) || 0)}
-                          className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-250 focus:outline-none focus:border-teal-500 font-semibold font-mono"
+                          className="w-full bg-[#FCFAF6] border border-[#EADDC9] rounded-xl px-3 py-1.5 text-xs text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] font-semibold font-mono"
                         />
                       </div>
                     </div>
@@ -5062,7 +5064,7 @@ export default function DashboardPage() {
 
                   if (!isFeasible) {
                     return (
-                      <div className="bg-rose-500/10 border border-rose-500/20 text-rose-455 p-4 rounded-2xl text-xs font-bold">
+                      <div className="bg-[#A76A57]/15 border border-[#A76A57]/20 text-[#A76A57] p-4 rounded-2xl text-xs font-bold">
                         ⚠️ Target protein ({pTarget}%) harus bernilai di antara kadar protein {pearsonIngA} ({pA}%) dan {pearsonIngB} ({pB}%). Silakan sesuaikan target atau kadar protein bahan baku.
                       </div>
                     );
@@ -5076,54 +5078,54 @@ export default function DashboardPage() {
                   return (
                     <div className="space-y-6">
                       {/* Diagram Visual Square */}
-                      <div className="bg-slate-950/45 p-6 rounded-2xl border border-slate-850 flex flex-col items-center justify-center relative overflow-hidden font-mono text-xs">
+                      <div className="bg-[#FAF7F0]/45 p-6 rounded-2xl border border-[#EADDC9] flex flex-col items-center justify-center relative overflow-hidden font-mono text-xs">
                         <div className="grid grid-cols-3 gap-y-8 gap-x-2 w-full max-w-md items-center text-center relative z-10">
                           {/* Row 1 */}
-                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
-                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">{pearsonIngA}</span>
-                            <strong className="text-teal-400 text-sm">{pA}%</strong>
+                          <div className="bg-[#FCFAF6] border border-[#EADDC9] p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-[#3C3530]/60 font-sans uppercase font-bold">{pearsonIngA}</span>
+                            <strong className="text-[#859681] text-sm">{pA}%</strong>
                           </div>
-                          <div className="text-slate-650 text-xl font-bold flex items-center justify-center h-full">↘</div>
-                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
-                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">Bagian {pearsonIngA}</span>
-                            <strong className="text-slate-200 text-sm">{diffA.toFixed(1)} bag</strong>
+                          <div className="text-[#3C3530]/50 text-xl font-bold flex items-center justify-center h-full">↘</div>
+                          <div className="bg-[#FCFAF6] border border-[#EADDC9] p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-[#3C3530]/60 font-sans uppercase font-bold">Bagian {pearsonIngA}</span>
+                            <strong className="text-[#3C3530] text-sm">{diffA.toFixed(1)} bag</strong>
                           </div>
 
                           {/* Row 2 (Center) */}
                           <div />
                           <div className="bg-gradient-to-tr from-teal-905/60 to-emerald-905/60 border border-teal-500/30 p-3 rounded-2xl flex flex-col items-center justify-center aspect-square w-16 mx-auto -my-2 relative shadow-lg shadow-teal-950/40">
-                            <span className="text-[8px] text-teal-400 uppercase tracking-widest font-sans font-black">Target</span>
+                            <span className="text-[8px] text-[#859681] uppercase tracking-widest font-sans font-black">Target</span>
                             <strong className="text-white text-base font-bold">{pTarget}%</strong>
                           </div>
                           <div />
 
                           {/* Row 3 */}
-                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
-                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">{pearsonIngB}</span>
-                            <strong className="text-emerald-450 text-sm">{pB}%</strong>
+                          <div className="bg-[#FCFAF6] border border-[#EADDC9] p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-[#3C3530]/60 font-sans uppercase font-bold">{pearsonIngB}</span>
+                            <strong className="text-[#859681] text-sm">{pB}%</strong>
                           </div>
-                          <div className="text-slate-650 text-xl font-bold flex items-center justify-center h-full">↗</div>
-                          <div className="bg-slate-900 border border-slate-800 p-2.5 rounded-xl">
-                            <span className="block text-[9px] text-slate-500 font-sans uppercase font-bold">Bagian {pearsonIngB}</span>
-                            <strong className="text-slate-200 text-sm">{diffB.toFixed(1)} bag</strong>
+                          <div className="text-[#3C3530]/50 text-xl font-bold flex items-center justify-center h-full">↗</div>
+                          <div className="bg-[#FCFAF6] border border-[#EADDC9] p-2.5 rounded-xl">
+                            <span className="block text-[9px] text-[#3C3530]/60 font-sans uppercase font-bold">Bagian {pearsonIngB}</span>
+                            <strong className="text-[#3C3530] text-sm">{diffB.toFixed(1)} bag</strong>
                           </div>
                         </div>
                       </div>
 
                       {/* Recipe Table Card */}
-                      <div className="bg-gradient-to-r from-teal-950/20 to-emerald-950/20 p-5 rounded-2xl border border-teal-500/10">
-                        <h4 className="text-xs font-bold text-slate-200 mb-4 uppercase tracking-wider font-sans">Hasil Formulasi Pakan</h4>
+                      <div className="bg-gradient-to-r from-teal-950/20 to-emerald-950/20 p-5 rounded-2xl border border-[#859681]/10">
+                        <h4 className="text-xs font-bold text-[#3C3530] mb-4 uppercase tracking-wider font-sans">Hasil Formulasi Pakan</h4>
                         <div className="space-y-3.5 font-mono">
-                          <div className="flex justify-between items-center text-xs border-b border-slate-850 pb-2">
-                            <span className="text-slate-450 font-semibold font-sans">{pearsonIngA} ({pA}% Protein)</span>
-                            <span className="text-teal-450 font-black">{pctA.toFixed(1)}% <span className="text-slate-400 font-medium">({kgA.toFixed(2)} kg)</span></span>
+                          <div className="flex justify-between items-center text-xs border-b border-[#EADDC9] pb-2">
+                            <span className="text-[#3C3530]/75 font-semibold font-sans">{pearsonIngA} ({pA}% Protein)</span>
+                            <span className="text-[#859681] font-black">{pctA.toFixed(1)}% <span className="text-[#3C3530]/80 font-medium">({kgA.toFixed(2)} kg)</span></span>
                           </div>
-                          <div className="flex justify-between items-center text-xs border-b border-slate-850 pb-2">
-                            <span className="text-slate-450 font-semibold font-sans">{pearsonIngB} ({pB}% Protein)</span>
-                            <span className="text-emerald-400 font-black">{pctB.toFixed(1)}% <span className="text-slate-400 font-medium">({kgB.toFixed(2)} kg)</span></span>
+                          <div className="flex justify-between items-center text-xs border-b border-[#EADDC9] pb-2">
+                            <span className="text-[#3C3530]/75 font-semibold font-sans">{pearsonIngB} ({pB}% Protein)</span>
+                            <span className="text-[#4D5D4A] font-black">{pctB.toFixed(1)}% <span className="text-[#3C3530]/80 font-medium">({kgB.toFixed(2)} kg)</span></span>
                           </div>
                           <div className="flex justify-between items-center text-xs pt-1">
-                            <span className="text-slate-200 font-extrabold uppercase font-sans">Total Target Campuran</span>
+                            <span className="text-[#3C3530] font-extrabold uppercase font-sans">Total Target Campuran</span>
                             <strong className="text-white font-black text-sm">100% ({pearsonTotalKg.toFixed(0)} kg) @ {pTarget}% Protein</strong>
                           </div>
                         </div>
@@ -5134,36 +5136,36 @@ export default function DashboardPage() {
               </div>
 
               {/* Standalone manual FCR Calculator */}
-              <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-[#3C3530] flex items-center gap-2">
                     <span>⚖️</span> Kalkulator FCR Manual (Feed Conversion Ratio)
                   </h3>
-                  <span className="px-2.5 py-1 bg-emerald-950/70 text-emerald-450 text-[10px] rounded-lg font-bold border border-emerald-500/20 uppercase tracking-wider">
+                  <span className="px-2.5 py-1 bg-emerald-950/70 text-[#859681] text-[10px] rounded-lg font-bold border-[#859681]/20 uppercase tracking-wider">
                     Premium Feature
                   </span>
                 </div>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-[#3C3530]/80">
                   Hitung nilai konversi pakan secara cepat untuk mengukur tingkat efisiensi serapan pakan ternak Anda.
                 </p>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Konsumsi Pakan (kg)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Konsumsi Pakan (kg)</label>
                     <input
                       type="number"
                       value={manualFcrFeed}
                       onChange={(e) => setManualFcrFeed(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono text-sm"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Bobot Hasil Panen (kg)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Bobot Hasil Panen (kg)</label>
                     <input
                       type="number"
                       value={manualFcrWeight}
                       onChange={(e) => setManualFcrWeight(parseFloat(e.target.value) || 0)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono text-sm"
                     />
                   </div>
                 </div>
@@ -5173,7 +5175,7 @@ export default function DashboardPage() {
                   const weight = manualFcrWeight;
                   if (weight <= 0) {
                     return (
-                      <div className="bg-slate-955/40 text-center py-6 text-xs text-slate-550 font-bold border border-slate-850 rounded-2xl">
+                      <div className="bg-[#FAF7F0]/40 text-center py-6 text-xs text-[#3C3530]/65 font-bold border border-[#EADDC9] rounded-2xl">
                         Awaiting weight entry...
                       </div>
                     );
@@ -5186,26 +5188,26 @@ export default function DashboardPage() {
 
                   if (fcrVal <= 1.5) {
                     fcrStatus = 'Sangat Efisien (Bagus Sekali) 🌟';
-                    fcrBg = 'bg-emerald-500/10 border-emerald-500/20';
-                    fcrText = 'text-emerald-400';
+                    fcrBg = 'bg-[#859681]/15 border-emerald-500/20';
+                    fcrText = 'text-[#4D5D4A]';
                   } else if (fcrVal <= 1.8) {
                     fcrStatus = 'Efisien (Standar) 👍';
-                    fcrBg = 'bg-teal-500/10 border-teal-500/20';
-                    fcrText = 'text-teal-400';
+                    fcrBg = 'bg-[#859681]/15 border-[#859681]/20';
+                    fcrText = 'text-[#859681]';
                   } else {
                     fcrStatus = 'Kurang Efisien (Butuh Evaluasi Pakan/Kandang) ⚠️';
-                    fcrBg = 'bg-rose-500/10 border-rose-500/20';
-                    fcrText = 'text-rose-450';
+                    fcrBg = 'bg-[#A76A57]/15 border-[#A76A57]/20';
+                    fcrText = 'text-[#A76A57]';
                   }
 
                   return (
                     <div className={`p-5 rounded-2xl border ${fcrBg} space-y-2`}>
-                      <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">Hasil Rasio Konversi Pakan</span>
+                      <span className="text-[10px] font-bold text-[#3C3530]/75 uppercase tracking-wider block">Hasil Rasio Konversi Pakan</span>
                       <div className="flex justify-between items-baseline flex-wrap gap-2">
                         <strong className={`text-3xl font-black font-mono ${fcrText}`}>{fcrVal.toFixed(2)}</strong>
                         <span className={`text-xs font-extrabold ${fcrText}`}>{fcrStatus}</span>
                       </div>
-                      <p className="text-[10px] text-slate-550 leading-relaxed font-semibold font-sans">
+                      <p className="text-[10px] text-[#3C3530]/65 leading-relaxed font-semibold font-sans">
                         *Artinya, untuk memproduksi 1 kg berat badan hewan ternak, dibutuhkan pasokan pakan sebanyak {fcrVal.toFixed(2)} kg. Semakin kecil angka FCR, semakin tinggi profit yang dihasilkan.
                       </p>
                     </div>
@@ -5220,18 +5222,18 @@ export default function DashboardPage() {
         {/* --- TAB: VENTILASI BROILER (Modul 08) --- */}
         {activeTab === 'ventilasi' && (
           <div className="max-w-2xl mx-auto space-y-8 animate-fadeIn">
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6">
-              <h3 className="text-lg font-bold text-slate-250 flex items-center gap-2">
+            <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6">
+              <h3 className="text-lg font-bold text-[#3C3530] flex items-center gap-2">
                 <span>💨</span> Kalkulator Ventilasi Kandang Broiler
               </h3>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#3C3530]/80">
                 Hitung kebutuhan udara kandang (CFM) dan status operasional kipas angin berdasarkan populasi saat ini.
               </p>
 
               {/* Fan specs input grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Daya Motor Kipas (Watt)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Daya Motor Kipas (Watt)</label>
                   <input
                     type="number"
                     value={activeCycle.data?.modal?.vent_watt_kipas || '375'}
@@ -5239,12 +5241,12 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), vent_watt_kipas: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono text-sm"
                   />
-                  <span className="text-[10px] text-slate-550 block mt-1">Standard: 375W (0.5 HP) atau 750W (1.0 HP)</span>
+                  <span className="text-[10px] text-[#3C3530]/65 block mt-1">Standard: 375W (0.5 HP) atau 750W (1.0 HP)</span>
                 </div>
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-500 block uppercase tracking-wider">Jumlah Kipas Aktif (Unit)</label>
+                  <label className="text-xs font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Kipas Aktif (Unit)</label>
                   <input
                     type="number"
                     value={activeCycle.data?.modal?.vent_jml_kipas || '2'}
@@ -5252,9 +5254,9 @@ export default function DashboardPage() {
                       const modal = { ...(activeCycle.data?.modal || {}), vent_jml_kipas: e.target.value };
                       handleSaveCycleData({ ...activeCycle.data, modal });
                     }}
-                    className="w-full bg-slate-955/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono text-sm"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono text-sm"
                   />
-                  <span className="text-[10px] text-slate-550 block mt-1">Jumlah blower yang dioperasikan</span>
+                  <span className="text-[10px] text-[#3C3530]/65 block mt-1">Jumlah blower yang dioperasikan</span>
                 </div>
               </div>
 
@@ -5263,42 +5265,42 @@ export default function DashboardPage() {
                 <div className="space-y-4">
                   {/* Alert if fans are insufficient */}
                   {stats.alertKipasKurang && (
-                    <div className="bg-rose-500/10 border border-rose-500/20 text-rose-450 p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
+                    <div className="bg-[#A76A57]/15 border border-[#A76A57]/20 text-[#A76A57] p-4 rounded-2xl flex items-center gap-2 font-semibold text-xs animate-pulse">
                       <span>⚠️</span>
                       <span><strong>Kritis (Kapasitas Kipas Kurang):</strong> Total kapasitas kipas ({Math.round(stats.CFM_kapasitas).toLocaleString('id-ID')} CFM) berada di bawah kebutuhan minimum ayam ({Math.round(stats.CFM_kebutuhan).toLocaleString('id-ID')} CFM). Tambahkan unit kipas atau tingkatkan dayanya untuk menghindari stress panas (heat stress) pada ayam!</span>
                     </div>
                   )}
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Kebutuhan Udara (Tropis)</span>
-                      <span className="text-sm font-black text-slate-200 font-mono">{Math.round(stats.CFM_kebutuhan).toLocaleString('id-ID')} CFM</span>
+                    <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
+                      <span className="text-[10px] font-bold text-[#3C3530]/60 uppercase tracking-wider block mb-1">Kebutuhan Udara (Tropis)</span>
+                      <span className="text-sm font-black text-[#3C3530] font-mono">{Math.round(stats.CFM_kebutuhan).toLocaleString('id-ID')} CFM</span>
                     </div>
-                    <div className="bg-slate-950/40 p-4 rounded-2xl border border-slate-850">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">Total Kapasitas Kipas</span>
-                      <span className="text-sm font-black text-slate-200 font-mono">{Math.round(stats.CFM_kapasitas).toLocaleString('id-ID')} CFM</span>
+                    <div className="bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9]">
+                      <span className="text-[10px] font-bold text-[#3C3530]/60 uppercase tracking-wider block mb-1">Total Kapasitas Kipas</span>
+                      <span className="text-sm font-black text-[#3C3530] font-mono">{Math.round(stats.CFM_kapasitas).toLocaleString('id-ID')} CFM</span>
                     </div>
                   </div>
 
-                  <div className="bg-[#0b1b1e] border border-teal-500/10 p-5 rounded-2xl text-xs space-y-2">
-                    <span className="text-[10px] font-black text-teal-400 uppercase tracking-widest block mb-2">📋 Hasil Analisis Ventilasi</span>
-                    <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60">
+                  <div className="bg-[#0b1b1e] border border-[#859681]/10 p-5 rounded-2xl text-xs space-y-2">
+                    <span className="text-[10px] font-black text-[#859681] uppercase tracking-widest block mb-2">📋 Hasil Analisis Ventilasi</span>
+                    <div className="flex justify-between items-center text-[#3C3530]/90 font-semibold py-1 border-b border-[#EADDC9]">
                       <span>Fase Ventilasi:</span>
-                      <span className="text-white font-extrabold uppercase bg-teal-500/15 border border-teal-500/20 px-2 py-0.5 rounded text-[10px] tracking-wider">
+                      <span className="text-white font-extrabold uppercase bg-[#859681]/15 border border-[#859681]/20 px-2 py-0.5 rounded text-[10px] tracking-wider">
                         {stats.fase === 'minimum' ? '❄️ Minimum (Umur < 14 hr)' : stats.fase === 'transitional' ? '🌀 Transitional (Umur 14-20 hr)' : '🔥 Tunnel / Terowongan (Umur >= 21 hr)'}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60">
+                    <div className="flex justify-between items-center text-[#3C3530]/90 font-semibold py-1 border-b border-[#EADDC9]">
                       <span>Target Suhu Kandang:</span>
                       <span className="text-white font-extrabold font-mono text-sm">{stats.suhu_target} °C</span>
                     </div>
-                    <div className="flex justify-between items-center text-slate-350 font-semibold py-1 border-b border-slate-850/60">
+                    <div className="flex justify-between items-center text-[#3C3530]/90 font-semibold py-1 border-b border-[#EADDC9]">
                       <span>Rasio Kebutuhan (Duty Cycle):</span>
                       <span className="text-white font-extrabold font-mono">{(stats.duty_cycle * 100).toFixed(1)} %</span>
                     </div>
-                    <div className="flex justify-between items-center text-slate-355 font-semibold py-1">
+                    <div className="flex justify-between items-center text-[#3C3530]/80 font-semibold py-1">
                       <span>Rekomendasi Siklus Timer (5 Menit):</span>
-                      <span className="text-teal-400 font-extrabold font-mono text-sm">
+                      <span className="text-[#859681] font-extrabold font-mono text-sm">
                         {stats.runtime_detik >= 300 ? 'ON TERUS (Kipas Jalan Non-stop)' : `ON: ${stats.runtime_detik} dtk | OFF: ${300 - stats.runtime_detik} dtk`}
                       </span>
                     </div>
@@ -5308,34 +5310,34 @@ export default function DashboardPage() {
             </div>
 
             {/* Suhu Target Cobb 500 Guide */}
-            <div className="bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-4">
-              <h4 className="text-sm font-bold text-slate-250 flex items-center gap-2">
+            <div className="bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-4">
+              <h4 className="text-sm font-bold text-[#3C3530] flex items-center gap-2">
                 <span>🌡️</span> Panduan Suhu Ideal Cobb 500 (As-Hatched)
               </h4>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[#3C3530]/80">
                 Suhu standar industri untuk meminimalkan FCR dan mengoptimalkan ADG berdasarkan kelompok umur ayam:
               </p>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-800 text-slate-500">
+                    <tr className="border-b border-[#EADDC9] text-[#3C3530]/60">
                       <th className="py-2 font-bold uppercase">Umur (Hari)</th>
                       <th className="py-2 font-bold uppercase">Target Suhu (°C)</th>
                       <th className="py-2 font-bold uppercase">Fase Ventilasi</th>
                       <th className="py-2 font-bold uppercase">Toleransi Kelembaban</th>
                     </tr>
                   </thead>
-                  <tbody className="text-slate-350 divide-y divide-slate-850/40">
+                  <tbody className="text-[#3C3530]/90 divide-y divide-[#EADDC9]/40">
                     <tr>
                       <td className="py-2 font-mono">Hari 1–7</td>
                       <td className="py-2 font-mono text-white">32°C - 33°C</td>
-                      <td className="py-2 text-teal-450 font-semibold">Minimum</td>
+                      <td className="py-2 text-[#859681] font-semibold">Minimum</td>
                       <td className="py-2">60% - 70%</td>
                     </tr>
                     <tr>
                       <td className="py-2 font-mono">Hari 8–14</td>
                       <td className="py-2 font-mono text-white">29°C - 30°C</td>
-                      <td className="py-2 text-teal-450 font-semibold">Minimum</td>
+                      <td className="py-2 text-[#859681] font-semibold">Minimum</td>
                       <td className="py-2">60% - 70%</td>
                     </tr>
                     <tr>
@@ -5347,7 +5349,7 @@ export default function DashboardPage() {
                     <tr>
                       <td className="py-2 font-mono">Hari 22–35+</td>
                       <td className="py-2 font-mono text-white">21°C - 24°C</td>
-                      <td className="py-2 text-rose-455 font-semibold">Tunnel</td>
+                      <td className="py-2 text-[#A76A57] font-semibold">Tunnel</td>
                       <td className="py-2">60% - 70%</td>
                     </tr>
                   </tbody>
@@ -5360,18 +5362,18 @@ export default function DashboardPage() {
         {/* --- TAB: KALENDER OPERASIONAL & VAKSINASI --- */}
         {activeTab === 'jadwal_kerja' && (
           <div className="max-w-3xl mx-auto space-y-6 animate-fadeIn">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-900 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#EADDC9] pb-4">
               <div>
-                <h3 className="text-xl font-black text-slate-100 flex items-center gap-2">
+                <h3 className="text-xl font-black text-[#3C3530] flex items-center gap-2">
                   <span>📅</span> Kalender Kegiatan & Vaksinasi
                 </h3>
-                <p className="text-xs text-slate-450 mt-1">
-                  Jadwal rutin harian ini dihitung otomatis dari tanggal mulai siklus: <strong className="text-teal-400 font-mono">{parsedStartDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
+                <p className="text-xs text-[#3C3530]/75 mt-1">
+                  Jadwal rutin harian ini dihitung otomatis dari tanggal mulai siklus: <strong className="text-[#859681] font-mono">{parsedStartDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</strong>
                 </p>
               </div>
-              <div className="bg-slate-900/60 border border-slate-850 px-4 py-2 rounded-xl text-center self-start">
-                <span className="text-[10px] font-bold text-slate-500 block uppercase">Pencapaian Tugas</span>
-                <span className="text-sm font-black text-teal-450 font-mono">
+              <div className="bg-[#FCFAF6]/60 border border-[#EADDC9] px-4 py-2 rounded-xl text-center self-start">
+                <span className="text-[10px] font-bold text-[#3C3530]/60 block uppercase">Pencapaian Tugas</span>
+                <span className="text-sm font-black text-[#859681] font-mono">
                   {calendarTasks.filter((t) => (activeCycle.data?.checkedTasks || []).includes(t.id)).length} / {calendarTasks.length} Selesai
                 </span>
               </div>
@@ -5386,31 +5388,31 @@ export default function DashboardPage() {
                     onClick={() => handleToggleTask(task.id)}
                     className={`flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-pointer select-none ${
                       isChecked 
-                        ? 'bg-slate-900/10 border-teal-500/15 opacity-60' 
-                        : 'bg-slate-900/30 border-slate-850 hover:border-teal-500/30 hover:bg-slate-900/50'
+                        ? 'bg-[#FCFAF6]/10 border-teal-500/15 opacity-60' 
+                        : 'bg-[#FCFAF6] border-[#EADDC9] hover:border-teal-500/30 hover:bg-[#FCFAF6]/50'
                     }`}
                   >
                     {/* Checkbox circle/box */}
                     <div className="mt-1 flex-shrink-0">
-                      <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${isChecked ? 'bg-teal-500 border-teal-500 text-slate-950 font-bold' : 'border-slate-800'}`}>
+                      <div className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-colors ${isChecked ? 'bg-[#859681] border-teal-500 text-slate-950 font-bold' : 'border-[#EADDC9]'}`}>
                         {isChecked && '✓'}
                       </div>
                     </div>
 
                     <div className="flex-1 space-y-1">
                       <div className="flex items-center gap-3 flex-wrap">
-                        <span className="text-xs font-extrabold text-teal-400 bg-teal-950/80 px-2 py-0.5 rounded-lg border border-teal-500/10 font-mono">
+                        <span className="text-xs font-extrabold text-[#859681] bg-[#859681]/15 px-2 py-0.5 rounded-lg border border-[#859681]/10 font-mono">
                           Hari ke-{task.day}
                         </span>
-                        <span className="text-xs font-bold text-slate-500 font-mono">
+                        <span className="text-xs font-bold text-[#3C3530]/60 font-mono">
                           {task.date}
                         </span>
                       </div>
                       
-                      <h4 className={`text-sm font-black ${isChecked ? 'line-through text-slate-400' : 'text-slate-200'}`}>
+                      <h4 className={`text-sm font-black ${isChecked ? 'line-through text-[#3C3530]/80' : 'text-[#3C3530]'}`}>
                         {task.title}
                       </h4>
-                      <p className={`text-xs mt-1 leading-relaxed ${isChecked ? 'line-through text-slate-500' : 'text-slate-400 font-medium'}`}>
+                      <p className={`text-xs mt-1 leading-relaxed ${isChecked ? 'line-through text-[#3C3530]/60' : 'text-[#3C3530]/80 font-medium'}`}>
                         {task.desc}
                       </p>
                     </div>
@@ -5429,17 +5431,17 @@ export default function DashboardPage() {
               'Konsultasikan kesehatan ternak Anda secara cerdas bersama Radeya AI Vet. Fitur ini hanya tersedia pada paket PRO dan ENTERPRISE.'
             )
           ) : (
-            <div className="max-w-3xl mx-auto h-[600px] bg-slate-900/20 border border-teal-500/10 rounded-3xl flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
+            <div className="max-w-3xl mx-auto h-[600px] bg-[#FCFAF6] border border-[#859681]/10 rounded-3xl flex flex-col shadow-2xl overflow-hidden animate-fadeIn">
               
               {/* Header info */}
-              <div className="bg-slate-950/80 border-b border-slate-900 p-5 flex items-center justify-between">
+              <div className="bg-[#FAF7F0] border-b border-[#EADDC9] p-5 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-xl">
+                  <div className="w-10 h-10 rounded-xl bg-[#859681]/15 border border-[#859681]/20 flex items-center justify-center text-xl">
                     👨‍⚕️
                   </div>
                   <div>
-                    <h4 className="text-xs font-black text-slate-100 uppercase tracking-wider">Radeya AI Vet</h4>
-                    <span className="text-[10px] font-bold text-emerald-450 flex items-center gap-1">
+                    <h4 className="text-xs font-black text-[#3C3530] uppercase tracking-wider">Radeya AI Vet</h4>
+                    <span className="text-[10px] font-bold text-[#859681] flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       Asisten Konsultasi Aktif
                     </span>
@@ -5447,7 +5449,7 @@ export default function DashboardPage() {
                 </div>
                 <button 
                   onClick={() => setChatMessages([])} 
-                  className="text-[10px] bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-400 hover:text-slate-200 px-3 py-1.5 rounded-xl font-bold transition-all"
+                  className="text-[10px] bg-[#FCFAF6] border border-[#EADDC9] hover:bg-[#EADDC9] text-[#3C3530]/80 hover:text-[#3C3530] px-3 py-1.5 rounded-xl font-bold transition-all"
                 >
                   Clear Chat
                 </button>
@@ -5456,7 +5458,7 @@ export default function DashboardPage() {
               {/* Messages Stream */}
               <div className="flex-1 p-6 overflow-y-auto space-y-4 scrollbar-thin">
                 {chatMessages.length === 0 ? (
-                  <div className="text-center py-16 text-slate-500 text-xs">
+                  <div className="text-center py-16 text-[#3C3530]/60 text-xs">
                     Ketik pertanyaan Anda di bawah untuk memulai sesi tanya-jawab dengan AI Vet.
                   </div>
                 ) : (
@@ -5464,8 +5466,8 @@ export default function DashboardPage() {
                     <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-fadeIn`}>
                       <div className={`max-w-[85%] p-4 rounded-2xl text-xs leading-relaxed font-semibold ${
                         msg.role === 'user'
-                          ? 'bg-teal-650 text-white rounded-br-none'
-                          : 'bg-slate-950/80 text-slate-200 border border-slate-850 rounded-bl-none'
+                          ? 'bg-[#859681] text-white rounded-br-none'
+                          : 'bg-[#FAF7F0] text-[#3C3530] border border-[#EADDC9] rounded-bl-none'
                       }`}>
                         {/* Simple custom formatter for bold and bullets */}
                         {msg.text.split('\n').map((line, idx) => {
@@ -5473,7 +5475,7 @@ export default function DashboardPage() {
                           // Replace **bold**
                           if (line.includes('**')) {
                             const parts = line.split('**');
-                            content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-teal-300 font-extrabold">{part}</strong> : part);
+                            content = parts.map((part, pIdx) => pIdx % 2 === 1 ? <strong key={pIdx} className="text-[#859681]/90 font-extrabold">{part}</strong> : part);
                           }
                           // Bullet point indentation helper
                           const isBullet = line.trim().startsWith('- ') || line.trim().startsWith('* ') || /^\d+\.\s/.test(line.trim());
@@ -5489,10 +5491,10 @@ export default function DashboardPage() {
                 )}
                 {isChatLoading && (
                   <div className="flex justify-start animate-pulse">
-                    <div className="bg-slate-950/80 text-slate-350 p-4 rounded-2xl rounded-bl-none border border-slate-850 text-xs flex items-center gap-2">
-                      <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce" />
-                      <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.2s]" />
-                      <span className="w-1.5 h-1.5 bg-teal-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                    <div className="bg-[#FAF7F0] text-[#3C3530]/90 p-4 rounded-2xl rounded-bl-none border border-[#EADDC9] text-xs flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-[#859681] rounded-full animate-bounce" />
+                      <span className="w-1.5 h-1.5 bg-[#859681] rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-1.5 h-1.5 bg-[#859681] rounded-full animate-bounce [animation-delay:0.4s]" />
                       <span>Dokter mengetik respon...</span>
                     </div>
                   </div>
@@ -5500,13 +5502,13 @@ export default function DashboardPage() {
               </div>
 
               {/* Input Bar */}
-              <form onSubmit={handleSendChatMessage} className="bg-slate-955/90 border-t border-slate-900 p-4 flex gap-3">
+              <form onSubmit={handleSendChatMessage} className="bg-[#FAF7F0]/90 border-t border-[#EADDC9] p-4 flex gap-3">
                 <input
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   placeholder="Tanyakan keluhan ternak Anda di sini (misal: ayam lemas berak kapur)..."
-                  className="flex-1 bg-slate-900/60 border border-slate-800 focus:border-teal-500 rounded-xl px-4 py-3 text-slate-200 text-xs font-semibold outline-none transition-colors"
+                  className="flex-1 bg-[#FCFAF6]/60 border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] rounded-xl px-4 py-3 text-[#3C3530] text-xs font-semibold outline-none transition-colors"
                   disabled={isChatLoading}
                 />
                 <button
@@ -5539,33 +5541,33 @@ export default function DashboardPage() {
 
         {/* --- TAB: HARIAN LOG (BEBEK PEDAGING) --- */}
         {activeTab === 'harian_log' && (
-          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+          <div className="max-w-xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-[#3C3530] flex items-center justify-between font-sans">
               <span>🦆 Log Harian Bebek Pedaging</span>
-              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono font-bold">
                 {(activeCycle.data?.harian || []).length} Catatan
               </span>
             </h3>
 
             <div className="space-y-3">
               {(activeCycle.data?.harian || []).length === 0 ? (
-                <div className="text-center py-10 text-slate-500 text-xs">Belum ada log harian dicatat.</div>
+                <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada log harian dicatat.</div>
               ) : (
                 (activeCycle.data?.harian || []).map((h: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                  <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                     <div>
-                      <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
-                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                      <div className="text-xs font-bold text-[#3C3530] font-sans">{h.tgl}</div>
+                      <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">
                         Pakan: {h.pakan_kg || 0} kg · Air: {h.air || 0} L · Kematian: {h.mati || 0} ekor
                       </div>
                     </div>
-                    <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                    <button onClick={() => handleDeleteListItem('harian', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                   </div>
                 ))
               )}
               <button
                 onClick={() => openModalForm('modal_harian_pedaging')}
-                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
               >
                 + Catat Log Harian Bebek
               </button>
@@ -5578,33 +5580,33 @@ export default function DashboardPage() {
           <div className="max-w-4xl mx-auto space-y-6 animate-fadeIn">
             {/* Summary Cards */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
-                <span className="text-[10px] text-slate-550 block uppercase font-black">Bobot Rata-rata</span>
-                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Bobot Rata-rata</span>
+                <span className="text-xl font-extrabold text-[#859681] mt-1 block font-mono">
                   {stats?.bobotRataTerakhir?.toFixed(1) || '0.0'} g
                 </span>
               </div>
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
-                <span className="text-[10px] text-slate-555 block uppercase font-black">ADG</span>
-                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">ADG</span>
+                <span className="text-xl font-extrabold text-[#859681] mt-1 block font-mono">
                   {stats?.adg?.toFixed(2) || '0.00'} g/hari
                 </span>
               </div>
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
-                <span className="text-[10px] text-slate-555 block uppercase font-black">SGR</span>
-                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">SGR</span>
+                <span className="text-xl font-extrabold text-[#859681] mt-1 block font-mono">
                   {stats?.sgr?.toFixed(2) || '0.00'} %/hari
                 </span>
               </div>
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
-                <span className="text-[10px] text-slate-555 block uppercase font-black">Biomassa</span>
-                <span className="text-xl font-extrabold text-teal-400 mt-1 block font-mono">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center">
+                <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Biomassa</span>
+                <span className="text-xl font-extrabold text-[#859681] mt-1 block font-mono">
                   {stats?.biomassaSaatIni?.toFixed(1) || '0.0'} kg
                 </span>
               </div>
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center col-span-2 md:col-span-1">
-                <span className="text-[10px] text-slate-555 block uppercase font-black">Keseragaman (CV)</span>
-                <span className={`text-xl font-extrabold mt-1 block font-mono ${stats?.cv > 20 ? 'text-rose-455' : 'text-emerald-400'}`}>
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center col-span-2 md:col-span-1">
+                <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Keseragaman (CV)</span>
+                <span className={`text-xl font-extrabold mt-1 block font-mono ${stats?.cv > 20 ? 'text-[#A76A57]' : 'text-[#4D5D4A]'}`}>
                   {stats?.cv ? `${stats.cv.toFixed(1)}%` : '-'}
                 </span>
               </div>
@@ -5612,7 +5614,7 @@ export default function DashboardPage() {
 
             {/* Grading Warning Alert */}
             {stats?.needGrading && (
-              <div className="p-4 bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs rounded-2xl flex items-center gap-3 font-semibold font-sans">
+              <div className="p-4 bg-[#A76A57]/15 border border-[#A76A57]/20 text-[#A76A57] text-xs rounded-2xl flex items-center gap-3 font-semibold font-sans">
                 <span className="text-xl">⚠️</span>
                 <div>
                   <strong>Peringatan Keseragaman (CV &gt; 20%):</strong> Pertumbuhan ukuran ikan tidak merata. Lakukan penyortiran (grading) wadah/kolam sesegera mungkin untuk mencegah kanibalisme dan memastikan kompetisi pakan yang merata.
@@ -5621,27 +5623,27 @@ export default function DashboardPage() {
             )}
 
             {/* Dosis Pakan Rekomendasi */}
-            <div className="bg-gradient-to-tr from-teal-950/20 to-emerald-950/20 border border-teal-500/10 p-5 rounded-3xl space-y-2">
-              <h4 className="text-xs font-black text-teal-400 uppercase tracking-widest font-sans">🍽️ Rekomendasi Pemberian Pakan Harian</h4>
-              <p className="text-xs text-slate-400 font-semibold leading-relaxed">
+            <div className="bg-gradient-to-tr from-teal-950/20 to-emerald-950/20 border border-[#859681]/10 p-5 rounded-3xl space-y-2">
+              <h4 className="text-xs font-black text-[#859681] uppercase tracking-widest font-sans">🍽️ Rekomendasi Pemberian Pakan Harian</h4>
+              <p className="text-xs text-[#3C3530]/80 font-semibold leading-relaxed">
                 Berdasarkan biomassa saat ini ({stats?.biomassaSaatIni?.toFixed(1) || 0} kg), dosis pakan harian standar yang disarankan berkisar antara <strong>3% - 5%</strong> dari total biomassa:
               </p>
               <div className="flex items-baseline gap-2 pt-1 font-sans">
                 <span className="text-2xl font-black text-white font-mono">
                   {((stats?.biomassaSaatIni || 0) * 0.03).toFixed(1)} - {((stats?.biomassaSaatIni || 0) * 0.05).toFixed(1)} kg / hari
                 </span>
-                <span className="text-slate-500 text-[10px] font-bold">(*Sesuaikan dengan nafsu makan dan suhu air kolam)</span>
+                <span className="text-[#3C3530]/60 text-[10px] font-bold">(*Sesuaikan dengan nafsu makan dan suhu air kolam)</span>
               </div>
             </div>
 
             {/* Table / List of Sampling */}
-            <div className="bg-[#0B1416] border border-slate-850 p-6 rounded-3xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-200">Riwayat Sampling Pertumbuhan</h3>
+            <div className="bg-[#0B1416] border border-[#EADDC9] p-6 rounded-3xl space-y-4">
+              <h3 className="text-sm font-bold text-[#3C3530]">Riwayat Sampling Pertumbuhan</h3>
               
-              <div className="overflow-x-auto rounded-2xl border border-slate-850 bg-slate-950/20">
+              <div className="overflow-x-auto rounded-2xl border border-[#EADDC9] bg-[#FAF7F0]/40">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-slate-950 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-850">
+                    <tr className="bg-[#FAF7F0] text-[#3C3530]/80 font-bold uppercase tracking-wider border-b border-[#EADDC9]">
                       <th className="px-4 py-3">Tanggal</th>
                       <th className="px-4 py-3 text-center">Jml Sampel</th>
                       <th className="px-4 py-3 text-center">Bobot Sampel (g)</th>
@@ -5652,28 +5654,28 @@ export default function DashboardPage() {
                       <th className="px-4 py-3 text-center">Aksi</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-850 text-slate-300 font-semibold">
+                  <tbody className="divide-y divide-[#EADDC9] text-[#3C3530]/90 font-semibold">
                     {(activeCycle.data?.sampling || []).length === 0 ? (
                       <tr>
-                        <td colSpan={8} className="text-center py-8 text-slate-550">Belum ada data sampling pertumbuhan.</td>
+                        <td colSpan={8} className="text-center py-8 text-[#3C3530]/65">Belum ada data sampling pertumbuhan.</td>
                       </tr>
                     ) : (
                       (activeCycle.data?.sampling || []).map((sm: any, i: number) => {
                         const rata = parseFloat(sm.bobot_total_g) / Math.max(1, parseFloat(sm.jml_sampel) || 1);
                         const rowCv = sm.stdev_g && rata > 0 ? (parseFloat(sm.stdev_g) / rata) * 100 : 0;
                         return (
-                          <tr key={i} className="hover:bg-slate-900/10">
+                          <tr key={i} className="hover:bg-[#FCFAF6]/10">
                             <td className="px-4 py-3.5 font-mono">{sm.tgl}</td>
                             <td className="px-4 py-3.5 text-center font-mono">{sm.jml_sampel}</td>
                             <td className="px-4 py-3.5 text-center font-mono">{sm.bobot_total_g} g</td>
                             <td className="px-4 py-3.5 text-center font-mono">{rata.toFixed(1)} g</td>
                             <td className="px-4 py-3.5 text-center font-mono">{sm.stdev_g || '-'}</td>
-                            <td className={`px-4 py-3.5 text-center font-mono ${rowCv > 20 ? 'text-rose-450' : 'text-slate-400'}`}>
+                            <td className={`px-4 py-3.5 text-center font-mono ${rowCv > 20 ? 'text-[#A76A57]' : 'text-[#3C3530]/80'}`}>
                               {rowCv > 0 ? `${rowCv.toFixed(1)}%` : '-'}
                             </td>
                             <td className="px-4 py-3.5 text-center font-mono">{sm.jml_estimasi?.toLocaleString('id-ID') || '-'}</td>
                             <td className="px-4 py-3.5 text-center font-sans">
-                              <button onClick={() => handleDeleteListItem('sampling', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                              <button onClick={() => handleDeleteListItem('sampling', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold px-2">✕</button>
                             </td>
                           </tr>
                         );
@@ -5684,7 +5686,7 @@ export default function DashboardPage() {
               </div>
               <button
                 onClick={() => openModalForm('modal_sampling_ikan')}
-                className="w-full py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                className="w-full py-3 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
               >
                 + Catat Sampling Pertumbuhan
               </button>
@@ -5703,9 +5705,9 @@ export default function DashboardPage() {
               return (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 font-semibold">
                   {/* Suhu */}
-                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                  <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-slate-555 block uppercase font-black">Suhu Air</span>
+                      <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Suhu Air</span>
                       <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                         {lastLog.suhu !== undefined ? `${lastLog.suhu}°C` : '-'}
                       </span>
@@ -5717,9 +5719,9 @@ export default function DashboardPage() {
                     )}
                   </div>
                   {/* pH */}
-                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                  <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-slate-555 block uppercase font-black">pH Air</span>
+                      <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">pH Air</span>
                       <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                         {lastLog.ph !== undefined ? lastLog.ph.toFixed(1) : '-'}
                       </span>
@@ -5731,9 +5733,9 @@ export default function DashboardPage() {
                     )}
                   </div>
                   {/* DO */}
-                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                  <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-slate-555 block uppercase font-black">Oksigen Terlarut (DO)</span>
+                      <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Oksigen Terlarut (DO)</span>
                       <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                         {lastLog.do !== undefined ? `${lastLog.do} mg/L` : '-'}
                       </span>
@@ -5745,9 +5747,9 @@ export default function DashboardPage() {
                     )}
                   </div>
                   {/* Amonia */}
-                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                  <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-slate-555 block uppercase font-black">Amonia NH₃</span>
+                      <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Amonia NH₃</span>
                       <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                         {lastLog.amonia !== undefined ? `${lastLog.amonia} mg/L` : '-'}
                       </span>
@@ -5759,9 +5761,9 @@ export default function DashboardPage() {
                     )}
                   </div>
                   {/* Nitrit */}
-                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                  <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-slate-555 block uppercase font-black">Nitrit NO₂</span>
+                      <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Nitrit NO₂</span>
                       <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                         {lastLog.nitrit !== undefined ? `${lastLog.nitrit} mg/L` : '-'}
                       </span>
@@ -5773,9 +5775,9 @@ export default function DashboardPage() {
                     )}
                   </div>
                   {/* Kecerahan */}
-                  <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                  <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] text-slate-555 block uppercase font-black">Kecerahan Air</span>
+                      <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Kecerahan Air</span>
                       <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                         {lastLog.kecerahan !== undefined ? `${lastLog.kecerahan} cm` : '-'}
                       </span>
@@ -5790,9 +5792,9 @@ export default function DashboardPage() {
                   {/* Bioflok parameters */}
                   {isBioflok && (
                     <>
-                      <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                      <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                         <div>
-                          <span className="text-[10px] text-slate-555 block uppercase font-black">Volume Flok</span>
+                          <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">Volume Flok</span>
                           <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                             {lastLog.volume_flok !== undefined ? `${lastLog.volume_flok} ml/L` : '-'}
                           </span>
@@ -5803,9 +5805,9 @@ export default function DashboardPage() {
                           </span>
                         )}
                       </div>
-                      <div className="bg-[#0B1416] border border-slate-850 p-4 rounded-2xl flex justify-between items-center">
+                      <div className="bg-[#0B1416] border border-[#EADDC9] p-4 rounded-2xl flex justify-between items-center">
                         <div>
-                          <span className="text-[10px] text-slate-555 block uppercase font-black">C/N Ratio</span>
+                          <span className="text-[10px] text-[#3C3530]/65 block uppercase font-black">C/N Ratio</span>
                           <span className="text-xl font-extrabold text-white mt-1 block font-mono">
                             {lastLog.cn_ratio !== undefined ? `${lastLog.cn_ratio}:1` : '-'}
                           </span>
@@ -5823,13 +5825,13 @@ export default function DashboardPage() {
             })()}
 
             {/* Riwayat Data Kualitas Air */}
-            <div className="bg-[#0B1416] border border-slate-850 p-6 rounded-3xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-200">Riwayat Parameter Kualitas Air</h3>
+            <div className="bg-[#0B1416] border border-[#EADDC9] p-6 rounded-3xl space-y-4">
+              <h3 className="text-sm font-bold text-[#3C3530]">Riwayat Parameter Kualitas Air</h3>
               
-              <div className="overflow-x-auto rounded-2xl border border-slate-850 bg-slate-950/20 font-semibold">
+              <div className="overflow-x-auto rounded-2xl border border-[#EADDC9] bg-[#FAF7F0]/40 font-semibold">
                 <table className="w-full text-left text-xs border-collapse">
                   <thead>
-                    <tr className="bg-slate-950 text-slate-400 font-bold uppercase tracking-wider border-b border-slate-850">
+                    <tr className="bg-[#FAF7F0] text-[#3C3530]/80 font-bold uppercase tracking-wider border-b border-[#EADDC9]">
                       <th className="px-4 py-3">Tanggal</th>
                       <th className="px-4 py-3 text-center">Suhu (°C)</th>
                       <th className="px-4 py-3 text-center">pH</th>
@@ -5846,16 +5848,16 @@ export default function DashboardPage() {
                       <th className="px-4 py-3 text-center">Aksi</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-850 text-slate-300 font-semibold font-mono">
+                  <tbody className="divide-y divide-[#EADDC9] text-[#3C3530]/90 font-semibold font-mono">
                     {(activeCycle.data?.kualitas_air || []).length === 0 ? (
                       <tr>
-                        <td colSpan={activeCycle.data?.modal?.sistem_kolam === 'bioflok' ? 9 : 7} className="text-center py-8 text-slate-550 font-sans">
+                        <td colSpan={activeCycle.data?.modal?.sistem_kolam === 'bioflok' ? 9 : 7} className="text-center py-8 text-[#3C3530]/65 font-sans">
                           Belum ada data monitoring kualitas air.
                         </td>
                       </tr>
                     ) : (
                       (activeCycle.data?.kualitas_air || []).map((w: any, i: number) => (
-                        <tr key={i} className="hover:bg-slate-900/10">
+                        <tr key={i} className="hover:bg-[#FCFAF6]/10">
                           <td className="px-4 py-3.5">{w.tgl}</td>
                           <td className="px-4 py-3.5 text-center">{w.suhu}°C</td>
                           <td className="px-4 py-3.5 text-center">{w.ph}</td>
@@ -5870,7 +5872,7 @@ export default function DashboardPage() {
                             </>
                           )}
                           <td className="px-4 py-3.5 text-center font-sans">
-                            <button onClick={() => handleDeleteListItem('kualitas_air', i)} className="text-rose-500 hover:text-rose-400 font-bold px-2">✕</button>
+                            <button onClick={() => handleDeleteListItem('kualitas_air', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold px-2">✕</button>
                           </td>
                         </tr>
                       ))
@@ -5880,7 +5882,7 @@ export default function DashboardPage() {
               </div>
               <button
                 onClick={() => openModalForm('modal_air_ikan')}
-                className="w-full py-3 bg-slate-950/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                className="w-full py-3 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
               >
                 + Catat Kualitas Air
               </button>
@@ -5890,33 +5892,33 @@ export default function DashboardPage() {
 
         {/* --- TAB: PEMIJAHAN (IKAN PEMBIBITAN) --- */}
         {activeTab === 'pemijahan' && (
-          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+          <div className="max-w-xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-[#3C3530] flex items-center justify-between font-sans">
               <span>💓 Log Pemijahan Induk</span>
-              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono font-bold">
                 {(activeCycle.data?.pemijahan || []).length} Catatan
               </span>
             </h3>
 
             <div className="space-y-3">
               {(activeCycle.data?.pemijahan || []).length === 0 ? (
-                <div className="text-center py-10 text-slate-500 text-xs">Belum ada data pemijahan dicatat.</div>
+                <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada data pemijahan dicatat.</div>
               ) : (
                 (activeCycle.data?.pemijahan || []).map((p: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                  <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                     <div>
-                      <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl}</div>
-                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                      <div className="text-xs font-bold text-[#3C3530] font-sans">{p.tgl}</div>
+                      <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">
                         Jantan: {p.jantan_ekor || 0} ekor · Betina: {p.betina_ekor || 0} ekor · Est. Telur: {p.est_telur?.toLocaleString('id-ID')} butir
                       </div>
                     </div>
-                    <button onClick={() => handleDeleteListItem('pemijahan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                    <button onClick={() => handleDeleteListItem('pemijahan', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                   </div>
                 ))
               )}
               <button
                 onClick={() => openModalForm('modal_pemijahan')}
-                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
               >
                 + Catat Pemijahan Baru
               </button>
@@ -5929,53 +5931,53 @@ export default function DashboardPage() {
           <div className="max-w-xl mx-auto space-y-6 animate-fadeIn font-semibold">
             {/* Summary statistics */}
             <div className="grid grid-cols-3 gap-4">
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
-                <span className="text-[9px] text-slate-500 block uppercase font-black">Telur Dibuahi</span>
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center">
+                <span className="text-[9px] text-[#3C3530]/60 block uppercase font-black">Telur Dibuahi</span>
                 <span className="text-sm font-extrabold text-white mt-1 block font-mono">
                   {stats?.telurDibuahi?.toLocaleString('id-ID') || '0'}
                 </span>
               </div>
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
-                <span className="text-[9px] text-slate-500 block uppercase font-black">Larva Menetas</span>
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center">
+                <span className="text-[9px] text-[#3C3530]/60 block uppercase font-black">Larva Menetas</span>
                 <span className="text-sm font-extrabold text-white mt-1 block font-mono">
                   {stats?.telurMenetas?.toLocaleString('id-ID') || '0'}
                 </span>
               </div>
-              <div className="bg-slate-900/30 border border-slate-850 p-4 rounded-2xl text-center">
-                <span className="text-[9px] text-slate-500 block uppercase font-black">Daya Tetas</span>
-                <span className="text-sm font-extrabold text-teal-450 mt-1 block font-mono">
+              <div className="bg-[#FCFAF6] border border-[#EADDC9] p-4 rounded-2xl text-center">
+                <span className="text-[9px] text-[#3C3530]/60 block uppercase font-black">Daya Tetas</span>
+                <span className="text-sm font-extrabold text-[#859681] mt-1 block font-mono">
                   {stats?.dayaTetas?.toFixed(1) || '0.0'}%
                 </span>
               </div>
             </div>
 
-            <div className="bg-[#0B1416] border border-slate-850 p-6 rounded-3xl space-y-4">
-              <h3 className="text-sm font-bold text-slate-200 flex justify-between font-sans">
+            <div className="bg-[#0B1416] border border-[#EADDC9] p-6 rounded-3xl space-y-4">
+              <h3 className="text-sm font-bold text-[#3C3530] flex justify-between font-sans">
                 <span>🐣 Catatan Hasil Penetasan</span>
-                <span className="text-[10px] px-2 bg-slate-950 text-slate-400 rounded font-mono font-normal">
+                <span className="text-[10px] px-2 bg-[#FAF7F0] text-[#3C3530]/80 rounded font-mono font-normal">
                   {(activeCycle.data?.penetasan || []).length} Log
                 </span>
               </h3>
 
               <div className="space-y-3">
                 {(activeCycle.data?.penetasan || []).length === 0 ? (
-                  <div className="text-center py-10 text-slate-500 text-xs font-sans">Belum ada data penetasan dicatat.</div>
+                  <div className="text-center py-10 text-[#3C3530]/60 text-xs font-sans">Belum ada data penetasan dicatat.</div>
                 ) : (
                   (activeCycle.data?.penetasan || []).map((p: any, i: number) => (
-                    <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                    <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                       <div>
-                        <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl}</div>
-                        <div className="text-[10px] text-slate-500 mt-1 font-bold">
-                          Berhasil (Larva): <strong className="text-emerald-450">{p.berhasil_larva?.toLocaleString('id-ID')} ekor</strong> · Gagal: {p.gagal_butir?.toLocaleString('id-ID')} butir
+                        <div className="text-xs font-bold text-[#3C3530] font-sans">{p.tgl}</div>
+                        <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">
+                          Berhasil (Larva): <strong className="text-[#859681]">{p.berhasil_larva?.toLocaleString('id-ID')} ekor</strong> · Gagal: {p.gagal_butir?.toLocaleString('id-ID')} butir
                         </div>
                       </div>
-                      <button onClick={() => handleDeleteListItem('penetasan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2 font-sans">✕</button>
+                      <button onClick={() => handleDeleteListItem('penetasan', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2 font-sans">✕</button>
                     </div>
                   ))
                 )}
                 <button
                   onClick={() => openModalForm('modal_penetasan_ikan')}
-                  className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                  className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
                 >
                   + Catat Hasil Penetasan
                 </button>
@@ -5986,33 +5988,33 @@ export default function DashboardPage() {
 
         {/* --- TAB: PENDEDERAN LOG (IKAN PEMBIBITAN) --- */}
         {activeTab === 'pendederan' && (
-          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn">
-            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+          <div className="max-w-xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 animate-fadeIn">
+            <h3 className="text-lg font-bold text-[#3C3530] flex items-center justify-between font-sans">
               <span>🌿 Log Harian Pendederan</span>
-              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono font-bold">
                 {(activeCycle.data?.harian || []).length} Catatan
               </span>
             </h3>
 
             <div className="space-y-3">
               {(activeCycle.data?.harian || []).length === 0 ? (
-                <div className="text-center py-10 text-slate-500 text-xs">Belum ada log pendederan dicatat.</div>
+                <div className="text-center py-10 text-[#3C3530]/60 text-xs">Belum ada log pendederan dicatat.</div>
               ) : (
                 (activeCycle.data?.harian || []).map((h: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                  <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                     <div>
-                      <div className="text-xs font-bold text-slate-200 font-sans">{h.tgl}</div>
-                      <div className="text-[10px] text-slate-500 mt-1 font-bold">
+                      <div className="text-xs font-bold text-[#3C3530] font-sans">{h.tgl}</div>
+                      <div className="text-[10px] text-[#3C3530]/60 mt-1 font-bold">
                         Pakan: {h.pakan_kg || 0} kg · Air: {h.air || 0} L · Kematian: {h.mati || 0} ekor
                       </div>
                     </div>
-                    <button onClick={() => handleDeleteListItem('harian', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2">✕</button>
+                    <button onClick={() => handleDeleteListItem('harian', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2">✕</button>
                   </div>
                 ))
               )}
               <button
                 onClick={() => openModalForm('modal_harian_pedaging')}
-                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
               >
                 + Catat Log Harian Pendederan
               </button>
@@ -6022,36 +6024,36 @@ export default function DashboardPage() {
 
         {/* --- TAB: PENJUALAN BENIH (IKAN PEMBIBITAN) --- */}
         {activeTab === 'penjualan' && activeCycle.mode === 'ikan_pembibitan' && (
-          <div className="max-w-xl mx-auto bg-slate-900/30 border border-slate-850 p-6 rounded-3xl space-y-6 animate-fadeIn font-semibold">
-            <h3 className="text-lg font-bold text-slate-250 flex items-center justify-between font-sans">
+          <div className="max-w-xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-6 rounded-3xl space-y-6 animate-fadeIn font-semibold">
+            <h3 className="text-lg font-bold text-[#3C3530] flex items-center justify-between font-sans">
               <span>💰 Data Penjualan Benih</span>
-              <span className="text-[10px] px-2.5 py-0.5 bg-teal-950/40 text-teal-400 rounded-md font-mono font-bold">
+              <span className="text-[10px] px-2.5 py-0.5 bg-[#859681]/15 text-[#859681] rounded-md font-mono font-bold">
                 {(activeCycle.data?.penjualan || []).length} Transaksi
               </span>
             </h3>
 
             <div className="space-y-3">
               {(activeCycle.data?.penjualan || []).length === 0 ? (
-                <div className="text-center py-10 text-slate-500 text-xs font-sans">Belum ada penjualan benih dicatat.</div>
+                <div className="text-center py-10 text-[#3C3530]/60 text-xs font-sans">Belum ada penjualan benih dicatat.</div>
               ) : (
                 (activeCycle.data?.penjualan || []).map((p: any, i: number) => (
-                  <div key={i} className="flex justify-between items-center bg-slate-950 p-4 rounded-2xl border border-slate-850/80 font-mono">
+                  <div key={i} className="flex justify-between items-center bg-[#FAF7F0] p-4 rounded-2xl border border-[#EADDC9] font-mono">
                     <div>
-                      <div className="text-xs font-bold text-slate-200 font-sans">{p.tgl} — {p.jml?.toLocaleString('id-ID')} Ekor</div>
-                      <div className="text-[10px] text-slate-550 mt-1 font-bold">
+                      <div className="text-xs font-bold text-[#3C3530] font-sans">{p.tgl} — {p.jml?.toLocaleString('id-ID')} Ekor</div>
+                      <div className="text-[10px] text-[#3C3530]/65 mt-1 font-bold">
                         Harga: {formatRp(p.harga_ekor)}/ekor · Ukuran: {p.ukuran_cm || '-'} cm
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-emerald-450">{formatRp(p.total)}</span>
-                      <button onClick={() => handleDeleteListItem('penjualan', i)} className="text-rose-500 hover:text-rose-400 font-bold p-2 font-sans">✕</button>
+                      <span className="text-xs font-black text-[#859681]">{formatRp(p.total)}</span>
+                      <button onClick={() => handleDeleteListItem('penjualan', i)} className="text-[#A76A57] hover:text-[#A76A57] font-bold p-2 font-sans">✕</button>
                     </div>
                   </div>
                 ))
               )}
               <button
                 onClick={() => openModalForm('modal_jual_benih')}
-                className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
+                className="w-full mt-6 py-3 bg-[#FAF7F0]/40 hover:bg-[#EADDC9] text-[#859681] font-bold rounded-xl border border-[#EADDC9] transition-all text-xs"
               >
                 + Catat Penjualan Benih Baru
               </button>
@@ -6068,17 +6070,17 @@ export default function DashboardPage() {
               'Kelola peternakan Anda bersama tim secara kolaboratif (Boss & Pekerja). Fitur multi-user ini hanya tersedia pada paket ENTERPRISE.'
             )
           ) : (
-            <div className="max-w-3xl mx-auto bg-slate-900/30 border border-slate-850 p-8 rounded-3xl space-y-8 animate-fadeIn">
-              <h3 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+            <div className="max-w-3xl mx-auto bg-[#FCFAF6] border border-[#EADDC9] p-8 rounded-3xl space-y-8 animate-fadeIn">
+              <h3 className="text-xl font-bold text-[#3C3530] flex items-center gap-2">
                 <span>👥</span> Kelola Anggota Tim (Pekerja)
               </h3>
-              <p className="text-sm text-slate-450 leading-relaxed font-semibold">
+              <p className="text-sm text-[#3C3530]/75 leading-relaxed font-semibold">
                 Sebagai pemilik (Boss), Anda dapat mendaftarkan akun pekerja untuk mencatat data harian peternakan. Pekerja hanya dapat menginput data dan tidak diizinkan untuk menghapus data.
               </p>
 
               {/* Form Tambah Anggota */}
-              <form onSubmit={handleAddTeamMember} className="space-y-4 bg-slate-955/20 p-6 rounded-2xl border border-slate-850">
-                <h4 className="text-xs font-black text-slate-200 uppercase tracking-widest">Tambah Pekerja Baru</h4>
+              <form onSubmit={handleAddTeamMember} className="space-y-4 bg-[#FAF7F0]/20 p-6 rounded-2xl border border-[#EADDC9]">
+                <h4 className="text-xs font-black text-[#3C3530] uppercase tracking-widest">Tambah Pekerja Baru</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <input
                     type="text"
@@ -6086,7 +6088,7 @@ export default function DashboardPage() {
                     placeholder="Nama Lengkap"
                     value={newMemberName}
                     onChange={(e) => setNewMemberName(e.target.value)}
-                    className="bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 font-semibold"
+                    className="bg-[#FCFAF6]/60 border border-[#EADDC9] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] font-semibold"
                   />
                   <input
                     type="email"
@@ -6094,7 +6096,7 @@ export default function DashboardPage() {
                     placeholder="Email Pekerja"
                     value={newMemberEmail}
                     onChange={(e) => setNewMemberEmail(e.target.value)}
-                    className="bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 font-semibold"
+                    className="bg-[#FCFAF6]/60 border border-[#EADDC9] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] font-semibold"
                   />
                   <input
                     type="password"
@@ -6102,7 +6104,7 @@ export default function DashboardPage() {
                     placeholder="Password Akun"
                     value={newMemberPassword}
                     onChange={(e) => setNewMemberPassword(e.target.value)}
-                    className="bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500 font-semibold"
+                    className="bg-[#FCFAF6]/60 border border-[#EADDC9] rounded-xl px-4 py-2.5 text-xs text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] font-semibold"
                   />
                 </div>
                 <button
@@ -6116,10 +6118,10 @@ export default function DashboardPage() {
 
               {/* Daftar Anggota */}
               <div className="space-y-3">
-                <h4 className="text-xs font-black text-slate-200 uppercase tracking-widest">Daftar Tim Aktif</h4>
-                <div className="border border-slate-850 rounded-2xl overflow-hidden bg-slate-950/20">
+                <h4 className="text-xs font-black text-[#3C3530] uppercase tracking-widest">Daftar Tim Aktif</h4>
+                <div className="border border-[#EADDC9] rounded-2xl overflow-hidden bg-[#FAF7F0]/40">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-slate-900 text-slate-400 font-bold uppercase tracking-wider">
+                    <thead className="bg-[#FCFAF6] text-[#3C3530]/80 font-bold uppercase tracking-wider">
                       <tr>
                         <th className="px-6 py-3">Nama</th>
                         <th className="px-6 py-3">Email</th>
@@ -6127,7 +6129,7 @@ export default function DashboardPage() {
                         <th className="px-6 py-3">Tanggal Dibuat</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-850 text-slate-300 font-medium">
+                    <tbody className="divide-y divide-[#EADDC9] text-[#3C3530]/90 font-medium">
                       {teamMembers.map((member) => (
                         <tr key={member.id}>
                           <td className="px-6 py-4">{member.name}</td>
@@ -6135,8 +6137,8 @@ export default function DashboardPage() {
                           <td className="px-6 py-4">
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                               member.role === 'OWNER' 
-                                ? 'bg-teal-500/10 text-teal-400 border border-teal-500/20' 
-                                : 'bg-slate-800 text-slate-400 border border-slate-700/30'
+                                ? 'bg-[#859681]/15 text-[#859681] border border-[#859681]/20' 
+                                : 'bg-[#EADDC9]/35 text-[#3C3530]/80 border border-[#EADDC9]/30'
                             }`}>
                               {member.role === 'OWNER' ? 'BOSS (Owner)' : 'PEKERJA (Member)'}
                             </span>
@@ -6198,28 +6200,28 @@ export default function DashboardPage() {
 
       {/* --- DYNAMIC INPUT MODAL --- */}
       {activeModal && activeModal !== 'new_cycle_wizard' && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-md relative shadow-2xl">
+        <div className="fixed inset-0 bg-[#3C3530]/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-[#FCFAF6] border border-[#EADDC9] rounded-3xl p-6 w-full max-w-md relative shadow-2xl text-[#3C3530]">
             <button
               onClick={() => setActiveModal(null)}
-              className="absolute top-4 right-4 w-7 h-7 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 rounded-full flex items-center justify-center transition-colors"
+              className="absolute top-4 right-4 w-7 h-7 bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#3C3530]/70 hover:text-[#3C3530] rounded-full flex items-center justify-center border border-[#EADDC9] transition-colors"
             >
               ✕
             </button>
 
-            <h3 className="text-lg font-black text-slate-100 mb-6">{modalTitle}</h3>
+            <h3 className="text-lg font-black text-[#3C3530] mb-6 font-serif">{modalTitle}</h3>
 
             <form onSubmit={handleModalFormSubmit} className="space-y-4">
               
               {formFields.tgl !== undefined && (
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tanggal</label>
+                  <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal</label>
                   <input
                     type="date"
                     required
                     value={formFields.tgl}
                     onChange={(e) => updateFormField('tgl', e.target.value)}
-                    className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                    className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                   />
                 </div>
               )}
@@ -6229,7 +6231,7 @@ export default function DashboardPage() {
                 <>
                   {activeCycle?.data?.resep_pakan && activeCycle.data.resep_pakan.length > 0 && (
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Gunakan Resep Formulator</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Gunakan Resep Formulator</label>
                       <select
                         onChange={(e) => {
                           const val = e.target.value;
@@ -6241,7 +6243,7 @@ export default function DashboardPage() {
                               harga_sak: ''
                             }));
                           } else {
-                            const recipe = activeCycle.data.resep_pakan.find((r: any) => r.id === val);
+                            const recipe = activeCycle?.data?.resep_pakan?.find((r: any) => r.id === val);
                             if (recipe) {
                               setFormFields((prev: any) => {
                                 const next = {
@@ -6259,11 +6261,11 @@ export default function DashboardPage() {
                           }
                         }}
                         defaultValue="manual"
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold cursor-pointer"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold cursor-pointer"
                       >
                         <option value="manual">-- Input Manual (Bukan Formulasi) --</option>
                         {activeCycle.data.resep_pakan.map((r: any) => (
-                          <option key={r.id} value={r.id} className="bg-slate-900">
+                          <option key={r.id} value={r.id} className="bg-[#FCFAF6]">
                             {r.nama} ({r.result.pk}% PK · Rp {r.result.biaya_kg.toLocaleString('id-ID')}/kg)
                           </option>
                         ))}
@@ -6271,49 +6273,49 @@ export default function DashboardPage() {
                     </div>
                   )}
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jenis Pakan</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jenis Pakan</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Pakan Broiler Starter"
                       value={formFields.jenis}
                       onChange={(e) => updateFormField('jenis', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Sak</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Sak</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 10"
                         value={formFields.sak}
                         onChange={(e) => updateFormField('sak', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Berat per Sak (kg)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Berat per Sak (kg)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 50"
                         value={formFields.kg_sak}
                         onChange={(e) => updateFormField('kg_sak', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Sak (Rp)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Sak (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 350000"
                       value={formFields.harga_sak}
                       onChange={(e) => updateFormField('harga_sak', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6323,35 +6325,35 @@ export default function DashboardPage() {
               {activeModal === 'modal_obat' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Nama Obat/Vaksin</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Nama Obat/Vaksin</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Vitamin A, Vaksin Gumboro"
                       value={formFields.nama}
                       onChange={(e) => updateFormField('nama', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Keterangan</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Keterangan</label>
                     <input
                       type="text"
                       placeholder="Contoh: Dosis 5ml per ekor"
                       value={formFields.ket}
                       onChange={(e) => updateFormField('ket', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Biaya Obat (Rp)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Biaya Obat (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 150000"
                       value={formFields.total}
                       onChange={(e) => updateFormField('total', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6361,35 +6363,35 @@ export default function DashboardPage() {
               {activeModal === 'modal_lain' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Nama Pengeluaran</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Nama Pengeluaran</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Sekam Kandang, Gaji Pekerja"
                       value={formFields.nama}
                       onChange={(e) => updateFormField('nama', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Keterangan</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Keterangan</label>
                     <input
                       type="text"
                       placeholder="Contoh: Tambahan sekam 10 karung"
                       value={formFields.ket}
                       onChange={(e) => updateFormField('ket', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Biaya (Rp)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Biaya (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 200000"
                       value={formFields.total}
                       onChange={(e) => updateFormField('total', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6399,7 +6401,7 @@ export default function DashboardPage() {
               {activeModal === 'modal_panen_broiler' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Panen (kg)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Panen (kg)</label>
                     <input
                       type="number"
                       required
@@ -6407,29 +6409,29 @@ export default function DashboardPage() {
                       placeholder="Contoh: 1200"
                       value={formFields.kg}
                       onChange={(e) => updateFormField('kg', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga Jual per kg (Rp)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga Jual per kg (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 22000"
                       value={formFields.harga_kg}
                       onChange={(e) => updateFormField('harga_kg', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ayam Kematian (Ekor)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Ayam Kematian (Ekor)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 10"
                       value={formFields.jml_mati}
                       onChange={(e) => updateFormField('jml_mati', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6439,46 +6441,46 @@ export default function DashboardPage() {
               {activeModal === 'modal_harian_petelur' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Telur (Butir)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Telur (Butir)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 350"
                       value={formFields.butir}
                       onChange={(e) => updateFormField('butir', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Berat Telur (kg)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Berat Telur (kg)</label>
                     <input
                       type="number"
                       step="0.1"
                       placeholder="Contoh: 20"
                       value={formFields.kg}
                       onChange={(e) => updateFormField('kg', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Telur Retak / BS (Butir)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Telur Retak / BS (Butir)</label>
                     <input
                       type="number"
                       placeholder="Contoh: 5"
                       value={formFields.retak}
                       onChange={(e) => updateFormField('retak', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   {activeCycle?.mode === 'bebek_petelur' && (
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Konsumsi Air Aktual (Liter)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Konsumsi Air Aktual (Liter)</label>
                       <input
                         type="number"
                         placeholder="Contoh: 150"
                         value={formFields.air}
                         onChange={(e) => updateFormField('air', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   )}
@@ -6489,36 +6491,36 @@ export default function DashboardPage() {
               {activeModal === 'modal_harian_pedaging' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Konsumsi Air Harian (Liter)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Konsumsi Air Harian (Liter)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 120"
                       value={formFields.air}
                       onChange={(e) => updateFormField('air', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Konsumsi Pakan Harian (kg)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Konsumsi Pakan Harian (kg)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 60"
                       value={formFields.pakan_kg}
                       onChange={(e) => updateFormField('pakan_kg', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kematian Harian (Ekor)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Kematian Harian (Ekor)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 2"
                       value={formFields.mati}
                       onChange={(e) => updateFormField('mati', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6528,7 +6530,7 @@ export default function DashboardPage() {
               {activeModal === 'modal_jual_petelur' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Jual (kg)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Jual (kg)</label>
                     <input
                       type="number"
                       required
@@ -6536,18 +6538,18 @@ export default function DashboardPage() {
                       placeholder="Contoh: 50"
                       value={formFields.kg}
                       onChange={(e) => updateFormField('kg', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per kg (Rp)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per kg (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 28000"
                       value={formFields.harga_kg}
                       onChange={(e) => updateFormField('harga_kg', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6557,11 +6559,11 @@ export default function DashboardPage() {
               {(activeModal === 'modal_biaya_ruminansia' || activeModal === 'modal_biaya_susu') && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jenis Pengeluaran</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jenis Pengeluaran</label>
                     <select
                       value={formFields.type}
                       onChange={(e) => updateFormField('type', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-[#3C3530] text-xs font-semibold"
                     >
                       <option value="pakan">Pakan / Hijauan / Konsentrat</option>
                       <option value="obat">Kesehatan / Obat / Hormon / IB</option>
@@ -6569,36 +6571,36 @@ export default function DashboardPage() {
                     </select>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Detail Nama Pengeluaran</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Detail Nama Pengeluaran</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Jerami Fermentasi, Vitamin ADE"
                       value={formFields.nama}
                       onChange={(e) => updateFormField('nama', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Volume Berat (kg)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Volume Berat (kg)</label>
                       <input
                         type="number"
                         placeholder="Contoh: 100"
                         value={formFields.kg}
                         onChange={(e) => updateFormField('kg', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Biaya (Rp)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Biaya (Rp)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 250000"
                         value={formFields.total}
                         onChange={(e) => updateFormField('total', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   </div>
@@ -6610,18 +6612,18 @@ export default function DashboardPage() {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor Dijual</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Ekor Dijual</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 5"
                         value={formFields.jml_jual}
                         onChange={(e) => updateFormField('jml_jual', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">BB Akhir Rata2 (kg)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">BB Akhir Rata2 (kg)</label>
                       <input
                         type="number"
                         required
@@ -6629,30 +6631,30 @@ export default function DashboardPage() {
                         placeholder="Contoh: 400"
                         value={formFields.bb_akhir}
                         onChange={(e) => updateFormField('bb_akhir', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga Jual per kg (Rp)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga Jual per kg (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 55000"
                       value={formFields.harga_kg}
                       onChange={(e) => updateFormField('harga_kg', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kematian (Ekor)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Kematian (Ekor)</label>
                     <input
                       type="number"
                       required
                       placeholder="0"
                       value={formFields.jml_mati}
                       onChange={(e) => updateFormField('jml_mati', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6662,7 +6664,7 @@ export default function DashboardPage() {
               {activeModal === 'modal_harian_susu' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Total Produksi Susu (Liter)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Total Produksi Susu (Liter)</label>
                     <input
                       type="number"
                       required
@@ -6670,18 +6672,18 @@ export default function DashboardPage() {
                       placeholder="Contoh: 50"
                       value={formFields.liter}
                       onChange={(e) => updateFormField('liter', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kadar Lemak Susu % (Opsional)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Kadar Lemak Susu % (Opsional)</label>
                     <input
                       type="number"
                       step="0.01"
                       placeholder="Contoh: 4.2"
                       value={formFields.kadar_lemak || ''}
                       onChange={(e) => updateFormField('kadar_lemak', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono"
                     />
                   </div>
                 </>
@@ -6691,7 +6693,7 @@ export default function DashboardPage() {
               {activeModal === 'modal_jual_susu' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Volume Disetor (Liter)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Volume Disetor (Liter)</label>
                     <input
                       type="number"
                       required
@@ -6699,18 +6701,18 @@ export default function DashboardPage() {
                       placeholder="Contoh: 150"
                       value={formFields.liter}
                       onChange={(e) => updateFormField('liter', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Liter (Rp)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Liter (Rp)</label>
                     <input
                       type="number"
                       required
                       placeholder="Contoh: 7000"
                       value={formFields.harga_liter}
                       onChange={(e) => updateFormField('harga_liter', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6720,57 +6722,57 @@ export default function DashboardPage() {
               {activeModal === 'modal_kelahiran' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Indukan Betina</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">ID / Tag Indukan Betina</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: A-01, B-03"
                       value={formFields.id_induk}
                       onChange={(e) => updateFormField('id_induk', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Anak Jantan</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Anak Jantan</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 1"
                         value={formFields.jantan}
                         onChange={(e) => updateFormField('jantan', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Anak Betina</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Anak Betina</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 1"
                         value={formFields.betina}
                         onChange={(e) => updateFormField('betina', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tanggal Kawin (Mulai Kebuntingan - Opsional)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tanggal Kawin (Mulai Kebuntingan - Opsional)</label>
                     <input
                       type="date"
                       value={formFields.tgl_kawin || ''}
                       onChange={(e) => updateFormField('tgl_kawin', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold font-mono"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold font-mono"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Pejantan (Opsional)</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">ID / Tag Pejantan (Opsional)</label>
                     <input
                       type="text"
                       placeholder="Contoh: P-99"
                       value={formFields.id_pejantan || ''}
                       onChange={(e) => updateFormField('id_pejantan', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                 </>
@@ -6780,33 +6782,33 @@ export default function DashboardPage() {
               {activeModal === 'modal_perkawinan' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Indukan Betina</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">ID / Tag Indukan Betina</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: A-01, B-03"
                       value={formFields.id_induk}
                       onChange={(e) => updateFormField('id_induk', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">ID / Tag Pejantan</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">ID / Tag Pejantan</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: P-02, P-05"
                       value={formFields.id_pejantan}
                       onChange={(e) => updateFormField('id_pejantan', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Status Hasil Perkawinan</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Status Hasil Perkawinan</label>
                     <select
                       value={formFields.status}
                       onChange={(e) => updateFormField('status', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold cursor-pointer"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-[#3C3530] text-xs font-semibold cursor-pointer"
                     >
                       <option value="menunggu">Menunggu Konfirmasi / Cek Bunting</option>
                       <option value="bunting">Berhasil (Bunting)</option>
@@ -6821,11 +6823,11 @@ export default function DashboardPage() {
                 <>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Kategori</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Kategori</label>
                       <select
                         value={formFields.kategori}
                         onChange={(e) => updateFormField('kategori', e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-[#3C3530] text-xs font-semibold"
                       >
                         <option>Bakalan</option>
                         <option>Afkir Betina</option>
@@ -6834,11 +6836,11 @@ export default function DashboardPage() {
                       </select>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jenis Kelamin</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jenis Kelamin</label>
                       <select
                         value={formFields.jenis}
                         onChange={(e) => updateFormField('jenis', e.target.value)}
-                        className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-[#3C3530] text-xs font-semibold"
                       >
                         <option value="jantan">Jantan</option>
                         <option value="betina">Betina</option>
@@ -6847,25 +6849,25 @@ export default function DashboardPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah (Ekor)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah (Ekor)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 2"
                         value={formFields.jml}
                         onChange={(e) => updateFormField('jml', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 3500000"
                         value={formFields.harga_ekor}
                         onChange={(e) => updateFormField('harga_ekor', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   </div>
@@ -6876,37 +6878,37 @@ export default function DashboardPage() {
               {activeModal === 'modal_telur_pembibitan' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Periode</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Periode</label>
                     <input
                       type="text"
                       required
                       placeholder="Contoh: Minggu ke-1"
                       value={formFields.periode}
                       onChange={(e) => updateFormField('periode', e.target.value)}
-                      className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">T. Dikumpulkan (Butir)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">T. Dikumpulkan (Butir)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 200"
                         value={formFields.dikumpulkan}
                         onChange={(e) => updateFormField('dikumpulkan', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Masuk Tetas (Butir)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Masuk Tetas (Butir)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 180"
                         value={formFields.masuk_tetas}
                         onChange={(e) => updateFormField('masuk_tetas', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   </div>
@@ -6917,11 +6919,11 @@ export default function DashboardPage() {
               {activeModal === 'modal_jual_doc' && (
                 <>
                   <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Tipe Penjualan</label>
+                    <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Tipe Penjualan</label>
                     <select
                       value={formFields.tipe}
                       onChange={(e) => updateFormField('tipe', e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-slate-200 focus:outline-none text-xs font-bold"
+                      className="w-full bg-[#FAF7F0] border border-[#EADDC9] focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] focus:outline-none rounded-xl px-3 py-2.5 text-[#3C3530] text-xs font-semibold"
                     >
                       <option>DOC</option>
                       <option>Ayam Remaja</option>
@@ -6930,25 +6932,25 @@ export default function DashboardPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Jumlah Ekor</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Jumlah Ekor</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 100"
                         value={formFields.jml}
                         onChange={(e) => updateFormField('jml', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
+                      <label className="text-[10px] font-bold text-[#3C3530]/60 block uppercase tracking-wider">Harga per Ekor (Rp)</label>
                       <input
                         type="number"
                         required
                         placeholder="Contoh: 8000"
                         value={formFields.harga_ekor}
                         onChange={(e) => updateFormField('harga_ekor', e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-850 rounded-xl px-4 py-2.5 text-slate-200 focus:outline-none focus:border-teal-500 transition-all font-semibold"
+                        className="w-full bg-[#FAF7F0] border border-[#EADDC9] rounded-xl px-4 py-2.5 text-[#3C3530] focus:outline-none focus:ring-2 focus:ring-[#859681]/30 focus:border-[#859681] transition-all font-semibold"
                       />
                     </div>
                   </div>
@@ -6956,7 +6958,7 @@ export default function DashboardPage() {
               )}
 
               {previewVal && (
-                <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold font-mono">
+                <div className="bg-[#859681]/15 border-[#859681]/20 text-[#4D5D4A] p-3.5 rounded-2xl flex justify-between items-center text-xs font-bold font-mono">
                   <span className="font-sans">Estimasi Total Biaya/Penjualan:</span>
                   <span className="text-sm font-black">{previewVal}</span>
                 </div>
@@ -6964,7 +6966,7 @@ export default function DashboardPage() {
 
               <button
                 type="submit"
-                className="w-full mt-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-teal-900/20 text-xs uppercase tracking-wider"
+                className="w-full mt-6 py-3.5 bg-[#859681] hover:bg-[#748570] text-[#FCFAF6] font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider shadow-sm"
               >
                 Simpan Catatan
               </button>
@@ -6974,34 +6976,18 @@ export default function DashboardPage() {
       )}
 
       {/* --- NEW CYCLE WIZARD OVERLAY --- */}
-      {activeModal === 'new_cycle_wizard' && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn overflow-y-auto">
-          <div className="bg-[#070e10] border border-teal-500/10 rounded-3xl p-6 w-full max-w-4xl relative shadow-2xl my-8">
-            <NewCycleWizard
-              profile={profile}
-              onClose={() => setActiveModal(null)}
-              onSubmit={async (name, animal, scaleStr, modalData) => {
-                await handleCreateCycle(name, animal, scaleStr, modalData);
-                setActiveModal(null);
-              }}
-              isModal={true}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* --- CONFIRMATION DIALOG MODAL --- */}
+         {/* --- CONFIRMATION DIALOG MODAL --- */}
       {confirmModal.show && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl">
+        <div className="fixed inset-0 bg-[#3C3530]/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn">
+          <div className="bg-[#FCFAF6] border border-[#EADDC9] rounded-3xl p-6 w-full max-w-sm text-center shadow-2xl text-[#3C3530]">
             <span className="text-5xl block mb-4">⚠️</span>
-            <h3 className="text-lg font-bold text-slate-100 mb-2">{confirmModal.title}</h3>
-            <p className="text-xs text-slate-400 mb-6 leading-relaxed font-semibold">{confirmModal.msg}</p>
+            <h3 className="text-lg font-bold text-[#3C3530] mb-2 font-serif">{confirmModal.title}</h3>
+            <p className="text-xs text-[#3C3530]/75 mb-6 leading-relaxed font-semibold">{confirmModal.msg}</p>
 
             <div className="flex gap-3">
               <button
                 onClick={() => setConfirmModal((prev) => ({ ...prev, show: false }))}
-                className="flex-1 py-2.5 border border-slate-800 hover:bg-slate-800 text-slate-300 font-bold rounded-xl text-xs transition-colors"
+                className="flex-1 py-2.5 border border-[#EADDC9] bg-[#FAF7F0] hover:bg-[#EADDC9] text-[#3C3530] font-bold rounded-xl text-xs transition-colors"
               >
                 Batal
               </button>
@@ -7018,21 +7004,21 @@ export default function DashboardPage() {
 
       {/* --- BILLING / UPGRADE MODAL --- */}
       {billingModalOpen && (
-        <div className="fixed inset-0 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fadeIn overflow-y-auto">
-          <div className="bg-[#0b1f22] border border-teal-500/20 rounded-3xl p-8 w-full max-w-4xl shadow-2xl relative my-8">
+        <div className="fixed inset-0 bg-[#3C3530]/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fadeIn overflow-y-auto">
+          <div className="bg-[#FCFAF6] border border-[#EADDC9] rounded-3xl p-8 w-full max-w-4xl shadow-2xl relative my-8">
             <button
               onClick={() => setBillingModalOpen(false)}
-              className="absolute top-4 right-4 w-8 h-8 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 rounded-full flex items-center justify-center transition-all border border-slate-800"
+              className="absolute top-4 right-4 w-8 h-8 bg-[#FCFAF6] hover:bg-[#EADDC9] text-[#3C3530]/80 hover:text-[#3C3530] rounded-full flex items-center justify-center transition-all border border-[#EADDC9]"
             >
               &times;
             </button>
 
             <div className="text-center mb-8">
-              <span className="px-3 py-1 bg-teal-500/10 border border-teal-500/20 text-teal-400 rounded-full text-[10px] font-extrabold uppercase tracking-widest">
+              <span className="px-3 py-1 bg-[#859681]/15 border border-[#859681]/20 text-[#859681] rounded-full text-[10px] font-extrabold uppercase tracking-widest">
                 Radeya Premium
               </span>
-              <h3 className="text-2xl font-black text-slate-100 mt-3">Pilih Paket Langganan Peternakan Anda</h3>
-              <p className="text-xs text-slate-450 mt-1 max-w-md mx-auto">
+              <h3 className="text-2xl font-black text-[#3C3530] mt-3">Pilih Paket Langganan Peternakan Anda</h3>
+              <p className="text-xs text-[#3C3530]/75 mt-1 max-w-md mx-auto">
                 Buka seluruh potensi otomatisasi Radeya SaaS untuk meningkatkan efisiensi dan laba peternakan Anda harian.
               </p>
             </div>
@@ -7040,30 +7026,30 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
               {/* Card FREE */}
-              <div className="bg-slate-950/40 border border-slate-900 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+              <div className="bg-[#FAF7F0] border border-[#EADDC9] rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
                 <div>
-                  <h4 className="text-sm font-black text-slate-300">FREE TIER</h4>
+                  <h4 className="text-sm font-black text-[#3C3530]/90">FREE TIER</h4>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-slate-200">Rp 0</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">/ Selamanya</span>
+                    <span className="text-2xl font-black text-[#3C3530]">Rp 0</span>
+                    <span className="text-[10px] text-[#3C3530]/60 font-bold uppercase">/ Selamanya</span>
                   </div>
-                  <p className="text-[11px] text-slate-450 mt-3 leading-relaxed">
+                  <p className="text-[11px] text-[#3C3530]/75 mt-3 leading-relaxed">
                     Sangat cocok untuk peternak pemula skala kecil rumahan.
                   </p>
-                  <ul className="mt-6 space-y-3.5 text-[11px] text-slate-400 font-bold">
+                  <ul className="mt-6 space-y-3.5 text-[11px] text-[#3C3530]/80 font-bold">
                     <li className="flex items-center gap-2">
-                      <span className="text-teal-400">✓</span> 3 Siklus Ternak Aktif
+                      <span className="text-[#859681]">✓</span> 3 Siklus Ternak Aktif
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-teal-400">✓</span> Kalender Kerja Harian
+                      <span className="text-[#859681]">✓</span> Kalender Kerja Harian
                     </li>
-                    <li className="flex items-center gap-2 text-slate-550 line-through">
+                    <li className="flex items-center gap-2 text-[#3C3530]/65 line-through">
                       <span>✗</span> Skala Besar / Komersil
                     </li>
-                    <li className="flex items-center gap-2 text-slate-550 line-through">
+                    <li className="flex items-center gap-2 text-[#3C3530]/65 line-through">
                       <span>✗</span> Radeya AI Vet Chat
                     </li>
-                    <li className="flex items-center gap-2 text-slate-550 line-through">
+                    <li className="flex items-center gap-2 text-[#3C3530]/65 line-through">
                       <span>✗</span> Pearson Square & FCR
                     </li>
                   </ul>
@@ -7071,7 +7057,7 @@ export default function DashboardPage() {
                 <div className="mt-8">
                   <button
                     disabled
-                    className="w-full py-3 bg-slate-900 border border-slate-800 text-slate-500 rounded-xl text-xs font-bold uppercase tracking-wider cursor-not-allowed"
+                    className="w-full py-3 bg-[#FCFAF6] border border-[#EADDC9] text-[#3C3530]/60 rounded-xl text-xs font-bold uppercase tracking-wider cursor-not-allowed"
                   >
                     {profile?.organization?.plan === 'FREE' ? 'Paket Aktif Saat Ini' : 'Bawaan'}
                   </button>
@@ -7079,31 +7065,31 @@ export default function DashboardPage() {
               </div>
 
               {/* Card PRO */}
-              <div className="bg-[#082a2e]/30 border-2 border-teal-500/30 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden shadow-lg shadow-teal-955/10">
-                <div className="absolute top-0 right-0 bg-teal-500 text-[#070e10] text-[8px] font-black uppercase px-3 py-1 rounded-bl-xl tracking-widest">
+              <div className="bg-[#FAF7F0] border-2 border-[#859681] rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden shadow-lg">
+                <div className="absolute top-0 right-0 bg-[#859681] text-[#FCFAF6] text-[8px] font-black uppercase px-3 py-1 rounded-bl-xl tracking-widest">
                   Terpopuler
                 </div>
                 <div>
-                  <h4 className="text-sm font-black text-teal-400">PRO PLAN</h4>
+                  <h4 className="text-sm font-black text-[#859681]">PRO PLAN</h4>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-slate-200">Rp 50.000</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">/ Bulan</span>
+                    <span className="text-2xl font-black text-[#3C3530]">Rp 50.000</span>
+                    <span className="text-[10px] text-[#3C3530]/60 font-bold uppercase">/ Bulan</span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-3 leading-relaxed">
+                  <p className="text-[11px] text-[#3C3530]/80 mt-3 leading-relaxed">
                     Membuka analisis medis dan pakan cerdas untuk efisiensi penuh.
                   </p>
-                  <ul className="mt-6 space-y-3.5 text-[11px] text-slate-350 font-bold">
+                  <ul className="mt-6 space-y-3.5 text-[11px] text-[#3C3530]/90 font-bold">
                     <li className="flex items-center gap-2">
-                      <span className="text-teal-450">✓</span> 10 Siklus Ternak Aktif
+                      <span className="text-[#859681]">✓</span> 10 Siklus Ternak Aktif
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-teal-450">✓</span> **Buka Skala Besar / Komersil**
+                      <span className="text-[#859681]">✓</span> **Buka Skala Besar / Komersil**
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-teal-450">✓</span> **Radeya AI Vet Chat Tanpa Batas**
+                      <span className="text-[#859681]">✓</span> **Radeya AI Vet Chat Tanpa Batas**
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-teal-450">✓</span> **Kalkulator Pearson & Rumus FCR**
+                      <span className="text-[#859681]">✓</span> **Kalkulator Pearson & Rumus FCR**
                     </li>
                   </ul>
                 </div>
@@ -7111,7 +7097,7 @@ export default function DashboardPage() {
                   <button
                     onClick={() => handleCheckoutMidtrans('PRO')}
                     disabled={billingLoading}
-                    className="w-full py-3 bg-gradient-to-r from-teal-650 to-emerald-650 hover:from-teal-600 hover:to-emerald-600 text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                    className="w-full py-3 bg-[#859681] hover:bg-[#748570] text-[#FCFAF6] rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
                   >
                     {profile?.organization?.plan === 'PRO' ? 'Perpanjang Langganan' : billingLoading ? 'Memproses...' : 'Pilih Paket PRO'}
                   </button>
@@ -7119,28 +7105,28 @@ export default function DashboardPage() {
               </div>
 
               {/* Card ENTERPRISE */}
-              <div className="bg-slate-950/40 border border-slate-900 rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+              <div className="bg-[#FAF7F0] border border-[#EADDC9] rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
                 <div>
-                  <h4 className="text-sm font-black text-emerald-450">ENTERPRISE</h4>
+                  <h4 className="text-sm font-black text-[#859681]">ENTERPRISE</h4>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-slate-200">Rp 150.000</span>
-                    <span className="text-[10px] text-slate-500 font-bold uppercase">/ Bulan</span>
+                    <span className="text-2xl font-black text-[#3C3530]">Rp 150.000</span>
+                    <span className="text-[10px] text-[#3C3530]/60 font-bold uppercase">/ Bulan</span>
                   </div>
-                  <p className="text-[11px] text-slate-450 mt-3 leading-relaxed">
+                  <p className="text-[11px] text-[#3C3530]/75 mt-3 leading-relaxed">
                     Sangat pas untuk peternakan modern komersil dengan banyak pekerja.
                   </p>
-                  <ul className="mt-6 space-y-3.5 text-[11px] text-slate-400 font-bold">
+                  <ul className="mt-6 space-y-3.5 text-[11px] text-[#3C3530]/80 font-bold">
                     <li className="flex items-center gap-2">
-                      <span className="text-emerald-450">✓</span> 100 Siklus Ternak Aktif
+                      <span className="text-[#859681]">✓</span> 100 Siklus Ternak Aktif
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-emerald-450">✓</span> **Kolaborasi Multi-user (Tim)**
+                      <span className="text-[#859681]">✓</span> **Kolaborasi Multi-user (Tim)**
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-emerald-450">✓</span> **1 Akun Boss + Banyak Pekerja**
+                      <span className="text-[#859681]">✓</span> **1 Akun Boss + Banyak Pekerja**
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="text-emerald-450">✓</span> Hak akses input terkendali
+                      <span className="text-[#859681]">✓</span> Hak akses input terkendali
                     </li>
                   </ul>
                 </div>
@@ -7148,7 +7134,7 @@ export default function DashboardPage() {
                   <button
                     onClick={() => handleCheckoutMidtrans('ENTERPRISE')}
                     disabled={billingLoading}
-                    className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+                    className="w-full py-3 bg-[#FCFAF6] hover:bg-[#EADDC9] text-[#3C3530] border border-[#EADDC9] rounded-xl text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
                   >
                     {profile?.organization?.plan === 'ENTERPRISE' ? 'Perpanjang Langganan' : billingLoading ? 'Memproses...' : 'Pilih Paket ENTERPRISE'}
                   </button>
@@ -7162,12 +7148,13 @@ export default function DashboardPage() {
 
       {/* --- FLOATING TOAST --- */}
       {toastMsg && (
-        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 border border-slate-850 text-slate-200 px-6 py-3.5 rounded-full text-xs font-extrabold shadow-2xl z-55 flex items-center gap-2 animate-bounce">
-          <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping" />
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 bg-[#FCFAF6] border border-[#EADDC9] text-[#3C3530] px-6 py-3.5 rounded-full text-xs font-extrabold shadow-2xl z-55 flex items-center gap-2 animate-bounce">
+          <span className="w-2 h-2 rounded-full bg-[#859681] animate-ping" />
           {toastMsg}
         </div>
       )}
 
+      </div> {/* Right Content Area */}
     </div>
   );
 }

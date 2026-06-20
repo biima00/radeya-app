@@ -53,7 +53,7 @@ export async function PATCH(
         ...(animal !== undefined && { animal }),
         ...(scale !== undefined && { scale: Number(scale) }),
         ...(mode !== undefined && { mode }),
-        ...(data !== undefined && { data }),
+        ...(data !== undefined && { data: data as any }),
       },
     });
 

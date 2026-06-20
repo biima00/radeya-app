@@ -283,4 +283,9 @@ const id = {
 } as const;
 
 export default id;
-export type Dictionary = typeof id;
+
+type DeepStringify<T> = {
+  [K in keyof T]: T[K] extends object ? DeepStringify<T[K]> : string;
+};
+
+export type Dictionary = DeepStringify<typeof id>;

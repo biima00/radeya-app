@@ -6,6 +6,7 @@ import { apiGet, apiPost, apiPatch, apiDelete } from '@/lib/api';
 import NewCycleWizard from '@/components/NewCycleWizard';
 import FeedFormulator from '@/components/FeedFormulator';
 import { COBB500_STANDARD, LOHMANN_STANDARD, KEPADATAN_STANDAR } from '@/constants/strainStandards';
+import packageJson from '@/package.json';
 
 // --- TS Interfaces ---
 interface Cycle {
@@ -2481,6 +2482,7 @@ export default function DashboardPage() {
             >
               Keluar
             </button>
+            <span className="text-[10px] text-slate-600 font-mono">v{packageJson.version}</span>
           </div>
         </div>
       </header>

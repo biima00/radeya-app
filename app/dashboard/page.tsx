@@ -6,7 +6,8 @@ import { apiGet, apiPost, apiPatch, apiDelete } from '@/lib/api';
 import NewCycleWizard from '@/components/NewCycleWizard';
 import FeedFormulator from '@/components/FeedFormulator';
 import { COBB500_STANDARD, LOHMANN_STANDARD, KEPADATAN_STANDAR } from '@/constants/strainStandards';
-import packageJson from '@/package.json';
+import { useTranslation } from '@/lib/i18n';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 // --- TS Interfaces ---
 interface Cycle {
@@ -316,6 +317,7 @@ const checkWaterParam = (paramName: string, val: number) => {
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { t } = useTranslation();
 
   // --- Core States ---
   const [farmName, setFarmName] = useState('');
@@ -2281,7 +2283,7 @@ export default function DashboardPage() {
           <div className="absolute inset-0 rounded-full border-4 border-teal-500/20" />
           <div className="absolute inset-0 rounded-full border-4 border-t-teal-400 animate-spin" />
         </div>
-        <p className="text-sm font-semibold tracking-wide text-slate-400">Menghubungkan ke database Radeya...</p>
+        <p className="text-sm font-semibold tracking-wide text-slate-400">{t.dashboard.connecting}</p>
       </div>
     );
   }
@@ -2480,9 +2482,10 @@ export default function DashboardPage() {
               onClick={handleSignOut}
               className="px-3.5 py-2 bg-rose-950/20 hover:bg-rose-900/30 text-rose-400 text-xs font-bold rounded-xl border border-rose-900/30 transition-all"
             >
-              Keluar
+              {t.common.logout}
             </button>
-            <span className="text-[10px] text-slate-600 font-mono">v{packageJson.version}</span>
+            <LanguageSwitcher />
+            <span className="text-[10px] text-slate-600 font-mono">v0.1.0</span>
           </div>
         </div>
       </header>
@@ -4487,6 +4490,8 @@ export default function DashboardPage() {
 
               {activeCycle.mode === 'breeding_ruminansia' && (
                 <>
+                  <button
+                    onClick={() => openModalForm('modal_harian_breeding')}
                     className="w-full mt-6 py-3 bg-slate-955/40 hover:bg-slate-800 text-teal-400 font-bold rounded-xl border border-slate-800 transition-all text-xs"
                   >
                     + Catat Kelahiran Baru

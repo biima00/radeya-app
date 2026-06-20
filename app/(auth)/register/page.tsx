@@ -3,8 +3,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiPost } from '@/lib/api';
+import { useTranslation } from '@/lib/i18n';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function RegisterPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   
   // State untuk menampung input pendaftaran pengguna
@@ -117,6 +120,11 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-teal-500/20 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+        {/* Top Bar */}
+        <div className="absolute top-6 right-6 z-10">
+          <LanguageSwitcher />
+        </div>
+
         {/* Glow Effect */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl" />
@@ -128,10 +136,10 @@ export default function RegisterPage() {
               Radeya
             </h1>
             <p className="text-sm text-slate-400 mt-2">
-              Langkah Pertama Digitalisasi Peternakan Anda
+              {t.auth.registerSubtitle}
             </p>
             <h2 className="text-xl font-bold text-slate-200 mt-6">
-              Daftar Akun Baru
+              {t.auth.registerTitle}
             </h2>
           </div>
 
@@ -150,7 +158,7 @@ export default function RegisterPage() {
             {/* Name Field */}
             <div className="space-y-1.5">
               <label htmlFor="name" className="text-xs font-semibold text-slate-300">
-                Nama Lengkap
+                {t.auth.nameLabel}
               </label>
               <input
                 id="name"
@@ -167,7 +175,7 @@ export default function RegisterPage() {
             {/* Email Field */}
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-xs font-semibold text-slate-300">
-                Alamat Email
+                {t.auth.emailLabel}
               </label>
               <input
                 id="email"
@@ -184,7 +192,7 @@ export default function RegisterPage() {
             {/* Password Field */}
             <div className="space-y-1.5">
               <label htmlFor="password" className="text-xs font-semibold text-slate-300">
-                Kata Sandi (Min. 8 karakter)
+                {t.auth.passwordLabel}
               </label>
               <input
                 id="password"
@@ -201,7 +209,7 @@ export default function RegisterPage() {
             {/* Confirm Password Field */}
             <div className="space-y-1.5">
               <label htmlFor="confirmPassword" className="text-xs font-semibold text-slate-300">
-                Konfirmasi Kata Sandi
+                {t.auth.confirmPasswordLabel}
               </label>
               <input
                 id="confirmPassword"
@@ -227,10 +235,10 @@ export default function RegisterPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  <span>Mendaftarkan...</span>
+                  <span>{t.common.loading}</span>
                 </>
               ) : (
-                <span>Daftar & Mulai</span>
+                <span>{t.auth.registerButton}</span>
               )}
             </button>
           </form>
@@ -241,7 +249,7 @@ export default function RegisterPage() {
               <div className="w-full border-t border-slate-800/80"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-slate-900/60 px-3 text-slate-400 font-bold">Atau daftar dengan</span>
+              <span className="bg-slate-900/60 px-3 text-slate-400 font-bold">{t.auth.orContinueWith}</span>
             </div>
           </div>
 
@@ -253,9 +261,9 @@ export default function RegisterPage() {
           {/* Login Link */}
           <div className="mt-6 pt-6 border-t border-slate-800/60 text-center">
             <p className="text-sm text-slate-400">
-              Sudah memiliki akun?{' '}
+              {t.auth.hasAccount}{' '}
               <a href="/login" className="text-teal-400 font-semibold hover:text-teal-300 transition-colors">
-                Masuk Sekarang
+                {t.auth.loginLink}
               </a>
             </p>
           </div>

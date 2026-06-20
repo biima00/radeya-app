@@ -3,8 +3,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiPost } from '@/lib/api';
+import { useTranslation } from '@/lib/i18n';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function LoginPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   
   // State untuk melacak input email dan password
@@ -108,16 +111,19 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-slate-900/60 backdrop-blur-xl border border-teal-500/20 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
-        {/* Home Button */}
-        <a
-          href="/"
-          className="absolute top-6 right-6 p-2.5 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/50 rounded-xl text-slate-300 hover:text-white transition-all duration-200 z-10"
-          title="Kembali ke Beranda"
-        >
+        {/* Top Bar */}
+        <div className="absolute top-6 right-6 flex items-center gap-2 z-10">
+          <LanguageSwitcher />
+          <a
+            href="/"
+            className="p-2.5 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/50 rounded-xl text-slate-300 hover:text-white transition-all duration-200"
+            title={t.auth.homeButton}
+          >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
-        </a>
+          </a>
+        </div>
 
         {/* Glow Effect */}
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl" />
@@ -130,10 +136,10 @@ export default function LoginPage() {
               Radeya
             </h1>
             <p className="text-sm text-slate-400 mt-2">
-              Sistem Manajemen Siklus Peternakan Pintar
+              {t.common.appTagline}
             </p>
             <h2 className="text-xl font-bold text-slate-200 mt-6">
-              Masuk ke Akun Anda
+              {t.auth.loginTitle}
             </h2>
           </div>
 
@@ -152,7 +158,7 @@ export default function LoginPage() {
             {/* Email Field */}
             <div className="space-y-1.5">
               <label htmlFor="email" className="text-xs font-semibold text-slate-300">
-                Alamat Email
+                {t.auth.emailLabel}
               </label>
               <input
                 id="email"
@@ -170,10 +176,10 @@ export default function LoginPage() {
             <div className="space-y-1.5">
               <div className="flex justify-between items-center">
                 <label htmlFor="password" className="text-xs font-semibold text-slate-300">
-                  Kata Sandi
+                  {t.auth.passwordLabel}
                 </label>
                 <a href="#" className="text-xs text-teal-400 hover:text-teal-300 transition-colors">
-                  Lupa kata sandi?
+                  {t.auth.forgotPassword}
                 </a>
               </div>
               <input
@@ -200,10 +206,10 @@ export default function LoginPage() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                   </svg>
-                  <span>Menghubungkan...</span>
+                  <span>{t.common.loading}</span>
                 </>
               ) : (
-                <span>Masuk Sekarang</span>
+                <span>{t.auth.loginButton}</span>
               )}
             </button>
           </form>
@@ -214,7 +220,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-slate-800/80"></div>
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-slate-900/60 px-3 text-slate-400 font-bold">Atau masuk dengan</span>
+              <span className="bg-slate-900/60 px-3 text-slate-400 font-bold">{t.auth.orContinueWith}</span>
             </div>
           </div>
 
@@ -226,9 +232,9 @@ export default function LoginPage() {
           {/* Sign Up Link */}
           <div className="mt-6 pt-6 border-t border-slate-800/60 text-center">
             <p className="text-sm text-slate-400">
-              Belum punya akun Radeya?{' '}
+              {t.auth.noAccount}{' '}
               <a href="/register" className="text-teal-400 font-semibold hover:text-teal-300 transition-colors">
-                Daftar Gratis
+                {t.auth.registerLink}
               </a>
             </p>
           </div>

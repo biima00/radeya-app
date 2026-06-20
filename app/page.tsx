@@ -2,8 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function LandingPage() {
+  const { t } = useTranslation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [simKomoditas, setSimKomoditas] = useState<'unggas' | 'ruminansia' | 'ikan'>('unggas');
   const [simSkala, setSimSkala] = useState<number>(500);
@@ -73,24 +76,25 @@ export default function LandingPage() {
             </div>
             <div>
               <span className="font-extrabold tracking-tight bg-gradient-to-r from-teal-400 via-teal-200 to-emerald-400 bg-clip-text text-transparent text-lg">
-                RADEYA
+                {t.common.appName}
               </span>
-              <span className="text-[9px] block text-slate-500 font-bold uppercase tracking-wider -mt-1">Agro & Livestock SaaS</span>
+              <span className="text-[9px] block text-slate-500 font-bold uppercase tracking-wider -mt-1">{t.common.appTagline}</span>
             </div>
           </div>
 
           <nav className="hidden md:flex items-center gap-8 text-xs font-bold text-slate-400">
-            <a href="#fitur" className="hover:text-teal-400 transition-colors">Fitur</a>
-            <a href="#simulasi" className="hover:text-teal-400 transition-colors">Simulasi Laba</a>
-            <a href="#harga" className="hover:text-teal-400 transition-colors">Harga</a>
+            <a href="#fitur" className="hover:text-teal-400 transition-colors">{t.landing.navFeatures}</a>
+            <a href="#simulasi" className="hover:text-teal-400 transition-colors">{t.landing.navSimulation}</a>
+            <a href="#harga" className="hover:text-teal-400 transition-colors">{t.landing.navPricing}</a>
           </nav>
 
-          <div>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             <Link
               href={isLoggedIn ? "/dashboard" : "/login"}
               className="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white text-xs font-bold rounded-xl transition-all shadow-md shadow-teal-950/20 flex items-center gap-1.5"
             >
-              {isLoggedIn ? 'Masuk Dashboard' : 'Mulai Sekarang'}
+              {isLoggedIn ? t.landing.ctaDashboard : t.landing.ctaStart}
               {Icons.arrowRight()}
             </Link>
           </div>
@@ -103,17 +107,17 @@ export default function LandingPage() {
         {/* Intro copy */}
         <div className="lg:col-span-6 space-y-6">
           <span className="text-[10px] uppercase font-black tracking-widest text-teal-400 bg-teal-950/80 px-3.5 py-1.5 rounded-full border border-teal-500/25 inline-block">
-            SaaS Pertanian & Peternakan Modern 🌿
+            {t.landing.heroTag} 🌿
           </span>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.08] tracking-tight">
-            Ukur Siklus,<br />
+            {t.landing.heroTitle1}<br />
             <span className="bg-gradient-to-r from-teal-400 via-teal-200 to-emerald-400 bg-clip-text text-transparent">
-              Lipatgandakan Laba
+              {t.landing.heroTitle2}
             </span><br />
-            Ternak Anda.
+            {t.landing.heroTitle3}
           </h1>
           <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-lg">
-            Radeya membantu peternak unggas, ruminansia, pembudidaya ikan, dan petani mengelola modal awal, memantau pengeluaran pakan harian, serta menganalisis performa FCR, ADG, dan kelangsungan hidup secara real-time.
+            {t.landing.heroDesc}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -121,29 +125,29 @@ export default function LandingPage() {
               href={isLoggedIn ? "/dashboard" : "/register"}
               className="py-4 px-8 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl text-center transition-all shadow-lg shadow-teal-500/10 flex items-center justify-center gap-2"
             >
-              Daftar Gratis 1 Siklus
+              {t.landing.ctaFree}
               {Icons.arrowRight()}
             </Link>
             <a
               href="#simulasi"
               className="py-4 px-8 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 font-bold rounded-xl text-center transition-all flex items-center justify-center"
             >
-              Coba Simulasi Laba
+              {t.landing.ctaSimulation}
             </a>
           </div>
 
           <div className="grid grid-cols-3 gap-6 pt-6 border-t border-slate-900/60 max-w-md text-center sm:text-left">
             <div>
               <span className="text-2xl font-black text-white font-mono block">100%</span>
-              <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Cloud Secured</span>
+              <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{t.landing.cloudSecured}</span>
             </div>
             <div>
               <span className="text-2xl font-black text-teal-400 font-mono block">FCR/ADG</span>
-              <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Auto Math</span>
+              <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{t.landing.autoMath}</span>
             </div>
             <div>
               <span className="text-2xl font-black text-emerald-450 font-mono block">AI Vet</span>
-              <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Consultant</span>
+              <span className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">{t.landing.consultant}</span>
             </div>
           </div>
         </div>
@@ -172,9 +176,9 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
-            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block">KOMODITAS RADE-YA</span>
-            <h2 className="text-3xl font-black text-white tracking-tight">Satu Dasbor untuk Seluruh Usaha Agro Anda</h2>
-            <p className="text-sm text-slate-450 max-w-xl mx-auto">Tersedia lembar kerja dan kalkulator performa spesifik yang disesuaikan dengan biologis dan proses bisnis tiap komoditas.</p>
+            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block">{t.landing.commodityTag}</span>
+            <h2 className="text-3xl font-black text-white tracking-tight">{t.landing.commodityTitle}</h2>
+            <p className="text-sm text-slate-450 max-w-xl mx-auto">{t.landing.commodityDesc}</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -182,25 +186,25 @@ export default function LandingPage() {
             {/* Card Unggas */}
             <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🍗</span>
-              <h3 className="text-base font-bold text-slate-200 mb-2">Ternak Unggas</h3>
-              <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan Ayam Pedaging (Broiler), Ayam Petelur (Layer), & Bebek. Otomatisasi FCR, Hen Day %, Indeks Performa (IP), dan pencatatan mortalitas harian.</p>
-              <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">Broiler & Layer &middot; Bebek</div>
+              <h3 className="text-base font-bold text-slate-200 mb-2">{t.landing.poultryTitle}</h3>
+              <p className="text-xs text-slate-450 leading-relaxed mb-4">{t.landing.poultryDesc}</p>
+              <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">{t.landing.poultryTag}</div>
             </div>
 
             {/* Card Ruminansia */}
             <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🥩</span>
-              <h3 className="text-base font-bold text-slate-200 mb-2">Ruminansia</h3>
-              <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan Penggemukan Sapi/Kambing & Mode Breeding. Otomatisasi ADG (Average Daily Gain), pencatatan kelahiran anak, dan taksiran nilai aset hidup.</p>
-              <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">Sapi & Kambing &middot; Domba</div>
+              <h3 className="text-base font-bold text-slate-200 mb-2">{t.landing.ruminantTitle}</h3>
+              <p className="text-xs text-slate-450 leading-relaxed mb-4">{t.landing.ruminantDesc}</p>
+              <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">{t.landing.ruminantTag}</div>
             </div>
 
             {/* Card Perikanan */}
             <div className="glass-panel p-6 rounded-3xl group">
               <span className="text-4xl block mb-4">🐟</span>
-              <h3 className="text-base font-bold text-slate-200 mb-2">Budidaya Ikan</h3>
-              <p className="text-xs text-slate-450 leading-relaxed mb-4">Dukungan untuk kolam pembesaran ikan (Nila, Lele, Gurame). Pantau FCR pelet pakan, kepadatan kolam, tingkat kelangsungan hidup (SR), serta jadwal tebar.</p>
-              <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">Nila & Lele &middot; Gurame</div>
+              <h3 className="text-base font-bold text-slate-200 mb-2">{t.landing.fishTitle}</h3>
+              <p className="text-xs text-slate-450 leading-relaxed mb-4">{t.landing.fishDesc}</p>
+              <div className="text-[10px] text-teal-400 font-bold uppercase tracking-wider">{t.landing.fishTag}</div>
             </div>
 
           </div>
@@ -210,9 +214,9 @@ export default function LandingPage() {
       {/* Interactive Simulator Section */}
       <section id="simulasi" className="py-24 px-4 max-w-4xl mx-auto w-full space-y-12">
         <div className="text-center space-y-3">
-          <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block">INTERAKTIF SIMULATOR</span>
-          <h2 className="text-3xl font-black text-white tracking-tight">Prediksikan Laba Usaha Anda</h2>
-          <p className="text-sm text-slate-450">Pilih jenis komoditas, skala populasi, dan harga pasar saat ini untuk menghitung profit kotor secara instan.</p>
+          <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block">{t.landing.simTag}</span>
+          <h2 className="text-3xl font-black text-white tracking-tight">{t.landing.simTitle}</h2>
+          <p className="text-sm text-slate-450">{t.landing.simDesc}</p>
         </div>
 
         <div className="glass-panel p-8 rounded-3xl relative grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -220,7 +224,7 @@ export default function LandingPage() {
           {/* Controls */}
           <div className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Jenis Komoditas</label>
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-wider block">{t.landing.simCommodity}</label>
               <div className="grid grid-cols-3 gap-2">
                 {(['unggas', 'ruminansia', 'ikan'] as const).map((k) => (
                   <button
@@ -244,7 +248,7 @@ export default function LandingPage() {
                         : 'bg-slate-950/50 text-slate-400 border-slate-850 hover:border-slate-800'
                     }`}
                   >
-                    {k === 'unggas' ? '🍗 Unggas' : k === 'ruminansia' ? '🥩 Ruminan' : '🐟 Perikanan'}
+                    {k === 'unggas' ? `🍗 ${t.landing.simPoultry}` : k === 'ruminansia' ? `🥩 ${t.landing.simRuminant}` : `🐟 ${t.landing.simFish}`}
                   </button>
                 ))}
               </div>
@@ -252,8 +256,8 @@ export default function LandingPage() {
 
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold">
-                <span className="text-slate-400">Skala Usaha:</span>
-                <span className="text-white font-mono">{simSkala.toLocaleString('id-ID')} {simKomoditas === 'ruminansia' ? 'ekor sapi' : simKomoditas === 'unggas' ? 'ekor ayam' : 'kg ikan'}</span>
+                <span className="text-slate-400">{t.landing.simScale}</span>
+                <span className="text-white font-mono">{simSkala.toLocaleString('id-ID')} {simKomoditas === 'ruminansia' ? t.landing.simCattle : simKomoditas === 'unggas' ? t.landing.simChicken : t.landing.simFishKg}</span>
               </div>
               <input
                 type="range"
@@ -268,8 +272,8 @@ export default function LandingPage() {
 
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold">
-                <span className="text-slate-400">Taksiran Harga Jual Pasar:</span>
-                <span className="text-white font-mono">{formatRp(simHarga)} / {simKomoditas === 'ruminansia' ? 'kg hidup' : simKomoditas === 'unggas' ? 'kg hidup' : 'kg'}</span>
+                <span className="text-slate-400">{t.landing.simPrice}</span>
+                <span className="text-white font-mono">{formatRp(simHarga)} / {simKomoditas === 'ruminansia' ? t.landing.simPerKgLive : simKomoditas === 'unggas' ? t.landing.simPerKgLive : t.landing.simPerKg}</span>
               </div>
               <input
                 type="range"
@@ -286,7 +290,7 @@ export default function LandingPage() {
           {/* Results Screen */}
           <div className="bg-slate-950/80 p-6 rounded-2xl border border-slate-850 flex flex-col justify-between text-center md:text-left">
             <div>
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block">Estimasi Keuntungan Siklus</span>
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider block">{t.landing.simProfit}</span>
               {(() => {
                 const laba = calculateSimLaba();
                 return (
@@ -295,7 +299,7 @@ export default function LandingPage() {
                       {formatRp(laba)}
                     </span>
                     <span className="text-[10px] text-slate-400 mt-2 block leading-relaxed font-semibold">
-                      *Perhitungan di atas bersifat estimasi kotor berdasarkan rata-rata nasional FCR dan biaya pakan standar industri.
+                      {t.landing.simDisclaimer}
                     </span>
                   </>
                 );
@@ -306,7 +310,7 @@ export default function LandingPage() {
               href={isLoggedIn ? "/dashboard" : "/register"}
               className="w-full mt-6 py-3 bg-gradient-to-r from-teal-650 to-emerald-650 hover:from-teal-600 hover:to-emerald-600 text-white font-bold rounded-xl text-center text-xs uppercase tracking-wider shadow-md flex items-center justify-center gap-1.5"
             >
-              Mulai Catat di Radeya
+              {t.landing.simCta}
               {Icons.arrowRight()}
             </Link>
           </div>
@@ -318,9 +322,9 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto space-y-12">
           
           <div className="text-center space-y-3">
-            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block">INVESTASI PINTAR</span>
-            <h2 className="text-3xl font-black text-white tracking-tight">Skema Langganan Tanpa Batas</h2>
-            <p className="text-sm text-slate-450">Nikmati pencatatan siklus cloud dengan harga terjangkau untuk menunjang produktivitas.</p>
+            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest block">{t.landing.pricingTag}</span>
+            <h2 className="text-3xl font-black text-white tracking-tight">{t.landing.pricingTitle}</h2>
+            <p className="text-sm text-slate-450">{t.landing.pricingDesc}</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -328,69 +332,69 @@ export default function LandingPage() {
             {/* Free Tier */}
             <div className="bg-slate-900/20 border border-slate-850 p-8 rounded-3xl space-y-6 hover:border-slate-800 transition-colors flex flex-col justify-between">
               <div>
-                <span className="text-xs font-extrabold text-slate-400 uppercase block">Radeya Lite</span>
-                <span className="text-3xl font-black text-white block mt-2">Rp 0</span>
-                <span className="text-[10px] text-slate-500 mt-1 block">Selamanya untuk peternak pemula</span>
+                <span className="text-xs font-extrabold text-slate-400 uppercase block">{t.landing.planLite}</span>
+                <span className="text-3xl font-black text-white block mt-2">{t.landing.priceFree}</span>
+                <span className="text-[10px] text-slate-500 mt-1 block">{t.landing.priceForever}</span>
                 <ul className="space-y-3 text-xs font-semibold text-slate-350 mt-6">
-                  <li className="flex items-center gap-2.5">{Icons.check()} 3 Siklus Ternak Aktif</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Kalender Kerja Harian</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Catat Harian Sederhana</li>
-                  <li className="flex items-center gap-2.5 text-slate-600 line-through">✗ Skala Besar / Komersil</li>
-                  <li className="flex items-center gap-2.5 text-slate-600 line-through">✗ Radeya AI Vet Chat</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.feature3Cycles}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureCalendar}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureSimpleLog}</li>
+                  <li className="flex items-center gap-2.5 text-slate-600 line-through">✗ {t.landing.featureNoCommercial}</li>
+                  <li className="flex items-center gap-2.5 text-slate-600 line-through">✗ {t.landing.featureNoAI}</li>
                 </ul>
               </div>
               <Link
                 href={isLoggedIn ? "/dashboard" : "/register"}
                 className="w-full py-3 mt-6 bg-slate-950/60 hover:bg-slate-900 text-slate-200 text-xs font-bold rounded-xl border border-slate-800 transition-all text-center block"
               >
-                Mulai Gratis
+                {t.landing.startFree}
               </Link>
             </div>
 
             {/* Pro Tier */}
             <div className="bg-slate-900/30 border border-teal-500/20 p-8 rounded-3xl space-y-6 relative overflow-hidden shadow-xl shadow-teal-500/2 flex flex-col justify-between">
               <div className="absolute top-3 right-3 text-[9px] font-black uppercase tracking-wider text-teal-450 bg-teal-950 px-2.5 py-1 rounded-md border border-teal-500/20">
-                Terpopuler
+                {t.landing.popular}
               </div>
               <div>
-                <span className="text-xs font-extrabold text-teal-450 uppercase block">Radeya Pro</span>
-                <span className="text-3xl font-black text-white block mt-2">Rp 50.000 <span className="text-xs font-bold text-slate-500">/ bulan</span></span>
-                <span className="text-[10px] text-slate-500 mt-1 block">Untuk peternak komersil mandiri</span>
+                <span className="text-xs font-extrabold text-teal-450 uppercase block">{t.landing.planPro}</span>
+                <span className="text-3xl font-black text-white block mt-2">{t.landing.pricePro} <span className="text-xs font-bold text-slate-500">{t.landing.priceProPer}</span></span>
+                <span className="text-[10px] text-slate-500 mt-1 block">{t.landing.priceProDesc}</span>
                 <ul className="space-y-3 text-xs font-semibold text-slate-350 mt-6">
-                  <li className="flex items-center gap-2.5">{Icons.check()} 10 Siklus Ternak Aktif</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Buka Skala Besar / Komersil</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Radeya AI Vet Chat</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Kalkulator Pearson & FCR</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Ekspor CSV & Laporan</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.feature10Cycles}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureCommercial}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureAI}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featurePearson}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureExport}</li>
                 </ul>
               </div>
               <Link
                 href={isLoggedIn ? "/dashboard" : "/register"}
                 className="w-full py-3 mt-6 bg-gradient-to-r from-teal-650 to-emerald-650 hover:from-teal-600 hover:to-emerald-600 text-white text-xs font-bold rounded-xl transition-all text-center block shadow-lg shadow-teal-950/30"
               >
-                Upgrade Pro
+                {t.landing.upgradePro}
               </Link>
             </div>
 
             {/* Enterprise Tier */}
             <div className="bg-slate-900/20 border border-slate-850 p-8 rounded-3xl space-y-6 hover:border-slate-800 transition-colors flex flex-col justify-between">
               <div>
-                <span className="text-xs font-extrabold text-emerald-450 uppercase block">Radeya Enterprise</span>
-                <span className="text-3xl font-black text-white block mt-2">Rp 150.000 <span className="text-xs font-bold text-slate-500">/ bulan</span></span>
-                <span className="text-[10px] text-slate-500 mt-1 block">Untuk peternak modern multi-user</span>
+                <span className="text-xs font-extrabold text-emerald-450 uppercase block">{t.landing.planEnterprise}</span>
+                <span className="text-3xl font-black text-white block mt-2">{t.landing.priceEnterprise} <span className="text-xs font-bold text-slate-500">{t.landing.priceEnterprisePer}</span></span>
+                <span className="text-[10px] text-slate-500 mt-1 block">{t.landing.priceEnterpriseDesc}</span>
                 <ul className="space-y-3 text-xs font-semibold text-slate-350 mt-6">
-                  <li className="flex items-center gap-2.5">{Icons.check()} 100 Siklus Ternak Aktif</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Semua Fitur Paket Pro</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Kolaborasi Multi-user (Tim)</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} 1 Akun Boss + Banyak Pekerja</li>
-                  <li className="flex items-center gap-2.5">{Icons.check()} Hak Akses Input Terkendali</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.feature100Cycles}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureAllPro}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureMultiUser}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureBossWorker}</li>
+                  <li className="flex items-center gap-2.5">{Icons.check()} {t.landing.featureAccessControl}</li>
                 </ul>
               </div>
               <Link
                 href={isLoggedIn ? "/dashboard" : "/register"}
                 className="w-full py-3 mt-6 bg-slate-950/60 hover:bg-slate-900 text-slate-250 text-xs font-bold rounded-xl border border-slate-800 transition-all text-center block"
               >
-                Pilih Enterprise
+                {t.landing.chooseEnterprise}
               </Link>
             </div>
 
@@ -407,15 +411,15 @@ export default function LandingPage() {
             </div>
             <div>
               <span className="font-extrabold tracking-tight text-white text-sm">RADEYA</span>
-              <span className="text-[8px] block text-slate-500 font-bold uppercase tracking-wider -mt-1">&copy; 2026 Radeya Indonesia</span>
+              <span className="text-[8px] block text-slate-500 font-bold uppercase tracking-wider -mt-1">{t.landing.footerCopyright}</span>
             </div>
           </div>
 
           <div className="flex gap-8 text-[11px] font-bold text-slate-500">
-            <a href="#fitur" className="hover:text-slate-300">Fitur</a>
-            <a href="#simulasi" className="hover:text-slate-300">Simulasi</a>
-            <a href="#harga" className="hover:text-slate-300">Harga</a>
-            <a href="/login" className="hover:text-slate-300">Masuk Akun</a>
+            <a href="#fitur" className="hover:text-slate-300">{t.landing.navFeatures}</a>
+            <a href="#simulasi" className="hover:text-slate-300">{t.landing.navSimulation}</a>
+            <a href="#harga" className="hover:text-slate-300">{t.landing.navPricing}</a>
+            <a href="/login" className="hover:text-slate-300">{t.landing.navLogin}</a>
           </div>
         </div>
       </footer>

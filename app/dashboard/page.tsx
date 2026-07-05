@@ -621,7 +621,6 @@ export default function DashboardPage() {
 
       if (profileData?.organization?.name) {
         setFarmName(profileData.organization.name);
-        localStorage.setItem('radeya_farm_name', profileData.organization.name);
       }
 
       // 2. Fetch cycles
@@ -661,7 +660,6 @@ export default function DashboardPage() {
       await apiPost('/api/v1/auth/logout', {});
     } catch {}
     localStorage.removeItem('radeya_org_id');
-    localStorage.removeItem('radeya_farm_name');
     router.push('/login');
   };
 

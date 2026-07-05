@@ -28,10 +28,7 @@ export default function OnboardingPage() {
     try {
       // Kirim data onboarding ke API
       await apiPost('/api/v1/onboarding', { farmName });
-      
-      // Update status onboarding di localStorage
-      localStorage.setItem('radeya_farm_name', farmName);
-      
+
       // Lanjut ke step sukses
       setStep(2);
     } catch (err: any) {

@@ -7150,7 +7150,7 @@ export default function DashboardPage() {
                 <div>
                   <h4 className="text-sm font-black text-[#859681]">PRO PLAN</h4>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-[#3C3530]">Rp 50.000</span>
+                    <span className="text-2xl font-black text-[#3C3530]">Rp 49.000</span>
                     <span className="text-[10px] text-[#3C3530]/60 font-bold uppercase">/ Bulan</span>
                   </div>
                   <p className="text-[11px] text-[#3C3530]/80 mt-3 leading-relaxed">
@@ -7187,7 +7187,7 @@ export default function DashboardPage() {
                 <div>
                   <h4 className="text-sm font-black text-[#859681]">ENTERPRISE</h4>
                   <div className="mt-4 flex items-baseline gap-1">
-                    <span className="text-2xl font-black text-[#3C3530]">Rp 150.000</span>
+                    <span className="text-2xl font-black text-[#3C3530]">Rp 149.000</span>
                     <span className="text-[10px] text-[#3C3530]/60 font-bold uppercase">/ Bulan</span>
                   </div>
                   <p className="text-[11px] text-[#3C3530]/75 mt-3 leading-relaxed">

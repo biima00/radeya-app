@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { apiGet, apiPost, apiPatch, apiDelete } from '@/lib/api';
 import NewCycleWizard from '@/components/NewCycleWizard';
 import FeedFormulator from '@/components/FeedFormulator';
-import { COBB500_STANDARD, LOHMANN_STANDARD, KEPADATAN_STANDAR } from '@/constants/strainStandards';
+import { COBB500_STANDARD, LOHMANN_STANDARD, BEBEK_PEDAGING_STANDARD, BEBEK_PETELUR_STANDARD, KEPADATAN_STANDAR } from '@/constants/strainStandards'; // ADDED CLAUDE AI: duck standards
 import { useTranslation } from '@/lib/i18n';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
@@ -1181,9 +1181,10 @@ export default function DashboardPage() {
       const alertKipasKurang = mode === 'broiler' && CFM_kapasitas < CFM_kebutuhan;
 
       // Cobb Standard comparisons (Modul 09)
-      const standardCobb = COBB500_STANDARD.reduce((prev, curr) => {
-        return Math.abs(curr.hari - umur) < Math.abs(prev.hari - umur) ? curr : prev;
-      });
+      // ADDED CLAUDE AI: Use duck standard for bebek_pedaging, chicken standard for broiler
+      const standardCobb = isBebek
+        ? BEBEK_PEDAGING_STANDARD.reduce((prev, curr) => Math.abs(curr.hari - umur) < Math.abs(prev.hari - umur) ? curr : prev)
+        : COBB500_STANDARD.reduce((prev, curr) => Math.abs(curr.hari - umur) < Math.abs(prev.hari - umur) ? curr : prev);
       const targetBB = standardCobb.bb_g / 1000;
       const targetFCR = standardCobb.fcr;
       const targetADG = standardCobb.adg_g;
@@ -1288,10 +1289,12 @@ export default function DashboardPage() {
 
       const lightingProgram = '16L : 8D (Standard Stimulasi Hormon Peletakan Telur)';
 
-      // Lohmann target comparisons (Modul 09)
-      const targetHDP = LOHMANN_STANDARD.puncak_hdp;
-      const targetFCRTelur = LOHMANN_STANDARD.fcr_produksi;
-      const targetBeratTelur = LOHMANN_STANDARD.berat_telur_g;
+      // Lohmann/Duck target comparisons (Modul 09)
+      // ADDED CLAUDE AI: Use duck standard for bebek_petelur, chicken standard for petelur
+      const standard = isBebek ? BEBEK_PETELUR_STANDARD : LOHMANN_STANDARD;
+      const targetHDP = standard.puncak_hdp;
+      const targetFCRTelur = standard.fcr_produksi;
+      const targetBeratTelur = standard.berat_telur_g;
       
       const gapHDP = henDay - targetHDP;
       const gapFCRTelur = fcrTelur - targetFCRTelur;
@@ -1383,6 +1386,12 @@ export default function DashboardPage() {
       const srTarget = sistem === 'RAS' ? 92 : sistem === 'bioflok' ? 85 : 70;
       const airEstimasi = 0;
 
+      // ADDED CLAUDE AI: Fish gap-analysis (use range midpoint for FCR since targets are min/max ranges)
+      const fcrTargetMid = (fcrTarget.min + fcrTarget.max) / 2;
+      const gapFCR = fcr - fcrTargetMid;
+      const gapFCRPct = fcrTargetMid > 0 ? (gapFCR / fcrTargetMid) * 100 : 0;
+      const gapSR = srPct - srTarget;
+
       const pakanPct = totalModalCash > 0 ? (totalPakan / totalModalCash) * 100 : 0;
       const tkPct = totalModalCash > 0 ? (totalTK / totalModalCash) * 100 : 0;
       const iofc = totalPendapatan - totalPakan;
@@ -1418,6 +1427,7 @@ export default function DashboardPage() {
         totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, hpp, hppAkurat, fcr, srPct, mati,
         fcrTarget, srTarget, airEstimasi, biomassaSaatIni, adg, sgr, bobotRataTerakhir, qtyTebar,
         pakanPct, tkPct, iofc, bepHarga,
+        gapFCR, gapFCRPct, gapSR, // ADDED CLAUDE AI: Gap analysis vs. target
         dayaTetas, srPendederan, fcrPendederan, telurDibuahi, telurMenetas, isPembibitan, cv, needGrading,
         breakdown: [
           { label: 'Benih & Persiapan Air', val: totalBenih },
@@ -1461,7 +1471,11 @@ export default function DashboardPage() {
       const iofc = totalPendapatan - totalPakan;
       const bepHarga = docMenetas > 0 ? totalModalAkurat / docMenetas : 0;
 
-      return { totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, margin, dayaTetas, docMenetas, populasi, telurMasukTetas, gagalTetas, pakanPct, tkPct, iofc, bepHarga };
+      // ADDED CLAUDE AI: Add hpp/hppAkurat for generic UI compatibility (same as other modes)
+      const hpp = docMenetas > 0 ? totalModalCash / docMenetas : 0;
+      const hppAkurat = bepHarga; // totalModalAkurat / docMenetas — already accurate incl. depreciation
+
+      return { totalModal, totalModalCash, totalModalAkurat, totalPendapatan, laba, labaCash, ebitda, depresiasi: depresiasiKandang, umur, margin, dayaTetas, docMenetas, populasi, telurMasukTetas, gagalTetas, pakanPct, tkPct, iofc, bepHarga, hpp, hppAkurat };
     }
 
     if (mode === 'penggemukan') {

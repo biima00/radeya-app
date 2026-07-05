@@ -2238,6 +2238,23 @@ export default function DashboardPage() {
     showToast('📥 CSV berhasil diunduh!');
   };
 
+  const handlePDFExport = async () => {
+    if (profile?.organization?.plan === 'FREE') {
+      showToast('⚠️ Ekspor PDF hanya tersedia untuk paket PRO & ENTERPRISE!');
+      setBillingModalOpen(true);
+      return;
+    }
+    const cycle = getActiveCycle();
+    if (!cycle) return;
+    try {
+      const { generateCycleReportPDF } = await import('@/lib/pdfExport');
+      generateCycleReportPDF({ cycle, stats, orgName: profile?.organization?.name });
+      showToast('📄 PDF berhasil diunduh!');
+    } catch (e) {
+      showToast('❌ Gagal membuat PDF');
+    }
+  };
+
   const updateFormField = (key: string, value: string) => {
     setFormFields((prev: any) => {
       const next = { ...prev, [key]: value };
@@ -3239,6 +3256,13 @@ export default function DashboardPage() {
               >
                 {Icons.export("w-4 h-4 text-[#859681]")}
                 Ekspor Laporan (CSV)
+              </button>
+              <button
+                onClick={handlePDFExport}
+                className="flex-1 py-3.5 px-4 bg-[#859681] hover:bg-[#748570] text-white border border-[#859681] font-bold rounded-xl transition-all text-xs flex items-center justify-center gap-2 shadow-sm"
+              >
+                {Icons.export("w-4 h-4 text-white")}
+                Ekspor Laporan (PDF)
               </button>
               {profile?.user?.role === 'OWNER' && (
                 <button

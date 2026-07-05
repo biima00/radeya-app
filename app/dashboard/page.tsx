@@ -559,9 +559,10 @@ export default function DashboardPage() {
 
   // --- Profile & Subscription States ---
   const [profile, setProfile] = useState<any>({
-    user: { role: 'OWNER', name: '', email: '' },
+    user: { role: 'OWNER', name: '', email: '', emailVerified: false },
     organization: { plan: 'FREE', subscriptionActive: false, subscriptionEnd: null }
   });
+  const [emailResendLoading, setEmailResendLoading] = useState(false);
   const [billingModalOpen, setBillingModalOpen] = useState(false);
   const [billingLoading, setBillingLoading] = useState(false);
 
@@ -2164,7 +2165,31 @@ export default function DashboardPage() {
     });
   };
 
+  const handleResendVerificationEmail = async () => {
+    setEmailResendLoading(true);
+    try {
+      const response = await fetch('/api/v1/auth/resend-verification', {
+        method: 'POST',
+      });
+      if (response.ok) {
+        showToast('✓ Email verifikasi telah dikirim ulang. Cek inbox Anda.');
+      } else {
+        const data = await response.json();
+        showToast('❌ ' + (data.error || 'Gagal mengirim email verifikasi'));
+      }
+    } catch (error) {
+      showToast('❌ Terjadi kesalahan saat mengirim email');
+    } finally {
+      setEmailResendLoading(false);
+    }
+  };
+
   const handleCSVExport = () => {
+    if (profile?.organization?.plan === 'FREE') {
+      showToast('⚠️ Ekspor CSV hanya tersedia untuk paket PRO & ENTERPRISE!');
+      setBillingModalOpen(true);
+      return;
+    }
     const cycle = getActiveCycle();
     if (!cycle) return;
 
@@ -2439,7 +2464,24 @@ export default function DashboardPage() {
 
       {/* Right Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        
+
+        {/* Email Verification Banner */}
+        {!profile?.user?.emailVerified && (
+          <div className="bg-amber-50 border-b border-amber-200 px-8 py-3 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 text-sm text-amber-900">
+              <span className="text-lg">⚠️</span>
+              <p className="font-semibold">Email Anda belum diverifikasi. Cek inbox atau folder spam untuk link verifikasi.</p>
+            </div>
+            <button
+              onClick={handleResendVerificationEmail}
+              disabled={emailResendLoading}
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-700 disabled:bg-amber-500 text-white text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
+            >
+              {emailResendLoading ? 'Mengirim...' : 'Kirim Ulang Email'}
+            </button>
+          </div>
+        )}
+
         {/* Top Header / Cycle Selector Bar */}
         <header className="bg-[#FAF7F0] border-b border-[#EADDC9]/60 px-8 py-4 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3 flex-wrap">

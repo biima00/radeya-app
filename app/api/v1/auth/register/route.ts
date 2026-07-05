@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { SignJWT } from 'jose';
 import { rateLimit, getClientIp } from '@/lib/rate-limit';
 import { setAuthCookie } from '@/lib/auth-cookie';
+import { sendVerificationEmail } from '@/lib/email';
 
 if (!process.env.NEXTAUTH_SECRET) {
   throw new Error('FATAL: NEXTAUTH_SECRET environment variable is not set.');
@@ -76,18 +77,30 @@ export async function POST(req: Request) {
       return user;
     });
 
-    // 5. Generate token JWT menggunakan library 'jose'
-    const token = await new SignJWT({ 
-      userId: newUser.id, 
+    // 5. Generate verification token JWT
+    const verifyToken = await new SignJWT({
+      userId: newUser.id,
+      purpose: 'email-verification'
+    })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('24h')
+      .sign(JWT_SECRET);
+
+    const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/v1/auth/verify-email?token=${verifyToken}`;
+    await sendVerificationEmail(newUser.email, newUser.name, verifyUrl);
+
+    // 6. Generate session token JWT menggunakan library 'jose'
+    const token = await new SignJWT({
+      userId: newUser.id,
       email: newUser.email,
       orgId: newUser.orgId,
       role: newUser.role
     })
       .setProtectedHeader({ alg: 'HS256' })
-      .setExpirationTime('7d') // Token berlaku selama 7 hari
+      .setExpirationTime('7d')
       .sign(JWT_SECRET);
 
-    // 6. Return data sukses + set httpOnly cookie
+    // 7. Return data sukses + set httpOnly cookie
     const response = NextResponse.json({
       success: true,
       message: 'Registrasi berhasil',

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getEffectivePlan } from '@/lib/subscription'; // ADDED CLAUDE AI
 import bcrypt from 'bcryptjs';
 import * as z from 'zod';
 
@@ -69,7 +70,8 @@ export async function POST(req: Request) {
       where: { id: orgId },
     });
 
-    if (!org || org.plan !== 'ENTERPRISE' || !org.subscriptionActive) {
+    // ADDED CLAUDE AI: Use getEffectivePlan to check true plan status (includes expiry check)
+    if (!org || getEffectivePlan(org) !== 'ENTERPRISE') {
       return NextResponse.json(
         { error: 'Fitur pengelolaan anggota tim hanya tersedia pada paket ENTERPRISE aktif.' },
         { status: 403 }

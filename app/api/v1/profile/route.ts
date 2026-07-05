@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getEffectivePlan } from '@/lib/subscription'; // ADDED CLAUDE AI
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +22,9 @@ export async function GET(req: Request) {
     if (!user || !org) {
       return NextResponse.json({ error: 'Data tidak ditemukan' }, { status: 404 });
     }
-    return NextResponse.json({ user, organization: org });
+    // ADDED CLAUDE AI: Return effective plan to frontend (includes expiry check)
+    const effectivePlan = getEffectivePlan(org);
+    return NextResponse.json({ user, organization: { ...org, plan: effectivePlan } });
   } catch (error: any) {
     console.error('Error fetching profile:', error);
     return NextResponse.json({ error: 'Gagal mengambil data profil' }, { status: 500 });

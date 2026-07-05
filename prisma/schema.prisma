@@ -22,16 +22,17 @@ model User {
 }
 
 model Organization {
-  id                 String    @id @default(uuid())
-  name               String
-  plan               String          @default("FREE")
-  subscriptionActive Boolean         @default(false)
-  subscriptionEnd    DateTime?
-  users              User[]
-  cycles             Cycle[]
-  inventoryItems     InventoryItem[]
-  createdAt          DateTime        @default(now())
-  updatedAt          DateTime        @updatedAt
+  id                   String    @id @default(uuid())
+  name                 String
+  plan                 String          @default("FREE")
+  subscriptionActive   Boolean         @default(false)
+  subscriptionEnd      DateTime?
+  lastPaymentOrderId   String?         // ADDED CLAUDE AI: Idempotency key for webhook deduplication
+  users                User[]
+  cycles               Cycle[]
+  inventoryItems       InventoryItem[]
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
 }
 
 model Cycle {

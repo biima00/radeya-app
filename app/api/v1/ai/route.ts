@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma'; // ADDED CLAUDE AI
+import { getEffectivePlan } from '@/lib/subscription'; // ADDED CLAUDE AI
 import { rateLimit, getClientIp } from '../../../../lib/rate-limit';
 
 // Fallback cerdas offline berbasis aturan (medis ternak Indonesia)
@@ -125,6 +127,19 @@ export async function POST(req: Request) {
     const orgId = req.headers.get('x-org-id');
     if (!orgId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    // ADDED CLAUDE AI: Check plan subscription — AI Vet is PRO+ only
+    const org = await prisma.organization.findUnique({
+      where: { id: orgId },
+      select: { plan: true, subscriptionActive: true, subscriptionEnd: true },
+    });
+
+    if (!org || getEffectivePlan(org) === 'FREE') {
+      return NextResponse.json(
+        { error: 'Fitur AI Vet hanya tersedia pada paket PRO atau ENTERPRISE aktif.' },
+        { status: 403 }
+      );
     }
 
     const { message, animal } = await req.json();

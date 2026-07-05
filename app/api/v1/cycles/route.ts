@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getEffectivePlan } from '@/lib/subscription'; // ADDED CLAUDE AI
 import * as z from 'zod';
 
 // Skema validasi input untuk memastikan data yang masuk sudah benar
@@ -59,10 +60,11 @@ export async function POST(req: Request) {
     // Check cycle count limit based on plan
     const org = await prisma.organization.findUnique({
       where: { id: orgId },
-      select: { plan: true }
+      select: { plan: true, subscriptionActive: true, subscriptionEnd: true }
     });
 
-    const plan = org?.plan || 'FREE';
+    // ADDED CLAUDE AI: Use getEffectivePlan to check true plan status (includes expiry check)
+    const plan = org ? getEffectivePlan(org) : 'FREE';
     const limit = plan === 'ENTERPRISE' ? 100 : plan === 'PRO' ? 10 : 3;
 
     const cycleCount = await prisma.cycle.count({
